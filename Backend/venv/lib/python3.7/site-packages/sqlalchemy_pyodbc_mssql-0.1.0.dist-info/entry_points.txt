@@ -1,0 +1,4 @@
+
+        [sqlalchemy.dialects]
+        mssql.pyodbc_mssql = sqlalchemy_pyodbc_mssql.dialect:MssqlDialect_pyodbc_quoted
+    
