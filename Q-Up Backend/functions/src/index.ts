@@ -23,4 +23,24 @@ app.get("/getQueue", (req, res) => {
     .catch((err) => console.error(err));
 });
 
+app.post("/enterQueue", (req, res) => {
+  const newUser = {
+    position: req.body.position,
+    userName: req.body.userName,
+    createdAt: admin.firestore.Timestamp.fromDate(new Date()),
+  };
+
+  admin
+    .firestore()
+    .collection("queues")
+    .add(newUser)
+    .then((doc) => {
+      res.json({ message: `document ${doc.id} created successfully` });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "something went wrong" });
+      console.error(err);
+    });
+});
+
 exports.api = functions.https.onRequest(app);
