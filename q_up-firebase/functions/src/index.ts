@@ -60,6 +60,17 @@ app.post("/enterQueue", (req, res) => {
     });
 });
 
+const isEmpty = (string: string) => {
+  if (string.trim() === "") return true;
+  else return false;
+};
+
+const isEmail = (email: string) => {
+  const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (email.match(regEx)) return true;
+  else return false;
+};
+
 // Signup route
 app.post("/signup", (req, res) => {
   const newUser = {
@@ -68,41 +79,99 @@ app.post("/signup", (req, res) => {
     confirmPassword: req.body.confirmPassword,
   };
 
-  // TODO: validate data
-  let token: string;
-  let userId: any;
-  db.doc(`/users/${newUser.email}`)
-    .get()
-    .then(() => {
-      return firebase
-        .auth()
-        .createUserWithEmailAndPassword(newUser.email, newUser.password)
-        .then((data) => {
-          userId = data.user?.uid;
-          return data.user?.getIdToken().then((generatedToken) => {
-            token = generatedToken;
-            const userCredentials = {
-              email: newUser.email,
-              createdAt: new Date().toISOString(),
-              userId,
-            };
-            return db
-              .doc(`/users/${newUser.email}`)
-              .set(userCredentials)
-              .then(() => {
-                return res.status(201).json({ token });
-              });
+  let errors = {};
+
+  if (isEmpty(newUser.email)) {
+    Object.assign(errors, { email: "Must not be empty" });
+  }
+  if (!isEmail(newUser.email)) {
+    Object.assign(errors, { email: "Must be a valid email address" });
+  }
+
+  if (isEmpty(newUser.password)) {
+    Object.assign(errors, { password: "Must not be empty" });
+  }
+
+  if (newUser.password !== newUser.confirmPassword) {
+    Object.assign(errors, { confirmPassword: "Passwords must match" });
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json(errors);
+  } else {
+    let token: string;
+    let userId: any;
+    db.doc(`/users/${newUser.email}`)
+      .get()
+      .then(() => {
+        return firebase
+          .auth()
+          .createUserWithEmailAndPassword(newUser.email, newUser.password)
+          .then((data) => {
+            userId = data.user?.uid;
+            return data.user?.getIdToken().then((generatedToken) => {
+              token = generatedToken;
+              const userCredentials = {
+                email: newUser.email,
+                createdAt: new Date().toISOString(),
+                userId,
+              };
+              return db
+                .doc(`/users/${newUser.email}`)
+                .set(userCredentials)
+                .then(() => {
+                  return res.status(201).json({ token });
+                });
+            });
           });
+      })
+      .catch((err) => {
+        console.error(err);
+        if (err.code === "auth/email-already-in-use") {
+          return res.status(400).json({ email: "Email is already in use" });
+        } else {
+          return res.status(500).json({ error: err.code });
+        }
+      });
+    return res.status(201);
+  }
+});
+
+// login route
+
+app.post("/login", (req, res) => {
+  const user = {
+    email: req.body.email,
+    password: req.body.password,
+  };
+
+  let errors = {};
+
+  if (isEmpty(user.email)) {
+    Object.assign(errors, { email: "Must not be empty" });
+  }
+
+  if (isEmpty(user.password)) {
+    Object.assign(errors, { password: "Must not be empty" });
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json(errors);
+  } else {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(user.email, user.password)
+      .then((data) => {
+        return data.user?.getIdToken().then((generatedToken) => {
+          return res.status(200).json({ generatedToken });
         });
-    })
-    .catch((err) => {
-      console.error(err);
-      if (err.code === "auth/email-already-in-use") {
-        return res.status(400).json({ email: "Email is already in use" });
-      } else {
+      })
+      .catch((err) => {
+        console.error(err);
         return res.status(500).json({ error: err.code });
-      }
-    });
+      });
+    return res.status(200);
+  }
 });
 
 exports.api = functions.https.onRequest(app);
