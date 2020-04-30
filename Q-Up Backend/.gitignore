@@ -63,3 +63,9 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+# mock database
+dbschema.js
+
+# local test credentials
+functions/admin.json
