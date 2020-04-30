@@ -16,3 +16,5 @@ The following table shows the developers of this project.
 ## Features:
 
 ## Launch:
+
+To run this application, first run \$npm install in the q_up-client directory, and open index.ts.
