@@ -2,7 +2,7 @@ import { db } from "../util/admin";
 import * as firebase from "firebase";
 import { firebaseConfig } from "../util/config";
 import { Request, Response } from "express";
-import { validateSignupData, validateLoginData } from "../util/validators";
+import { validateSignUpData, validateLoginData } from "../util/validators";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -12,7 +12,7 @@ const customerSignup = (req: Request, res: Response) => {
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
   };
-  const { valid, errors } = validateSignupData(newUser);
+  const { valid, errors } = validateSignUpData(newUser);
 
   if (!valid) {
     return res.status(400).json(errors);
@@ -60,7 +60,7 @@ const businessSignup = (req: Request, res: Response) => {
     confirmPassword: req.body.confirmPassword,
   };
 
-  const { valid, errors } = validateSignupData(newUser);
+  const { valid, errors } = validateSignUpData(newUser);
 
   if (!valid) {
     return res.status(400).json(errors);
