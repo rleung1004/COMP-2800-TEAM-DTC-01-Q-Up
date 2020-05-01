@@ -63,8 +63,6 @@ const FBAuth = (
     .verifyIdToken(idToken)
     .then((decodedToken) => {
       Object.assign(req.body, { decodedToken });
-      let uid = req.body.decodedToken.uid;
-      Object.assign(req.body, { uid });
       return db
         .collection("users")
         .where("userId", "==", req.body.decodedToken.uid)
