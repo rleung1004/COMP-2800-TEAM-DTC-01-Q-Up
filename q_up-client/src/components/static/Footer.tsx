@@ -8,10 +8,10 @@ export default function Footer() {
       <Grid container justify="center" alignItems="center" className="foot-container">
         <Grid item container direction="column" id="foot-content-grid">
             <Grid item container>
-                <Grid item xs={3}><img src={require('../../img/twit.svg')}/></Grid>
-                <Grid item xs={3}><img src={require('../../img/face.svg')}/></Grid>
-                <Grid item xs={3}><img src={require('../../img/insta.png')}/></Grid>
-                <Grid item xs={3}><img src={require('../../img/youtube.svg')}/></Grid>
+                <Grid item xs={3}><img src={require('../../img/twit.svg')} alt="Twitter logo"/></Grid>
+                <Grid item xs={3}><img src={require('../../img/face.svg')} alt="Facebook logo"/></Grid>
+                <Grid item xs={3}><img src={require('../../img/insta.png')} alt="Instagram logo"/></Grid>
+                <Grid item xs={3}><img src={require('../../img/youtube.svg')} alt="Youtube logo"/></Grid>
             </Grid>
             <Grid item><hr/></Grid>
             <Grid item>
