@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import './pages/landing';
+import {
+  BrowserRouter as Router, Route, Switch
+} from 'react-router-dom';
 import LandingPage from './pages/landing';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
