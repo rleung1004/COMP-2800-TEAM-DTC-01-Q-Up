@@ -42,10 +42,52 @@ app.get("/getQueue", (_, res) => {
     .catch((err) => console.error(err));
 });
 
-app.post("/enterQueue", (req, res) => {
+const FBAuth = (
+  req: express.Request,
+  res: express.Response,
+  next: Function
+) => {
+  let idToken: string;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer ")
+  ) {
+    idToken = req.headers.authorization.split("Bearer ")[1];
+  } else {
+    console.error("No token found");
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+
+  admin
+    .auth()
+    .verifyIdToken(idToken)
+    .then((decodedToken) => {
+      Object.assign(req.body, { decodedToken });
+      let uid = req.body.decodedToken.uid;
+      Object.assign(req.body, { uid });
+      return db
+        .collection("users")
+        .where("userId", "==", req.body.decodedToken.uid)
+        .limit(1)
+        .get()
+        .then((data) => {
+          let userEmail = data.docs[0].data().email;
+          Object.assign(req.body, { userEmail });
+          return next();
+        });
+    })
+    .catch((err) => {
+      console.error("Error while verifying token", err);
+      return res.status(403).json(err);
+    });
+  return undefined;
+};
+
+app.post("/enterQueue", FBAuth, (req, res) => {
+  console.log(req);
   const newUser = {
     position: req.body.position,
-    userName: req.body.userName,
+    userEmail: req.body.userEmail,
     createdAt: new Date().toISOString(),
   };
 
@@ -101,29 +143,26 @@ app.post("/signup", (req, res) => {
   } else {
     let token: string;
     let userId: any;
-    db.doc(`/users/${newUser.email}`)
-      .get()
-      .then(() => {
-        return firebase
-          .auth()
-          .createUserWithEmailAndPassword(newUser.email, newUser.password)
-          .then((data) => {
-            userId = data.user?.uid;
-            return data.user?.getIdToken().then((generatedToken) => {
-              token = generatedToken;
-              const userCredentials = {
-                email: newUser.email,
-                createdAt: new Date().toISOString(),
-                userId,
-              };
-              return db
-                .doc(`/users/${newUser.email}`)
-                .set(userCredentials)
-                .then(() => {
-                  return res.status(201).json({ token });
-                });
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(newUser.email, newUser.password)
+      .then((data) => {
+        userId = data.user?.uid;
+        return data.user?.getIdToken().then((generatedToken) => {
+          token = generatedToken;
+          const userCredentials = {
+            email: newUser.email,
+            createdAt: new Date().toISOString(),
+            userId,
+          };
+          return db
+            .doc(`/users/${newUser.email}`)
+            .set(userCredentials)
+            .then(() => {
+              return res.status(201).json({ token });
             });
-          });
+        });
       })
       .catch((err) => {
         console.error(err);
