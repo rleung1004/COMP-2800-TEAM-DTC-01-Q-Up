@@ -30,7 +30,13 @@ body {
 }
 
 .btn:hover {
-   background-color: #141313;
+   background-color: darkgray;
+   border-color: #eef13e;
+   color: white;
+}
+
+.btn:active {
+   background-color: black;
    border-color: #eef13e;
    color: white;
 }
