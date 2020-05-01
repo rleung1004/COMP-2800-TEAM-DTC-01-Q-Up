@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/static/Header";
 import Footer from "src/components/static/Footer";
+import '../styles/landing.scss';
 
 export default function LandingPage() {
   return (

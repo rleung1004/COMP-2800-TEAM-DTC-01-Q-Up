@@ -1,12 +1,12 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import '../../styles/staticHeader.css'
+import '../../styles/staticHeader.scss'
 
 export default function Header() {
    
     return (
     <header style={{backgroundColor: "#242323"}}>
-        <Grid container>
+        <Grid container alignItems="center">
             <Grid item xs={2}>
                 <h1>QUP</h1>
             </Grid>
