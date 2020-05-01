@@ -6,6 +6,8 @@ import { FBAuth } from "./util/fbAuth";
 
 const app = express();
 
+// all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
+
 // queue routes
 app.get("/getQueue", getQueues);
 app.post("/enterQueue", FBAuth, enterQueue);
