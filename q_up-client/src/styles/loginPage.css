@@ -26,11 +26,17 @@ body {
 .btn {
    background-color: #242323;
    border-color: #eef13e;
+   color: white;
 }
 
 .btn:hover {
    background-color: #141313;
    border-color: #eef13e;
+   color: white;
+}
+
+.bottom-space {
+   margin-bottom: 50px;
 }
 
 a {
@@ -38,6 +44,11 @@ a {
    color: white;
 }
 
-.bottom-space {
-   margin-bottom: 50px;
+.signup-btn {
+   text-decoration: none;
+}
+
+.signup-btn:hover {
+   text-decoration: none;
+   color: white;
 }
