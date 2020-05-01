@@ -1,12 +1,23 @@
-main>section:first-child {
+.top-pic-section {
     background-image: url(../img/macHipster.jpg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     height: 50vh;
-
     h2{
         margin-top: 0;
     }
+}
 
+#iframe-container {
+    position: relative;
+    padding-top: 56.25%
+}
+
+#pitch-video{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
