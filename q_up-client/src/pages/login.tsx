@@ -11,7 +11,10 @@ export default function LoginPage() {
          <Header />
          <main>
             <div className='login-form first-element'>
-               <form action='/api/login' method='post'>
+               <form
+                  action='https://us-central1-q-up-c2b70.cloudfunctions.net/api/login'
+                  method='post'
+               >
                   <div className='form-group'>
                      <input
                         type='email'
