@@ -19,9 +19,8 @@ export default function LandingPage() {
           <Grid item container direction="column" spacing={2}>
             <Grid item>
               <Link to="/login">
-                
+                <button>Login</button>
               </Link>
-              <button>Login</button>
             </Grid>
             <Grid item>
               <Link to="/signup">
