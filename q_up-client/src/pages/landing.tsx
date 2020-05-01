@@ -16,6 +16,13 @@ export default function LandingPage() {
           alignItems="center"
           className="top-pic-section"
         >
+          <Grid item xs={12}>
+            <header id="landing-header">
+              <h2>No more queues with Q-UP</h2>
+              <p>Queue from home on your favorite grocers, clinics and more!</p>
+            </header>
+          </Grid>
+
           <Grid item container direction="column" spacing={2}>
             <Grid item>
               <Link to="/login">
@@ -31,9 +38,10 @@ export default function LandingPage() {
         </Grid>
       </main>
       <section id="iframe-container">
-        <iframe title="Pitch"
-          id="pitch-video"
+        <iframe
+          title="Pitch"
           frameBorder="0"
+          id="pitch-video"
           src="https://www.youtube.com/embed/zUbBq3o2b2g"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

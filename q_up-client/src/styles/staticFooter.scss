@@ -1,5 +1,6 @@
 footer {
   background-color: #242323;
+  font-size: 12px;
 }
 
 .foot-container {
@@ -7,10 +8,10 @@ footer {
 }
 
 #foot-content-grid {
-  width: 20rem;
-  padding: 1rem;
+  width: 30rem;
+  padding: 1em;
   img {
-    height: 1.5rem;
+    height: 1.5em;
   }
   hr {
     border-color: #eef13e;
@@ -23,6 +24,11 @@ footer {
 
 #priv-terms-container {
   p {
-    font-size: 0.6rem;
+    font-size: 0.8em;
   }
+}
+
+#copyright-row{
+    margin-top: 0.5em;
+    font-size: 0.6em;
 }

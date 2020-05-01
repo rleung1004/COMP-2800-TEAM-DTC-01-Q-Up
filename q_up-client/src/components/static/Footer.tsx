@@ -1,6 +1,7 @@
 import React from "react";
 import "../../styles/staticFooter.scss";
 import { Grid } from "@material-ui/core";
+import CopyrightIcon from '@material-ui/icons/Copyright';
 
 export default function Footer() {
   return (
@@ -23,11 +24,13 @@ export default function Footer() {
             </Grid>
             <Grid item><hr/></Grid>
             <Grid item container justify="space-around" id="priv-terms-container">
-                <Grid item xs={3}><p>PRIVACY</p></Grid>
-                <Grid item xs={3}><p>TERMS OF USE</p></Grid>
+                <Grid item xs={4}><p>PRIVACY</p></Grid>
+                <Grid item xs={4}><p>TERMS OF USE</p></Grid>
             </Grid>
+            <Grid item id="copyright-row"><p><CopyrightIcon fontSize="small"/> All rights reserved. Q-UP. 2020</p></Grid>
         </Grid>
       </Grid>
+    
     </footer>
   );
 }
