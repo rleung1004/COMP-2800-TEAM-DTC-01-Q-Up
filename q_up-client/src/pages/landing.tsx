@@ -5,7 +5,7 @@ import Footer from "src/components/static/Footer";
 export default function LandingPage() {
   return (
     <>
-      <Header />
+      <Header/>
       <main>
         <section>
           <h2>The best is yet to come</h2>
@@ -15,7 +15,7 @@ export default function LandingPage() {
           <p>nothing but the best</p>
         </section>
       </main>
-      <Footer />
+      <Footer/>
     </>
   );
 }
