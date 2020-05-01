@@ -10,8 +10,8 @@ export default function Header() {
             <Grid item xs={2}>
                 <h1>QUP</h1>
             </Grid>
-            <Grid item xs={8} justify="center">
-                <img src={require("../../img/temp_logo_png.png")}/>
+            <Grid item container xs={8} justify="center">
+                <img src={require("../../img/temp_logo_png.png")} alt="QUP logo"/>
             </Grid>
         </Grid>
     </header>);

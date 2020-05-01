@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "../components/static/Header";
 import Footer from "src/components/static/Footer";
 import "../styles/landing.scss";
-import { Grid, Button } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 export default function LandingPage() {
   return (
@@ -19,23 +19,20 @@ export default function LandingPage() {
           <Grid item container direction="column" spacing={2}>
             <Grid item>
               <Link to="/login">
-                <Button variant="contained" className="btn">
-                  Login
-                </Button>
+                
               </Link>
+              <button>Login</button>
             </Grid>
             <Grid item>
               <Link to="/signup">
-                <Button variant="contained" className="btn">
-                  Signup
-                </Button>
+                <button>Signup</button>
               </Link>
             </Grid>
           </Grid>
         </Grid>
       </main>
       <section id="iframe-container">
-        <iframe
+        <iframe title="Pitch"
           id="pitch-video"
           frameBorder="0"
           src="https://www.youtube.com/embed/zUbBq3o2b2g"
