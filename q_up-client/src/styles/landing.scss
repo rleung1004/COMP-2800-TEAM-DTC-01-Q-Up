@@ -57,6 +57,32 @@
   }
 }
 
+.how-it-works-section{
+  text-align: left;
+  padding: 1rem;
+  font-size: 12px;
+  header{
+    border: none;
+  }
+  h2{
+    font-size: 2rem;
+    text-align: left;
+  }
+  border-bottom: 1px solid black;
+  h3{
+    font-size: 1.2rem;
+  }
+  
+  section{
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  div:first-of-type{
+    margin-right: 5rem;
+  }
+}
+
 @media (min-width: 800px) {
   #landing-header{
     h2{
@@ -72,4 +98,9 @@
       width: 40rem;
     }
   }
+
+  .how-it-works-section{
+    font-size: 20px;
+  }
 }
+

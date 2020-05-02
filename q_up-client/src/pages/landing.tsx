@@ -47,23 +47,35 @@ export default function LandingPage() {
           allowFullScreen
         ></iframe>
       </section>
-        <section className="how-it-works-section">
-           <h2>How it Works:</h2>
-            <h3>As a customer:</h3>
-               <ol >
-                   <li>Sign up to our website</li>
-                   <li>Find the store that you want to queue for and queue up for it</li>
-                   <li>Go to the store when its your turn to enter</li>
-               </ol>
-            <h3>As a business:</h3>
-            <ol>
-                <li>Sign up to our website</li>
-                <li>Set up your business profile</li>
-                <li>Start your queue</li>
-                <li>Let customers into your store</li>
-            </ol>
-
+      <section className="how-it-works-section">
+        <header>
+          <h2>How it Works</h2>
+        </header>
+        <section>
+          <div>
+            <header>
+              <h3>As a customer</h3>
+            </header>
+            <ul>
+              <li>Sign up to our website</li>
+              <li>
+                Find the store that you want 
+              </li>
+              <li>Press enter</li>
+              <li>Go to the store when its your turn</li>
+            </ul>
+          </div>
+          <div>
+            <h3>As a business</h3>
+            <ul>
+              <li>Sign up to our website</li>
+              <li>Set up your business profile</li>
+              <li>Start your queue</li>
+              <li>Let customers into your store</li>
+            </ul>
+          </div>
         </section>
+      </section>
       <Footer />
     </>
   );
