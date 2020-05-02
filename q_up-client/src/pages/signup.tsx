@@ -44,26 +44,28 @@ export default function LoginPage() {
                         required
                      />
                   </div>
+
                   <div className='radio-class'>
                      <label>
                         <input
                            type='radio'
-                           id='business'
+                           id='user'
                            name='userType'
-                           value='business'
+                           value='customer'
                         />
-                        I am a manager of a business.
+                        I want to queue as a customer.
                      </label>
                   </div>
                   <div className='radio-class bottom-space'>
                      <label>
                         <input
                            type='radio'
-                           id='user'
+                           id='business'
                            name='userType'
-                           value='user'
+                           value='business'
+                           required
                         />
-                        I want to queue as a customer.
+                        I am a manager of a business.
                      </label>
                   </div>
                   <div className='form-group'>
