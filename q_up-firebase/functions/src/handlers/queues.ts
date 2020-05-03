@@ -1,8 +1,9 @@
 import { db } from '../util/admin';
 import { Request, Response } from 'express';
 
-const getQueues = (_: Request, res: Response) => {
-   db.collection('queue')
+const getQueues = async (_: Request, res: Response) => {
+   await db
+      .collection('queue')
       .get()
       .then((data) => {
          let queue: Array<object> = [];
@@ -21,31 +22,34 @@ const getQueues = (_: Request, res: Response) => {
 
 const enterQueue = async (req: Request, res: Response) => {
    // find last position
-   let lastPosition: number = 0;
+   let Position: number = 0;
    await db
       .collection('queue')
       .orderBy('position', 'desc')
       .limit(1)
       .get()
       .then((data) => {
-         lastPosition = data.docs[0].data().position;
+         Position = data.docs[0].data().position;
       })
       .catch(() => {
          console.log('First customer queued.');
       });
-   lastPosition++;
+
+   // new position
+   Position++;
 
    // create user object
-   const newUser: object = {
-      position: lastPosition,
+   const newUser = {
+      position: Position,
       userEmail: req.body.userEmail,
       createdAt: new Date().toISOString(),
    };
 
-   // TODO: check if user is already in queue.
+   // TODO?: check if user is already in queue.
 
    // put user object in queue
-   db.collection('queue')
+   await db
+      .collection('queue')
       .add(newUser)
       .then((doc) => {
          res.json({ message: `document ${doc.id} created successfully` });
