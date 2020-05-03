@@ -23,7 +23,6 @@ const enterQueue = (req: Request, res: Response) => {
    const newUser = {
       position: req.body.position,
       userEmail: req.body.userEmail,
-      accountType: req.body.accountType,
       createdAt: new Date().toISOString(),
    };
 
