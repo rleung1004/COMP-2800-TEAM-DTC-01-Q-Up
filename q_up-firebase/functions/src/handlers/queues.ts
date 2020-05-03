@@ -19,13 +19,32 @@ const getQueues = (_: Request, res: Response) => {
       .catch((err) => console.error(err));
 };
 
-const enterQueue = (req: Request, res: Response) => {
-   const newUser = {
-      position: req.body.position,
+const enterQueue = async (req: Request, res: Response) => {
+   // find last position
+   let lastPosition: number = 0;
+   await db
+      .collection('queue')
+      .orderBy('position', 'desc')
+      .limit(1)
+      .get()
+      .then((data) => {
+         lastPosition = data.docs[0].data().position;
+      })
+      .catch(() => {
+         console.log('First customer queued.');
+      });
+   lastPosition++;
+
+   // create user object
+   const newUser: object = {
+      position: lastPosition,
       userEmail: req.body.userEmail,
       createdAt: new Date().toISOString(),
    };
 
+   // TODO: check if user is already in queue.
+
+   // put user object in queue
    db.collection('queue')
       .add(newUser)
       .then((doc) => {
