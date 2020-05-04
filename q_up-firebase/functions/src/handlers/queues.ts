@@ -21,6 +21,8 @@ const getQueues = async (_: Request, res: Response) => {
 };
 
 const enterQueue = async (req: Request, res: Response) => {
+   // TODO:
+
    // find last position
    let Position: number = 0;
    await db
@@ -44,8 +46,6 @@ const enterQueue = async (req: Request, res: Response) => {
       userEmail: req.body.userEmail,
       createdAt: new Date().toISOString(),
    };
-
-   // TODO?: check if user is already in queue.
 
    // put user object in queue
    await db
