@@ -1,7 +1,7 @@
 import { admin, db } from '../util/admin';
 import { Request, Response } from 'express';
 
-export const FBAuth = (req: Request, res: Response, next: Function) => {
+export const FBAuth = async (req: Request, res: Response, next: Function) => {
    let idToken: string;
    if (
       req.headers.authorization &&
@@ -13,7 +13,7 @@ export const FBAuth = (req: Request, res: Response, next: Function) => {
       return res.status(403).json({ error: 'Unauthorized' });
    }
 
-   admin
+   await admin
       .auth()
       .verifyIdToken(idToken)
       .then((decodedToken) => {
