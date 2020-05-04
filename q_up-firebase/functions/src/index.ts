@@ -3,6 +3,7 @@ import { getQueues, enterQueue } from './handlers/queues';
 import * as express from 'express';
 import { signup, login } from './handlers/users';
 import { FBAuth } from './util/fbAuth';
+// TODO: bring in express-rate-limit (https://www.npmjs.com/package/express-rate-limit)
 
 const app = express();
 
