@@ -6,11 +6,12 @@ import { validateSignUpData, validateLoginData } from '../util/validators';
 
 firebase.initializeApp(firebaseConfig);
 
-const signup = (req: Request, res: Response) => {
+const signup = async (req: Request, res: Response) => {
    const newUser = {
-      email: req.body.email,
-      password: req.body.password,
-      confirmPassword: req.body.confirmPassword,
+      // use toString() to prevent user entering nested object to database
+      email: req.body.email.toString(),
+      password: req.body.password.toString(),
+      confirmPassword: req.body.confirmPassword.toString(),
       userType: req.body.userType,
    };
 
@@ -22,7 +23,7 @@ const signup = (req: Request, res: Response) => {
       let token: string;
       let userId: any;
 
-      firebase
+      await firebase
          .auth()
          .createUserWithEmailAndPassword(newUser.email, newUser.password)
          .then((data) => {
@@ -57,7 +58,7 @@ const signup = (req: Request, res: Response) => {
    }
 };
 
-const login = (req: Request, res: Response) => {
+const login = async (req: Request, res: Response) => {
    const user = {
       email: req.body.email,
       password: req.body.password,
@@ -67,7 +68,7 @@ const login = (req: Request, res: Response) => {
    if (!valid) {
       return res.status(400).json(errors);
    } else {
-      firebase
+      await firebase
          .auth()
          .signInWithEmailAndPassword(user.email, user.password)
          .then((data) => {
