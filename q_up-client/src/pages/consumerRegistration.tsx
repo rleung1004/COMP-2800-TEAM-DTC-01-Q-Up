@@ -7,7 +7,7 @@ export default function ConsumerRegistrationPage() {
     return <>
     <Header/>
         <main>
-            consumer registration page
+            consumer registration page.
         </main>
     <Footer/>
     </>;
