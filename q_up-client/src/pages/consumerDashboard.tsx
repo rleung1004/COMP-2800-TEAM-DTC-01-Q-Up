@@ -8,6 +8,7 @@ export default function ClientDashboardPage() {
     return <>
     <Header Nav={ConsumerNav}/>
         <main>
+            consumer dashboard
         </main>
     <Footer/>
     </>;
