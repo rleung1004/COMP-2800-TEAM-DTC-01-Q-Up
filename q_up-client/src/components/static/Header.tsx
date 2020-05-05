@@ -2,8 +2,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import '../../styles/staticHeader.scss'
 
-export default function Header() {
-   
+export default function Header(props: any) {
     return (
     <header style={{backgroundColor: "#242323"}}>
         <Grid container alignItems="center">
@@ -14,5 +13,6 @@ export default function Header() {
                 <img src={require("../../img/temp_logo_png.png")} alt="QUP logo"/>
             </Grid>
         </Grid>
+        <props.Nav/>
     </header>);
 }

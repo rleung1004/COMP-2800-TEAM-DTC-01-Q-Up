@@ -1,5 +1,5 @@
 import React from 'react';
 
-export default function comsumerNav() {
-    return<nav></nav>;
+export default function ConsumerNav() {
+    return<nav>consumer nav</nav>;
 }
