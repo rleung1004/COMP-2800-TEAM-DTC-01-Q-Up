@@ -7,6 +7,7 @@ export default function BusinessRegistrationPage() {
     return <>
     <Header/>
         <main>
+            business registration page
         </main>
     <Footer/>
     </>;
