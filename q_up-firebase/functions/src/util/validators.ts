@@ -2,6 +2,8 @@ interface signupData {
   email: string;
   password: string;
   confirmPassword: string;
+  userType: string;
+  business: string;
 }
 
 interface loginData {
@@ -13,6 +15,7 @@ interface errors {
   email?: string;
   password?: string;
   confirmPassword?: string;
+  userType?: string;
 }
 
 const isEmpty = (string: string) => {
@@ -29,8 +32,7 @@ const validateSignUpData = (data: signupData) => {
 
   if (isEmpty(data.email)) {
     errors.email = "Must not be empty";
-  }
-  else if (!isEmail(data.email)) {
+  } else if (!isEmail(data.email)) {
     errors.email = "Must be a valid email address";
   }
 
@@ -40,6 +42,14 @@ const validateSignUpData = (data: signupData) => {
 
   if (data.password !== data.confirmPassword) {
     errors.confirmPassword = "Passwords must match";
+  }
+
+  if (
+    data.userType !== "customer" &&
+    data.userType !== "manager" &&
+    data.userType !== "employee"
+  ) {
+    errors.userType = "Invalid user type";
   }
 
   return {
@@ -65,4 +75,4 @@ const validateLoginData = (data: loginData) => {
   };
 };
 
-export { validateSignUpData, validateLoginData, isEmail, isEmpty};
+export { validateSignUpData, validateLoginData, isEmail, isEmpty };
