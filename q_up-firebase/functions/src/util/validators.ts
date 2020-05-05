@@ -3,6 +3,7 @@ interface signupData {
   password: string;
   confirmPassword: string;
   userType: string;
+  business: string;
 }
 
 interface loginData {
@@ -43,9 +44,14 @@ const validateSignUpData = (data: signupData) => {
     errors.confirmPassword = "Passwords must match";
   }
 
-  if (data.userType !== "customer" && data.userType !== "business") {
+  if (
+    data.userType !== "customer" &&
+    data.userType !== "manager" &&
+    data.userType !== "employee"
+  ) {
     errors.userType = "Invalid user type";
   }
+
   return {
     errors,
     valid: Object.keys(errors).length === 0,

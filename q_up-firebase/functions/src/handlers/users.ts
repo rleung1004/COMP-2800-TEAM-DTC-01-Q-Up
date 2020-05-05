@@ -13,6 +13,7 @@ const signup = async (req: Request, res: Response) => {
     password: req.body.password.toString(),
     confirmPassword: req.body.confirmPassword.toString(),
     userType: req.body.userType,
+    business: req.body.business,
   };
 
   const { valid, errors } = validateSignUpData(newUser);
@@ -43,7 +44,7 @@ const signup = async (req: Request, res: Response) => {
               .then(() => {
                 return res.status(201).json({ token });
               });
-          } else {
+          } else if (newUser.userType === "manager") {
             const userCredentials = {
               email: newUser.email,
               businessList: [],
@@ -51,6 +52,18 @@ const signup = async (req: Request, res: Response) => {
             };
             return db
               .doc(`/managers/${newUser.email}`)
+              .set(userCredentials)
+              .then(() => {
+                return res.status(201).json({ token });
+              });
+          } else {
+            const userCredentials = {
+              email: newUser.email,
+              business: newUser.business,
+              userID: userId,
+            };
+            return db
+              .doc(`/employees/${newUser.email}`)
               .set(userCredentials)
               .then(() => {
                 return res.status(201).json({ token });
