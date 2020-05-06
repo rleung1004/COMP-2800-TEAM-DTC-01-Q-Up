@@ -4,11 +4,12 @@ import Header from "../components/static/Header";
 import Footer from "src/components/static/Footer";
 import "../styles/landing.scss";
 import { Grid } from "@material-ui/core";
+import StaticNav from '../components/staticNav';
 
 export default function LandingPage() {
   return (
     <>
-      <Header />
+      <Header Nav={StaticNav}/>
       <main>
         <Grid
           container
