@@ -1,15 +1,15 @@
-import React from 'react';
+import React from "react";
 // import { Link } from 'react-router-dom';
-import Footer from 'src/components/static/Footer';
-import Header from 'src/components/static/Header';
-import ConsumerNav from 'src/components/consumerNav';
+import Footer from "../components/static/Footer";
+import Header from "../components/static/Header";
+import ConsumerNav from "../components/consumerNav";
 
 export default function ClientDashboardPage() {
-    return <>
-    <Header Nav={ConsumerNav}/>
-        <main>
-            consumer dashboard
-        </main>
-    <Footer/>
-    </>;
+  return (
+    <>
+      <Header Nav={ConsumerNav} />
+      <main>consumer dashboard</main>
+      <Footer />
+    </>
+  );
 }

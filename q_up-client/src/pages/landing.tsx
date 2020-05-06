@@ -1,15 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/static/Header";
-import Footer from "src/components/static/Footer";
+import Footer from "../components/static/Footer";
 import "../styles/landing.scss";
 import { Grid } from "@material-ui/core";
-import StaticNav from '../components/staticNav';
+import StaticNav from "../components/staticNav";
 
 export default function LandingPage() {
   return (
     <>
-      <Header Nav={StaticNav}/>
+      <Header Nav={StaticNav} />
       <main>
         <Grid
           container
@@ -59,9 +59,7 @@ export default function LandingPage() {
             </header>
             <ul>
               <li>Sign up to our website</li>
-              <li>
-                Find the store that you want 
-              </li>
+              <li>Find the store that you want</li>
               <li>Press enter</li>
               <li>Go to the store when its your turn</li>
             </ul>

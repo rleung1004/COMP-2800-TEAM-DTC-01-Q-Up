@@ -1,14 +1,14 @@
-import React from 'react';
+import React from "react";
 // import { Link } from 'react-router-dom';
-import Footer from 'src/components/static/Footer';
-import Header from 'src/components/static/Header';
+import Footer from "../components/static/Footer";
+import Header from "../components/static/Header";
 
 export default function ConsumerRegistrationPage() {
-    return <>
-    <Header/>
-        <main>
-            consumer registration page.
-        </main>
-    <Footer/>
-    </>;
+  return (
+    <>
+      <Header />
+      <main>consumer registration page.</main>
+      <Footer />
+    </>
+  );
 }
