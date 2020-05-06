@@ -6,6 +6,7 @@ import { Grid } from '@material-ui/core';
 import us from '../img/us.png';
 import productImage from '../img/product image.png';
 import ourMission from '../img/our-mission.jpeg';
+import ourCulture from '../img/our-culture.jpeg';
 import logo from '../img/logo.png';
 
 export default function aboutUsPage() {
@@ -26,7 +27,9 @@ export default function aboutUsPage() {
                </Grid>
             </Grid>
             <Grid className='our-story-section'>
-               <img className='story-image' src={us} alt='Our avatars' />
+               <Grid>
+                  <img className='story-image' src={us} alt='Our avatars' />
+               </Grid>
                <Grid className='our-text-content'>
                   <h3>OUR STORY</h3>
                   <p>
@@ -49,11 +52,13 @@ export default function aboutUsPage() {
                   </p>
                   <img className='logo' src={logo} alt='logo' />
                </Grid>
-               <img
-                  className='story-image'
-                  src={productImage}
-                  alt='Our product'
-               />
+               <Grid>
+                  <img
+                     className='story-image'
+                     src={productImage}
+                     alt='Our product'
+                  />
+               </Grid>
                <Grid className='our-text-content'>
                   <h3>OUR PRODUCT</h3>
                   <p>
@@ -71,11 +76,13 @@ export default function aboutUsPage() {
                   </p>
                   <img className='logo' src={logo} alt='logo' />
                </Grid>
-               <img
-                  className='story-image'
-                  src={ourMission}
-                  alt='Our mission'
-               />
+               <Grid>
+                  <img
+                     className='story-image'
+                     src={ourMission}
+                     alt='Our mission'
+                  />
+               </Grid>
                <Grid className='our-text-content'>
                   <h3>OUR MISSION</h3>
                   <p>
@@ -85,6 +92,24 @@ export default function aboutUsPage() {
                      during the COVID-19 pandemic. We want to change the way the
                      solutions providers are perceived by providing high
                      quality, targeted, and free solutions for everyone.
+                  </p>
+                  <img className='logo' src={logo} alt='logo' />
+               </Grid>
+               <Grid>
+                  <img
+                     className='story-image'
+                     src={ourCulture}
+                     alt='Our culture'
+                  />
+               </Grid>
+               <Grid className='our-text-content'>
+                  <h3>OUR CULTURE</h3>
+                  <p>
+                     We are more than just a technical partner for businesses
+                     and a solution provider to our clients. We are a dedicated
+                     team of problem solvers, designers, artists, singers, and
+                     sport players. We value commitment and handwork, but more
+                     importantly, passion and joy along the journey.
                   </p>
                   <img className='logo' src={logo} alt='logo' />
                </Grid>
