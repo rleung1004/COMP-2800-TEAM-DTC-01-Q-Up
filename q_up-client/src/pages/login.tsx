@@ -111,6 +111,7 @@ export default function LoginPage() {
                 className={classes.textField}
                 helperText={formState.errors.email}
                 error={formState.errors.email ? true : false}
+                color="secondary"
               />
               <TextField
                 required
@@ -122,6 +123,7 @@ export default function LoginPage() {
                 value={formState.password}
                 helperText={formState.errors.password}
                 error={formState.errors.password ? true : false}
+                color="secondary"
               />
 
               <Button
