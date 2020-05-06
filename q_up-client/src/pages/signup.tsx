@@ -108,6 +108,7 @@ export default function SignupPage() {
                 Sign Up
               </Typography>
               <TextField
+                color="secondary"
                 required
                 id="email"
                 label="Email"
@@ -119,6 +120,7 @@ export default function SignupPage() {
                 error={formState.errors.email ? true : false}
               />
               <TextField
+                color="secondary"
                 required
                 id="password"
                 label="Password"
@@ -130,6 +132,7 @@ export default function SignupPage() {
                 error={formState.errors.password ? true : false}
               />
               <TextField
+                color="secondary"
                 required
                 id="confirmPassword"
                 label="Confirm password"
