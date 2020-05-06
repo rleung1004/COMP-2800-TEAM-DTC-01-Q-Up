@@ -28,7 +28,6 @@ const theme = createMuiTheme({
       root: {
           "&&>div::before": {
               borderColor: "#EEF13E",
-              
           },
           "&&>div:hover::before": {
             borderColor: "#c4c4c4"
