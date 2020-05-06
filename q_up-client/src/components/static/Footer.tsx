@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "../../styles/staticFooter.scss";
-import { Grid } from "@material-ui/core";
+import { Grid} from "@material-ui/core";
 import CopyrightIcon from '@material-ui/icons/Copyright';
 
 export default function Footer() {
@@ -16,7 +17,9 @@ export default function Footer() {
             </Grid>
             <Grid item><hr/></Grid>
             <Grid item>
-                <p>ABOUT US</p>
+                <Link to='/aboutUs' style={{textDecoration: 'none'}}>
+                    <p>ABOUT US</p>
+                </Link>
             </Grid>
             <Grid item><hr/></Grid>
             <Grid item>
@@ -25,7 +28,7 @@ export default function Footer() {
             <Grid item><hr/></Grid>
             <Grid item container justify="space-around" id="priv-terms-container">
                 <Grid item xs={4}><p>PRIVACY</p></Grid>
-                <Grid item xs={4}><p>TERMS OF USE</p></Grid>
+                <Grid item xs={4}><p>TERMS</p></Grid>
             </Grid>
             <Grid item id="copyright-row"><p><CopyrightIcon fontSize="small"/> All rights reserved. Q-UP. 2020</p></Grid>
         </Grid>
