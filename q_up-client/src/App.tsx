@@ -7,6 +7,8 @@ import LandingPage from './pages/landing';
 import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import themes from './mui-theming/themes';
+import termsPage from "./pages/termsAndConditions";
+import privacyPage from "./pages/privaryPolicy";
 import { ThemeProvider } from '@material-ui/core';
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
                <Route path='/' component={LandingPage} exact />
                <Route path='/login' component={LoginPage} exact />
                <Route path='/signup' component={SignupPage} exact />
+               <Route path='/termsAndConditions' component={termsPage} exact/>
+               <Route path='/PrivacyPolicy' component={privacyPage} exact/>
             </Switch>
             </ThemeProvider>
          </div>
