@@ -1,0 +1,21 @@
+.top-pic-section {
+   background-image: url(../img/about-us-first-image.jpg);
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: cover;
+   height: 50vh;
+   h2 {
+      margin-top: 0;
+   }
+}
+
+#top-img-text {
+   color: white;
+   text-align: left;
+   border: none;
+   padding: 1rem;
+   h2 {
+      font-size: 24px;
+      margin-top: -5rem;
+   }
+}
