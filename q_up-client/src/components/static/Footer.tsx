@@ -27,8 +27,6 @@ export default function Footer() {
             </Grid>
             <Grid item><hr/></Grid>
             <Grid item container justify="space-around" id="priv-terms-container">
-                <Grid item xs={4}><p>PRIVACY</p></Grid>
-                <Grid item xs={4}><p>TERMS</p></Grid>
                 <Grid item xs={4}><Link style={{textDecoration:"none"}} to='/PrivacyPolicy'><p>PRIVACY</p></Link></Grid>
                 <Grid item xs={4}><Link style={{textDecoration:"none"}} to='/termsAndConditions'><p>TERMS OF USE</p></Link></Grid>
             </Grid>
