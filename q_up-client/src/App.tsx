@@ -9,6 +9,8 @@ import themes from './mui-theming/themes';
 import termsPage from "./pages/termsAndConditions";
 import privacyPage from "./pages/privaryPolicy";
 import { ThemeProvider } from '@material-ui/core';
+import ConsumerRegistrationPage from './pages/consumerRegistration';
+import BusinessRegistrationPage from './pages/businessRegistration';
 
 function App() {
    const theme = themes();
@@ -21,6 +23,8 @@ function App() {
                <Route path='/login' component={LoginPage} exact />
                <Route path='/signup' component={SignupPage} exact />
                <Route path='/aboutUs' component={aboutUsPage} exact/>
+               <Route path='/consumerRegistration' component={ConsumerRegistrationPage} exact/>
+               <Route path='/businessRegistration' component={BusinessRegistrationPage} exact/>
                <Route path='/termsAndConditions' component={termsPage} exact/>
                <Route path='/PrivacyPolicy' component={privacyPage} exact/>
             </Switch>

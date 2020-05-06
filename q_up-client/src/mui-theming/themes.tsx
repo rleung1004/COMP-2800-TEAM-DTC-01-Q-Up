@@ -13,7 +13,7 @@ const theme = createMuiTheme({
     secondary: {
         main: "#EEF13E",
         contrastText:"#FFFFFF"
-    }
+    },
   },
   overrides: {
     MuiButton: {
