@@ -1,16 +1,22 @@
-h1, h2, h3, span {
-  color:  #EEF13E;
-}
+.term-and-conditions,
+.privacy-policy {
+   h1,
+   h2,
+   h3,
+   span {
+      color: #eef13e;
+   }
 
-span {
-  font-weight: bold;
-}
+   span {
+      font-weight: bold;
+   }
 
-section {
-  text-align: left;
-  padding: 20px 20px;
-}
+   section {
+      text-align: left;
+      padding: 20px 20px;
+   }
 
-main {
-  padding: 10px 10px;
+   main {
+      padding: 10px 10px;
+   }
 }

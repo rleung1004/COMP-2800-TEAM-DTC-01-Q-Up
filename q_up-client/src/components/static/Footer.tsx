@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import '../../styles/staticFooter.scss';
 import { Grid } from '@material-ui/core';
 import CopyrightIcon from '@material-ui/icons/Copyright';
-import { NavLink } from 'react-router-dom';
 
 export default function Footer() {
    return (
@@ -44,10 +43,11 @@ export default function Footer() {
                <Grid item>
                   <hr />
                </Grid>
+
                <Grid item>
-                  <p>
-                     <NavLink to='/about'>ABOUT US</NavLink>
-                  </p>
+                  <Link to='/aboutUs' style={{ textDecoration: 'none' }}>
+                     <p>ABOUT US</p>
+                  </Link>
                </Grid>
                <Grid item>
                   <hr />
@@ -65,61 +65,28 @@ export default function Footer() {
                   id='priv-terms-container'
                >
                   <Grid item xs={4}>
-                     <p>PRIVACY</p>
+                     <Link
+                        style={{ textDecoration: 'none' }}
+                        to='/PrivacyPolicy'
+                     >
+                        <p>PRIVACY</p>
+                     </Link>
                   </Grid>
                   <Grid item xs={4}>
-                     <p>TERMS OF USE</p>
+                     <Link
+                        style={{ textDecoration: 'none' }}
+                        to='/termsAndConditions'
+                     >
+                        <p>TERMS OF USE</p>
+                     </Link>
                   </Grid>
                </Grid>
                <Grid item id='copyright-row'>
                   <p>
-                     <CopyrightIcon fontSize='small' /> All rights reserved.
+                     <CopyrightIcon fontSize='default' /> All rights reserved.
                      Q-UP. 2020
                   </p>
                </Grid>
-            </Grid>
-            <Grid item>
-               <hr />
-            </Grid>
-            <Grid item>
-               <Link to='/aboutUs' style={{ textDecoration: 'none' }}>
-                  <p>ABOUT US</p>
-               </Link>
-            </Grid>
-            <Grid item>
-               <hr />
-            </Grid>
-            <Grid item>
-               <p>CONTACT US</p>
-            </Grid>
-            <Grid item>
-               <hr />
-            </Grid>
-            <Grid
-               item
-               container
-               justify='space-around'
-               id='priv-terms-container'
-            >
-               <Grid item xs={4}>
-                  <Link style={{ textDecoration: 'none' }} to='/PrivacyPolicy'>
-                     <p>PRIVACY</p>
-                  </Link>
-               </Grid>
-               <Grid item xs={4}>
-                  <Link
-                     style={{ textDecoration: 'none' }}
-                     to='/termsAndConditions'
-                  >
-                     <p>TERMS OF USE</p>
-                  </Link>
-               </Grid>
-            </Grid>
-            <Grid item id='copyright-row'>
-               <p>
-                  <CopyrightIcon fontSize='default' /> All rights reserved.
-                  Q-UP. 2020
-               </p>
             </Grid>
          </Grid>
       </footer>
