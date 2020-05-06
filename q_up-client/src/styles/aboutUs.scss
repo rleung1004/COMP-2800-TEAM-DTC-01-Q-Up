@@ -53,9 +53,11 @@
 }
 
 @media (min-width: 800px) {
-   //h2 {
-   //   padding-left: 20%;
-   //}
+   .top-about-us-section {
+      h2 {
+         padding-left: 20%;
+      }
+   }
 
    .story-image {
       max-width: 60%;
