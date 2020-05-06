@@ -17,7 +17,7 @@ export default function aboutUsPage() {
                container
                justify='center'
                alignItems='center'
-               className='top-pic-section'
+               className='top-about-us-section'
             >
                <Grid item xs={12}>
                   <header id='top-img-text'>
