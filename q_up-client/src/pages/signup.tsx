@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import Footer from "src/components/static/Footer";
+import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
 import "bootstrap/dist/css/bootstrap.css";
 import "../styles/signupPage.css";
