@@ -19,3 +19,34 @@
       margin-top: -5rem;
    }
 }
+
+.our-story-section {
+   margin: 4%;
+   border: solid 1px #eef13e;
+
+   h3 {
+      margin-bottom: 20px;
+   }
+
+   img {
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      width: 100%;
+      height: auto;
+   }
+
+   .our-text-content {
+      margin: 40px;
+   }
+
+   .story-image {
+      margin: 20px 0;
+   }
+
+   .logo {
+      width: 38px;
+      height: auto;
+      margin-top: 30px;
+   }
+}
