@@ -1,18 +1,19 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
+import '../../styles/staticHeader.scss';
 
-export default function Header() {
-   
+export default function Header(props: any) {
+    const Navbar = props.Nav? props.Nav: null;
     return (
-    <header style={{backgroundColor: "gray"}}>
-        <Grid container justify="space-between" >
-        <h1>QUP</h1>
-        <img src={require("../../img/temp_logo_png.png")} style={{height: 100, width: 100}} />
+    <header style={{backgroundColor: "#242323"}}>
+        <Grid container alignItems="center">
+            <Grid item xs={2}>
+                <h1>QUP</h1>
+            </Grid>
+            <Grid item container xs={8} justify="center">
+                <img src={require("../../img/temp_logo_png.png")} alt="QUP logo"/>
+            </Grid>
         </Grid>
-        <nav>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Signup</Link>
-        </nav>
+        {Navbar}
     </header>);
 }
