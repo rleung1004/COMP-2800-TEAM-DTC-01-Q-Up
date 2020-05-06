@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../../styles/staticFooter.scss";
 import { Grid} from "@material-ui/core";
-import { Link } from "react-router-dom";
 import CopyrightIcon from '@material-ui/icons/Copyright';
 
 export default function Footer() {
