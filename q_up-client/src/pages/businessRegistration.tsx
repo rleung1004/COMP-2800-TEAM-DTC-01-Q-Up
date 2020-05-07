@@ -174,9 +174,9 @@ export default function ConsumerRegistrationPage() {
     };
 
     axios
-      .post("/consumerRegistration", userData)
+      .post("/businessRegistration", userData)
       .then(() => {
-        window.location.href = window.location.hostname + "/consumerDashboard";
+        window.location.href = window.location.hostname + "/businessDashboard";
       })
       .catch((err: any) => {
         setFormState((prevState) => ({
