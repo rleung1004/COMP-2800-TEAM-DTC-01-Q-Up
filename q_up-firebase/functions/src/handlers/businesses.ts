@@ -12,7 +12,6 @@ const updateBusiness = async (req: Request, res: Response) => {
   const noImg = "no-img.png";
   const businessInfo = {
     name: req.body.name,
-    queue: [],
     category: req.body.category,
     description: req.body.description,
     email: req.body.email,
@@ -37,6 +36,9 @@ const updateBusiness = async (req: Request, res: Response) => {
         .then((docSnapshot) => {
           if (docSnapshot.exists) {
             businessRef.update(businessInfo);
+            db.collection("users")
+              .doc(req.body.userEmail)
+              .update({ businessName: businessInfo.name });
             return res.status(200).json({
               general: `Business ${businessInfo.name} has been successfully updated`,
             });
@@ -128,4 +130,24 @@ const uploadBusinessImage = (req: Request, res: Response) => {
   }
 };
 
-export { updateBusiness, uploadBusinessImage };
+const getBusiness = async (req: Request, res: Response) => {
+  const userType = req.body.userType;
+
+  if (userType === "manager") {
+    const businessName = req.body.businessName;
+    const businessRef = db.collection("businesses").doc(businessName);
+    await businessRef.get().then((docSnapshot) => {
+      if (docSnapshot.exists) {
+        let businessData = docSnapshot.data();
+        return res.status(200).json(businessData);
+      } else {
+        return res.status(500).json({
+          general:
+            "Your business is not registered. Please register your business.",
+        });
+      }
+    });
+  }
+};
+
+export { updateBusiness, uploadBusinessImage, getBusiness };

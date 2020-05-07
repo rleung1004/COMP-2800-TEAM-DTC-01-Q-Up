@@ -13,7 +13,6 @@ interface loginData {
 
 interface businessData {
   name: string;
-  queue: Array<string>;
   category: Array<string>;
   description: string;
   email: string;

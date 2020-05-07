@@ -2,7 +2,11 @@ import * as functions from "firebase-functions";
 import { getQueues, enterQueue } from "./handlers/queues";
 import * as express from "express";
 import { signup, login, updateCustomerInfo } from "./handlers/users";
-import { updateBusiness, uploadBusinessImage } from "./handlers/businesses";
+import {
+  updateBusiness,
+  uploadBusinessImage,
+  getBusiness,
+} from "./handlers/businesses";
 import { FBAuth } from "./util/fbAuth";
 // TODO: bring in express-rate-limit (https://www.npmjs.com/package/express-rate-limit)
 
@@ -10,8 +14,10 @@ const app = express();
 
 // all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
 
+// Get route
+app.get("/getBusiness", FBAuth, getBusiness);
 // Queue routes
-app.get("/getQueue", getQueues);
+app.get("/getQueue", FBAuth, getQueues);
 app.post("/enterQueue", FBAuth, enterQueue);
 
 // Signup route
