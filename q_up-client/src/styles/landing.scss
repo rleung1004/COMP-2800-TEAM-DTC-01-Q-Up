@@ -10,18 +10,8 @@
 
    button {
       border-radius: 5px;
-      border: 1px solid #eef13e;
-      background-color: #2c2b2b;
       width: 10rem;
-      color: white;
       height: 2.25rem;
-      &:hover {
-         background-color: darkgray;
-      }
-
-      &:active {
-         background-color: black;
-      }
    }
 }
 
