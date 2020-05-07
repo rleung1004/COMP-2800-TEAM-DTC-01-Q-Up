@@ -43,6 +43,7 @@ export default function SignupPage() {
     password?: string;
     confirmPassword?: string;
     userType?: string;
+    businessName?: string;
   }
   let errorObject: errors = {};
   const [formState, setFormState] = useState({
@@ -50,6 +51,7 @@ export default function SignupPage() {
     email: "",
     confirmPassword: "",
     userType: "customer",
+    businessName: "",
     loading: false,
     errors: errorObject,
   });
@@ -143,6 +145,20 @@ export default function SignupPage() {
                 helperText={formState.errors.confirmPassword}
                 error={formState.errors.confirmPassword ? true : false}
               />
+              {formState.userType === "manager" && (
+                <TextField
+                  color="secondary"
+                  required
+                  id="businessName"
+                  label="Business Name"
+                  name="businessName"
+                  type="password"
+                  onChange={handleOnFieldChange}
+                  value={formState.businessName}
+                  helperText={formState.errors.businessName}
+                  error={formState.errors.businessName ? true : false}
+                />
+              )}
               <FormControl component="fieldset">
                 <FormLabel component="legend"></FormLabel>
                 <RadioGroup
