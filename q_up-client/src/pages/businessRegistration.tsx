@@ -171,14 +171,18 @@ export default function ConsumerRegistrationPage() {
       hours: formState.hours,
       description: formState.description,
       email: formState.email,
+      userType: JSON.parse(sessionStorage.user).type
     };
 
     axios
       .post("/updateBusiness", userData)
       .then(() => {
-        window.location.href = window.location.hostname + "/businessDashboard";
+        console.log("success registering business");
+        
+        window.location.href = "/businessDashboard";
       })
       .catch((err: any) => {
+        console.log("firebase lets you down, ", err);
         setFormState((prevState) => ({
           ...prevState,
           errors: err.response.data,
