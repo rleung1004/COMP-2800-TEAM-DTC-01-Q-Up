@@ -14,7 +14,6 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { makeStyles } from "@material-ui/core/styles";
-import { hostname } from "os";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,10 +74,10 @@ export default function SignupPage() {
         if (formState.userType === "customer") {
           setFormState((prevState) => ({ ...prevState, loading: false }));
           sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "customer"}));
-          window.location.href = hostname + "/consumerRegistration";
+          window.location.href = "/consumerRegistration";
         } else {
           sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "business"}));
-          window.location.href = hostname + "/businessRegistration";
+          window.location.href = "/businessRegistration";
         }
       })
       .catch((err) => {
