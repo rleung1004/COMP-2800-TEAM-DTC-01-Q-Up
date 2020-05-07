@@ -1,9 +1,15 @@
-import { db } from "../util/admin";
+import { db, admin } from "../util/admin";
 import { Request, Response } from "express";
 import { validateBusinessData } from "../util/validators";
+import * as BusBoy from "busboy";
+import * as path from "path";
+import * as os from "os";
+import * as fs from "fs";
+import { firebaseConfig } from "../util/config";
 
 const updateBusiness = async (req: Request, res: Response) => {
   const userType = req.body.userType;
+  const noImg = "no-img.png";
   const businessInfo = {
     name: req.body.name,
     queue: [],
@@ -16,6 +22,7 @@ const updateBusiness = async (req: Request, res: Response) => {
     website: req.body.website,
     phoneNumber: req.body.phoneNumber,
     lastUpdated: new Date().toISOString(),
+    imageUrl: `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${noImg}?alt=media`,
   };
 
   if (userType === "manager") {
@@ -58,4 +65,63 @@ const updateBusiness = async (req: Request, res: Response) => {
   }
 };
 
-export { updateBusiness };
+const uploadBusinessImage = (req: Request, res: Response) => {
+  const busboy = new BusBoy({ headers: req.headers });
+  interface imageObject {
+    filepath: string;
+    mimetype: string;
+  }
+  const businessName = req.body.businessName;
+  const userType = req.body.userType;
+  if (userType === "manager") {
+    let imageFileName: string;
+    let imageToBeUploaded: imageObject;
+    busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+      // my.image.png => ['my', 'image', 'png']
+      console.log(fieldname, file, filename, encoding, mimetype);
+      const imageExtension = filename.split(".")[
+        filename.split(".").length - 1
+      ];
+      imageFileName = `${Math.round(
+        Math.random() * 1000000000000
+      ).toString()}.${imageExtension}`;
+
+      const filepath = path.join(os.tmpdir(), imageFileName);
+      imageToBeUploaded = { filepath, mimetype };
+
+      file.pipe(fs.createWriteStream(filepath));
+    });
+    busboy.on("finish", () => {
+      admin
+        .storage()
+        .bucket()
+        .upload(imageToBeUploaded.filepath, {
+          resumable: false,
+          metadata: {
+            contentType: imageToBeUploaded.mimetype,
+          },
+        })
+        .then(() => {
+          const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${imageFileName}?alt=media`;
+          return db.doc(`/businesses/${businessName}`).update({ imageUrl });
+        })
+        .then(() => {
+          return res.json({ message: "Image uploaded successfully" });
+        })
+        .catch((err) => {
+          console.error(err);
+          return res
+            .status(500)
+            .json({ general: "Something went wrong, please try again" });
+        });
+    });
+    busboy.end(req.body);
+    return res.status(201);
+  } else {
+    return res.status(403).json({
+      general: "Access forbidden. Please login as a business to gain access.",
+    });
+  }
+};
+
+export { updateBusiness, uploadBusinessImage };
