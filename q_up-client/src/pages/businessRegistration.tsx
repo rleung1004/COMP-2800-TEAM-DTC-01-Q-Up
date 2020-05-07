@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const axiosConfig = {
+  headers: { Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}` }
+};
+
 export default function ConsumerRegistrationPage() {
   const classes = useStyles();
   interface errors {
@@ -170,15 +174,18 @@ export default function ConsumerRegistrationPage() {
       website: formState.website,
       hours: formState.hours,
       description: formState.description,
-      email: formState.email,
+      email: formState.email
     };
 
     axios
-      .post("/businessRegistration", userData)
+      .post("/updateBusiness", userData, axiosConfig)
       .then(() => {
-        window.location.href = window.location.hostname + "/businessDashboard";
+        console.log("success registering business");
+        
+        window.location.href = "/businessDashboard";
       })
       .catch((err: any) => {
+        console.log("firebase lets you down, ", err);
         setFormState((prevState) => ({
           ...prevState,
           errors: err.response.data,
@@ -345,6 +352,19 @@ export default function ConsumerRegistrationPage() {
                     })}
                   </Select>
                 </FormControl>
+                <Grid item xs={12}>
+                <TextField
+                  color="secondary"
+                  id="postalCode"
+                  label="Postal Code"
+                  name="address-postalCode"
+                  onChange={handleOnFieldChange}
+                  value={formState.address.postalCode}
+                  className={classes.textField}
+                  helperText={formState.errors.address?.postalCode}
+                  error={formState.errors.address?.postalCode ? true : false}
+                />
+              </Grid>
               </Grid>
 
               <Grid container item direction="column">
