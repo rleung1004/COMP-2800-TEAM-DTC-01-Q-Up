@@ -86,7 +86,7 @@ export default function ConsumerRegistrationPage() {
               alignItems="center"
             >
               <Typography variant="h2" className={classes.pageTitle}>
-                Sign Up
+                Your info
               </Typography>
               <TextField
                 color="secondary"

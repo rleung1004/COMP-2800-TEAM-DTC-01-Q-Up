@@ -141,14 +141,15 @@ export default function SignupPage() {
                 helperText={formState.errors.confirmPassword}
                 error={formState.errors.confirmPassword ? true : false}
               />
-              <FormControl component="fieldset">
+              <FormControl color="secondary" component="fieldset">
                 <FormLabel component="legend"></FormLabel>
                 <RadioGroup
+                
                   name="userType"
                   value={formState.userType}
                   onChange={handleOnFieldChange}
                 >
-                  <FormControlLabel
+                  <FormControlLabel                  
                     value="customer"
                     control={<Radio />}
                     label="I want to queue as a customer"

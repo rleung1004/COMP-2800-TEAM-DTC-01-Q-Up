@@ -12,6 +12,7 @@ const theme = createMuiTheme({
     },
     secondary: {
         main: "#EEF13E",
+        dark: "#242323",
         contrastText:"#FFFFFF"
     },
   },
@@ -38,6 +39,22 @@ const theme = createMuiTheme({
           "&& input": {
               color:"white"
           }
+      }
+    },
+    MuiFormControl:{
+      root:{
+        "&&>div::before":{
+          borderColor: "#EEF13E"
+        },
+        "&&>div:hover::before": {
+          borderColor: "#c4c4c4"
+        },
+        "&&>.MuiFormLabel-root, &&>div": {
+            color:"white"
+        },
+        "&&>div>div:focus":{
+          backgroundColor:"#242323"
+        }
       }
     }
   },
