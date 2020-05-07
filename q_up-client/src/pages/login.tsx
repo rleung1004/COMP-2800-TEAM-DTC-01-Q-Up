@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: "20px auto 20px auto",
   },
+  customError: {
+    color: "red",
+    fontSize: "0.8em",
+  },
 }));
 
 export default function LoginPage() {
@@ -38,6 +42,7 @@ export default function LoginPage() {
     password?: string;
     confirmPassword?: string;
     userType?: string;
+    general?: string;
   }
   let errorObject: errors = {};
   const [formState, setFormState] = useState({
@@ -113,6 +118,7 @@ export default function LoginPage() {
                 error={formState.errors.email ? true : false}
                 color="secondary"
               />
+
               <TextField
                 required
                 id="password"
@@ -125,6 +131,12 @@ export default function LoginPage() {
                 error={formState.errors.password ? true : false}
                 color="secondary"
               />
+
+              {formState.errors.general && (
+                <Typography variant="body2" className={classes.customError}>
+                  {formState.errors.general}
+                </Typography>
+              )}
 
               <Button
                 type="submit"

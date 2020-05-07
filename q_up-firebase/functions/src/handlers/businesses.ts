@@ -44,6 +44,9 @@ const updateBusiness = async (req: Request, res: Response) => {
             db.doc(`/businesses/${businessInfo.name}`)
               .set(businessInfo)
               .then(() => {
+                db.collection("users")
+                  .doc(req.body.userEmail)
+                  .update({ businessName: businessInfo.name });
                 return res.status(201).json({
                   general: `Business ${businessInfo.name} created successfully`,
                 });
@@ -56,6 +59,7 @@ const updateBusiness = async (req: Request, res: Response) => {
             .status(500)
             .json({ general: "Something went wrong. Please try again" });
         });
+
       return res.status(200);
     }
   } else {

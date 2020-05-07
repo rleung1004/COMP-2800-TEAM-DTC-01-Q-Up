@@ -51,7 +51,6 @@ const signup = async (req: Request, res: Response) => {
           } else if (newUser.userType === "manager") {
             const userCredentials = {
               email: newUser.email,
-              businessList: [],
               userId,
               userType: newUser.userType,
             };
@@ -157,7 +156,10 @@ const updateCustomerInfo = (req: Request, res: Response) => {
           if (docSnapshot.exists) {
             userRef.update(userInfo);
           } else {
-            userRef.set(userInfo, { merge: true });
+            res.status(403).json({
+              general:
+                "Access forbidden. Please login as a customer to gain access.",
+            });
           }
         })
         .catch(() => {

@@ -27,7 +27,7 @@ export const FBAuth = async (req: Request, res: Response, next: Function) => {
           let userEmail = data.docs[0].data().email;
           let userType = data.docs[0].data().userType;
           if (userType === "manager") {
-            let businessName = data.docs[0].data().businessList[0];
+            let businessName = data.docs[0].data().businessName;
             Object.assign(req.body, { userEmail, userType, businessName });
           } else {
             Object.assign(req.body, { userEmail, userType });
