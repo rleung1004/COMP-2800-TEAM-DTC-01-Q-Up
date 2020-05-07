@@ -14,6 +14,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { makeStyles } from "@material-ui/core/styles";
+import { hostname } from "os";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,10 +71,14 @@ export default function SignupPage() {
     axios
       .post("/signup", userData)
       .then((res) => {
+        
         if (formState.userType === "customer") {
-          console.log(res.data);
           setFormState((prevState) => ({ ...prevState, loading: false }));
-          history.push("/consumerRegistration");
+          sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "customer"}));
+          window.location.href = hostname + "/consumerRegistration";
+        } else {
+          sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "business"}));
+          window.location.href = hostname + "/businessRegistration";
         }
       })
       .catch((err) => {
@@ -144,12 +149,11 @@ export default function SignupPage() {
               <FormControl color="secondary" component="fieldset">
                 <FormLabel component="legend"></FormLabel>
                 <RadioGroup
-                
                   name="userType"
                   value={formState.userType}
                   onChange={handleOnFieldChange}
                 >
-                  <FormControlLabel                  
+                  <FormControlLabel
                     value="customer"
                     control={<Radio />}
                     label="I want to queue as a customer"
