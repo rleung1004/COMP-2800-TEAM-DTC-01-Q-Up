@@ -51,21 +51,36 @@ const signup = async (req: Request, res: Response) => {
           } else if (newUser.userType === "manager") {
             const userCredentials = {
               email: newUser.email,
+              businessName: req.body.businessName,
               userId,
               userType: newUser.userType,
             };
-            return db
-              .doc(`/users/${newUser.email}`)
-              .set(userCredentials)
-              .then(() => {
-                return res.status(201).json({ token });
-              });
+            let businessRef = db
+              .collection("businesses")
+              .doc(userCredentials.businessName);
+
+            businessRef.get().then((docSnapshot) => {
+              if (docSnapshot.exists) {
+                return res.status(500).json({
+                  businessName: "This business already has an account",
+                });
+              } else {
+                return db
+                  .doc(`/users/${newUser.email}`)
+                  .set(userCredentials)
+                  .then(() => {
+                    return res.status(201).json({ token });
+                  });
+              }
+            });
+            return res.status(201);
           } else {
             const userCredentials = {
               email: newUser.email,
+              isOnline: false,
               business: newUser.business,
               userId,
-              userType: newUser.userType,
+              userType: "employee",
             };
             return db
               .doc(`/users/${newUser.email}`)
