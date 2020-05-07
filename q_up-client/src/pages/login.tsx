@@ -81,6 +81,9 @@ export default function LoginPage() {
                case 'employee':
                   history.push('/employeeDashBoard');
                   break;
+               case 'booth':
+                  history.push('/boothDashBoard');
+                  break;
                default:
                   break;
             }
