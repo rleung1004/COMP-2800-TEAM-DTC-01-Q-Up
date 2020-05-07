@@ -59,9 +59,9 @@ export default function ConsumerRegistrationPage() {
     };
 
     axios
-      .post("/consumerRegistration", userData)
+      .post("/updateCustomer", userData)
       .then(() => {
-        window.location.href = window.location.hostname + '/consumerDashboard';
+        window.location.href = '/consumerDashboard';
       })
       .catch((err:any) => {
         setFormState((prevState) => ({

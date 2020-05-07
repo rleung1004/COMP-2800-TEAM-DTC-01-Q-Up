@@ -21,7 +21,7 @@ app.post("/signup", signup);
 app.post("/login", login);
 
 // add or update customer and business information
-app.post("/updateCustomerInfo", FBAuth, updateCustomerInfo);
+app.post("/updateCustomer", FBAuth, updateCustomerInfo);
 app.post("/updateBusiness", FBAuth, updateBusiness);
 app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
 
