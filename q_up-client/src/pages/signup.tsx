@@ -72,13 +72,18 @@ export default function SignupPage() {
     axios
       .post("/signup", userData)
       .then((res) => {
-        
         if (formState.userType === "customer") {
           setFormState((prevState) => ({ ...prevState, loading: false }));
-          sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "customer"}));
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify({ token: res.data.token, type: "customer" })
+          );
           window.location.href = "/consumerRegistration";
         } else {
-          sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "manager"}));
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify({ token: res.data.token, type: "manager" })
+          );
           window.location.href = "/businessRegistration";
         }
       })
@@ -147,9 +152,6 @@ export default function SignupPage() {
                 helperText={formState.errors.confirmPassword}
                 error={formState.errors.confirmPassword ? true : false}
               />
-<<<<<<< HEAD
-              <FormControl color="secondary" component="fieldset">
-=======
               {formState.userType === "manager" && (
                 <TextField
                   color="secondary"
@@ -165,7 +167,6 @@ export default function SignupPage() {
                 />
               )}
               <FormControl component="fieldset">
->>>>>>> business-dashboard
                 <FormLabel component="legend"></FormLabel>
                 <RadioGroup
                   name="userType"
