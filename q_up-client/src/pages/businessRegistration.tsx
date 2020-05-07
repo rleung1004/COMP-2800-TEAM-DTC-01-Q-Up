@@ -174,7 +174,7 @@ export default function ConsumerRegistrationPage() {
     };
 
     axios
-      .post("/businessRegistration", userData)
+      .post("/updateBusiness", userData)
       .then(() => {
         window.location.href = window.location.hostname + "/businessDashboard";
       })
