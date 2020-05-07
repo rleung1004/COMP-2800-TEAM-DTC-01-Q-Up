@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const axiosConfig = {
+  headers: { Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}` }
+};
+
 export default function ConsumerRegistrationPage() {
   const classes = useStyles();
   interface errors {
@@ -170,12 +174,11 @@ export default function ConsumerRegistrationPage() {
       website: formState.website,
       hours: formState.hours,
       description: formState.description,
-      email: formState.email,
-      userType: JSON.parse(sessionStorage.user).type
+      email: formState.email
     };
 
     axios
-      .post("/updateBusiness", userData)
+      .post("/updateBusiness", userData, axiosConfig)
       .then(() => {
         console.log("success registering business");
         
@@ -349,6 +352,19 @@ export default function ConsumerRegistrationPage() {
                     })}
                   </Select>
                 </FormControl>
+                <Grid item xs={12}>
+                <TextField
+                  color="secondary"
+                  id="postalCode"
+                  label="Postal Code"
+                  name="address-postalCode"
+                  onChange={handleOnFieldChange}
+                  value={formState.address.postalCode}
+                  className={classes.textField}
+                  helperText={formState.errors.address?.postalCode}
+                  error={formState.errors.address?.postalCode ? true : false}
+                />
+              </Grid>
               </Grid>
 
               <Grid container item direction="column">
