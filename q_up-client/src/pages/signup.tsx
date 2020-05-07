@@ -76,7 +76,7 @@ export default function SignupPage() {
           sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "customer"}));
           window.location.href = "/consumerRegistration";
         } else {
-          sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "business"}));
+          sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "manager"}));
           window.location.href = "/businessRegistration";
         }
       })
