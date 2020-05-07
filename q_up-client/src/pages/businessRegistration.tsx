@@ -93,15 +93,13 @@ export default function ConsumerRegistrationPage() {
     const name =
       fieldNameTokens.length !== 2 ? event.target.name : fieldNameTokens[1];
     const value = event.target.value;
-    switch (fieldCategory) {
-      case "address":
-        setFormState((prevState) => ({
+    if (fieldCategory === "address") {
+      setFormState((prevState) => ({
           ...prevState,
           address: { ...prevState.address, [name]: value },
         }));
-        break;
-      default:
-        setFormState((prevState) => ({ ...prevState, [name]: value }));
+    } else {
+      setFormState((prevState) => ({ ...prevState, [name]: value }));
     }
   };
 
