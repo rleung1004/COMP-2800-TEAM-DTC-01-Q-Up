@@ -1,17 +1,20 @@
-import { db } from "../util/admin";
+import { db, admin } from "../util/admin";
 import * as firebase from "firebase";
 import { firebaseConfig } from "../util/config";
 import { Request, Response } from "express";
-import { validateSignUpData, validateLoginData } from "../util/validators";
+import {
+  validateSignUpData,
+  validateLoginData,
+  validateCustomerData,
+} from "../util/validators";
 
 firebase.initializeApp(firebaseConfig);
 
 const signup = async (req: Request, res: Response) => {
   const newUser = {
-    // use toString() to prevent user entering nested object to database
-    email: req.body.email.toString(),
-    password: req.body.password.toString(),
-    confirmPassword: req.body.confirmPassword.toString(),
+    email: req.body.email,
+    password: req.body.password,
+    confirmPassword: req.body.confirmPassword,
     userType: req.body.userType,
     business: req.body.business,
   };
@@ -36,10 +39,11 @@ const signup = async (req: Request, res: Response) => {
               email: newUser.email,
               currentQueue: null,
               favoriteBusinesses: [],
-              userID: userId,
+              userId,
+              userType: newUser.userType,
             };
             return db
-              .doc(`/customers/${newUser.email}`)
+              .doc(`/users/${newUser.email}`)
               .set(userCredentials)
               .then(() => {
                 return res.status(201).json({ token });
@@ -48,10 +52,11 @@ const signup = async (req: Request, res: Response) => {
             const userCredentials = {
               email: newUser.email,
               businessList: [],
-              userID: userId,
+              userId,
+              userType: newUser.userType,
             };
             return db
-              .doc(`/managers/${newUser.email}`)
+              .doc(`/users/${newUser.email}`)
               .set(userCredentials)
               .then(() => {
                 return res.status(201).json({ token });
@@ -60,10 +65,11 @@ const signup = async (req: Request, res: Response) => {
             const userCredentials = {
               email: newUser.email,
               business: newUser.business,
-              userID: userId,
+              userId,
+              userType: newUser.userType,
             };
             return db
-              .doc(`/employees/${newUser.email}`)
+              .doc(`/users/${newUser.email}`)
               .set(userCredentials)
               .then(() => {
                 return res.status(201).json({ token });
@@ -92,6 +98,8 @@ const login = async (req: Request, res: Response) => {
   };
   const { valid, errors } = validateLoginData(user);
 
+  let resData = {};
+
   if (!valid) {
     return res.status(400).json(errors);
   } else {
@@ -100,7 +108,24 @@ const login = async (req: Request, res: Response) => {
       .signInWithEmailAndPassword(user.email, user.password)
       .then((data) => {
         return data.user?.getIdToken().then((generatedToken) => {
-          return res.status(200).json({ generatedToken });
+          Object.assign(resData, { generatedToken });
+          admin
+            .auth()
+            .verifyIdToken(generatedToken)
+            .then((decodedToken) => {
+              return db
+                .collection("users")
+                .where("userId", "==", decodedToken.uid)
+                .limit(1)
+                .get()
+                .then((data) => {
+                  let userId = data.docs[0].data().userId;
+                  let userEmail = data.docs[0].data().email;
+                  let userType = data.docs[0].data().userType;
+                  Object.assign(resData, { userId, userType, userEmail });
+                  return res.status(201).json(resData);
+                });
+            });
         });
       })
       .catch(() => {
@@ -111,5 +136,44 @@ const login = async (req: Request, res: Response) => {
     return res.status(200);
   }
 };
+const updateCustomerInfo = (req: Request, res: Response) => {
+  const userType = req.body.userType;
+  const userEmail = req.body.userEmail;
+  const userRef = db.collection("users").doc(userEmail);
+  const userInfo = {
+    phoneNumber: req.body.phoneNumber,
+    postalCode: req.body.postalCode,
+  };
 
-export { signup, login };
+  const { errors, valid } = validateCustomerData(userInfo);
+
+  if (!valid) {
+    return res.status(400).json(errors);
+  } else {
+    if (userType === "customer") {
+      userRef
+        .get()
+        .then((docSnapshot) => {
+          if (docSnapshot.exists) {
+            userRef.update(userInfo);
+          } else {
+            userRef.set(userInfo, { merge: true });
+          }
+        })
+        .catch(() => {
+          return res
+            .status(500)
+            .json({ general: "Something went wrong. Please try again" });
+        });
+      return res.status(201).json({
+        general: `${userEmail} phone number and postal code have been updated`,
+      });
+    } else {
+      return res.status(403).json({
+        general: "Access forbidden. Please login as a customer to gain access.",
+      });
+    }
+  }
+};
+
+export { signup, login, updateCustomerInfo };
