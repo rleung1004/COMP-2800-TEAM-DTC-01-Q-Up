@@ -70,10 +70,14 @@ export default function SignupPage() {
     axios
       .post("/signup", userData)
       .then((res) => {
+        
         if (formState.userType === "customer") {
-          console.log(res.data);
           setFormState((prevState) => ({ ...prevState, loading: false }));
-          history.push("/consumerRegistration");
+          sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "customer"}));
+          window.location.href = "/consumerRegistration";
+        } else {
+          sessionStorage.setItem("user", JSON.stringify({token: res.data.token, type: "business"}));
+          window.location.href = "/businessRegistration";
         }
       })
       .catch((err) => {
@@ -144,12 +148,11 @@ export default function SignupPage() {
               <FormControl color="secondary" component="fieldset">
                 <FormLabel component="legend"></FormLabel>
                 <RadioGroup
-                
                   name="userType"
                   value={formState.userType}
                   onChange={handleOnFieldChange}
                 >
-                  <FormControlLabel                  
+                  <FormControlLabel
                     value="customer"
                     control={<Radio />}
                     label="I want to queue as a customer"
