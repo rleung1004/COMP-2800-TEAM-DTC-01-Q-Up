@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import { getQueues, enterQueue } from "./handlers/queues";
 import * as express from "express";
-import { signup, login } from "./handlers/users";
+import { signup, login, updateCustomerInfo } from "./handlers/users";
+import { updateBusiness } from "./handlers/businesses";
 import { FBAuth } from "./util/fbAuth";
 // TODO: bring in express-rate-limit (https://www.npmjs.com/package/express-rate-limit)
 
@@ -18,5 +19,9 @@ app.post("/signup", signup);
 
 // login route
 app.post("/login", login);
+
+// add or update customer and business information
+app.post("/updateCustomerInfo", FBAuth, updateCustomerInfo);
+app.post("/updateBusiness", FBAuth, updateBusiness);
 
 exports.api = functions.https.onRequest(app);
