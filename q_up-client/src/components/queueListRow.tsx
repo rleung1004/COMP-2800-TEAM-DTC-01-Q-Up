@@ -28,25 +28,37 @@ export default function QueueListRow(props: any) {
     );
 
   const handleFavClick = (fav: Boolean) => () => {
-    if (props.favList) {
+    if (props.isFavList) {
       props.remove();
       return;
     }
     if (fav) {
-      setFavicon(<IconButton color="secondary" onClick={handleFavClick(false)}>
-      <StarBorderIcon color="primary" />
-    </IconButton>);
+      setFavicon(
+        <IconButton color="secondary" onClick={handleFavClick(false)}>
+          <StarBorderIcon color="primary" />
+        </IconButton>
+      );
     } else {
-      setFavicon(<IconButton color="secondary" onClick={handleFavClick(true)}>
-      <StarIcon />
-    </IconButton>);
+      setFavicon(
+        <IconButton color="secondary" onClick={handleFavClick(true)}>
+          <StarIcon />
+        </IconButton>
+      );
     }
   };
 
-  const [favicon, setFavicon] = useState(
+  const favButtonModel = (
     <IconButton color="secondary" onClick={handleFavClick(true)}>
       <StarIcon />
     </IconButton>
+  );
+  const notFavButtonModel = (
+    <IconButton color="secondary" onClick={handleFavClick(false)}>
+      <StarBorderIcon color="primary" />
+    </IconButton>
+  );
+  const [favicon, setFavicon] = useState(
+    props.isFav ? favButtonModel : notFavButtonModel
   );
 
   const queueUp = () => {
@@ -72,7 +84,9 @@ export default function QueueListRow(props: any) {
             <Typography variant="caption">Queue Size</Typography>
             <Typography variant="body2">{data.size}</Typography>
           </Grid>
-          <Grid item xs={2}>{favicon}</Grid>          
+          <Grid item xs={2}>
+            {favicon}
+          </Grid>
         </Grid>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>

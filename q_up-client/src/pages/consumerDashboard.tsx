@@ -4,7 +4,7 @@ import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
 import ConsumerNav from "../components/consumerNav";
 import QueueList from "src/components/queueList";
-import { mockFavQueues } from "src/mockData";
+import { mockQueues, mockFavs } from "src/mockData";
 
 export default function ClientDashboardPage() {
   
@@ -12,7 +12,7 @@ export default function ClientDashboardPage() {
     <>
       <Header Nav={ConsumerNav} />
       <main>
-        <QueueList dataList={mockFavQueues()}/>
+        <QueueList dataList={mockQueues()} favs={mockFavs()}/>
       </main>
       <Footer />
     </>
