@@ -34,15 +34,6 @@ interface businessData {
   lastUpdated: string;
 }
 
-interface queueData {
-  averageWaitTime: string;
-  business: string;
-  startTime: string;
-  endTime: string;
-  isActive: boolean;
-  queueSlots: Array<string>;
-}
-
 
 interface customerData {
   phoneNumber: string;

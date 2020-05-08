@@ -33,7 +33,7 @@ const getTellerQueueList = async (req: Request, res: Response) => {
 };
 
 /**
- * shows the queue information, isAcitve, currentWaitTImeForWholeQueue and NumberOfQueueSlots
+ * shows the queue information, is Active, currentWaitTImeForWholeQueue and NumberOfQueueSlots
  */
 
 const getQueueInfoForBusiness = async (req: Request, res: Response) => {
@@ -75,326 +75,204 @@ const getQueueSlotInfo = async (req: Request, res: Response) => {
         customerIdentifier: req.body.customerIdentifier,
         queueName: req.body.currentQueue,
     };
-    return db
+    await db
         .collection('queues')
-        .doc(requestData.queueName)
+        .where('queueName','==' ,requestData.queueName)
         .get()
-        .then( (docSnapshot) => {
-            const doc: any = docSnapshot.data();
-            const queueSlotIndex: number = doc.queueSlots.findIndex(requestData.customerIdentifier);
+        .then( (data) => {
+            const usableData: any = data.docs[0].data();
+            const queueSlotIndex: number = usableData
+                .queueSlots
+                .findIndex((object: any) => {
+                    return object.customer === requestData.customerIdentifier;
+                });
             if (queueSlotIndex === -1) {
                 return res
-                    .status(404)
-                    .json({
+                    .status(404).json({
                         general: 'could not find the customer position.',
                     })
             }
-            const queueSlot: any = db
-                .collection('queueSlots')
-                .doc(requestData.customerIdentifier)
-                .get()
-                .then((docSnapshot) => docSnapshot.data())
-                .catch(()=> false);
 
-            if (!queueSlot) {
-                return res
-                    .status(400)
-                    .json({
-                        general:'could not find the customer queue slot',
-                    })
-            }
-
-            const currentWaitTime: number = queueSlotIndex * doc.averageWaitTime;
+            const currentWaitTime: number = queueSlotIndex * usableData.averageWaitTime;
             const queuePosition: number = queueSlotIndex + 1;
             return res
-                .status(200)
-                .json({
-                    ticketNumber: queueSlot.ticketNumber,
-                    password: queueSlot.password,
-                    queue: queueSlot.queue,
+                .status(200).json({
+                    ticketNumber: usableData.queueSlots[queueSlotIndex].ticketNumber,
+                    password: usableData.queueSlots[queueSlotIndex].password,
                     currentWaitTime: currentWaitTime,
                     queuePosition: queuePosition,
                     general: 'successful',
                 });
         })
-        .catch(() => {
-            return res
-                .status(500)
-                .json({
-                    general: "Something went wrong. Please try again"
-                });
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Something went wrong. Please try again",
+                error: err,
+            });
         });
 
-};
-
-/**
- * Adds a queueSlot to the QueueSlot Collections
- */
-const addQueueSlot =  (customerIdentifier: string, queueName: string, res: Response) => {
-    const newSlot = createQueueSlotCredentials({
-        customer: customerIdentifier,
-        queue: queueName,
-    });
-    db
-        .doc(`queueSlots/${newSlot.customer}`)
-        .set(newSlot)
-        .then(()=> res.status(200).json({
-            general:'Customer added to the queue',
-        }))
-        .catch(() => {
-            return res
-                .status(500)
-                .json({
-                    general: "Something went wrong. Please try again"
-                });
-        });
-    return newSlot;
-};
-
-/**
- * Adds the queue name to the customer document
- */
-const addQueueNameToCustomer = (customerIdentifier: string, queueName: string, res: Response) => {
-   return db
-        .collection('users')
-        .doc(customerIdentifier)
-        .get()
-        .then((docSnapshot) => {
-            if (!docSnapshot.exists) {
-                return res.status(404).json({
-                    general:'the user does not exist!',
-                })
-            }
-            const user: any = docSnapshot.data();
-            if (user.currentQueue) {
-                return res.status(400).json({
-                    general: 'customer is already in a different Queue',
-                })
-            }
-            db
-                .collection('users')
-                .doc(customerIdentifier)
-                .update({currentQueue: queueName});
-            return res.status(200);
-        })
-       .catch(() => {
-           return res
-               .status(500)
-               .json({
-                   general: "Something went wrong. Please try again"
-               });
-       });
-};
-
-/**
- * Add the queueSlot to the queue Collection
- */
-const addQueueSlotToQueue = (req: Request, res: Response)=> {
-    const queueSlot = addQueueSlot(req.body.customerIdentifier, req.body.queueName, res);
-    const queue: any =  db
-        .collection('queues')
-        .doc(req.body.queueName)
-        .get()
-        .then((docSnapshot)=> docSnapshot.data())
-        .catch();
-    queue.queueSlots.push(queueSlot);
-    return db
-        .collection('queues')
-        .doc(req.body.queueName)
-        .update(queue)
-        .then(()=> {
-            return res.status(200).json({
-                general:'added a customer to a queue',
-            })
-        })
-        .catch(() => {
-            return res
-                .status(500)
-                .json({
-                    general: "Something went wrong. Please try again"
-                });
-        });
 };
 
 /**
  * Adds a booth customer to a queue
  */
-const boothEnterQueue = (req: Request, res: Response) => {
-    return addQueueSlotToQueue(req, res);
+const boothEnterQueue = async (req: Request, res: Response) => {
+    const requestData = {
+        customerIdentifier: req.body.customerIdentifier,
+        queueName: req.body.currentQueue,
+    };
+    const newSlot = createQueueSlotCredentials(requestData);
+    await db
+        .collection('queues')
+        .where('queueName', '==', requestData.queueName)
+        .get()
+        .then((data) => {
+            const usableData = data.docs[0].data();
+            usableData.queueSlots.push(newSlot);
+            db
+                .collection('queues')
+                .doc(usableData.queueName)
+                .update(usableData)
+            return res.status(201).json({
+                general:`${newSlot} has been added to ${usableData.queueName} successfully`,
+            })
+
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Something went wrong. Please try again",
+                error: err
+            });
+        });
 };
 
 /**
  * Adds a logged in customer to a queue
  */
 const customerEnterQueue = async(req: Request, res: Response) => {
-    const returnObject = await addQueueNameToCustomer(req.body.customerIdentifier, req.body.queueName, res);
-    if (returnObject.statusCode !== 200) {
-        return returnObject
-    }
-    return await addQueueSlotToQueue(req, res);
+    const requestData = {
+        customerIdentifier: req.body.customerIdentifier,
+        queueName: req.body.currentQueue,
+    };
+    await db
+        .collection('users')
+        .doc(requestData.customerIdentifier)
+        .update({currentQueue: requestData.queueName})
+        .then(()=> res.status(200).json({
+            general: `${requestData.customerIdentifier} is now in ${requestData.queueName}`,
+        })
+        )
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Something went wrong. Please try again",
+                error: err
+            });
+        });
+    return boothEnterQueue(req, res);
 };
 
 /**
  * Remove the customer's current queue from the
-
  */
-const removeCurrentQueueFromCustomer = (customerIdentifier: string, res: Response) => {
-    return db
-        .collection('users')
-        .doc(customerIdentifier)
-        .get()
-        .then((docSnapshot)=> {
-            if (!docSnapshot.exists) {
-                return res.status(404).json({
-                    general:'did not find the user!',
-                });
-            }
-            return db
-                .collection('users')
-                .doc(customerIdentifier)
-                .update({currentQueue: null})
-                .then(()=> {
-                    return res.status(200).json({
-                        general:'added a customer to a queue',
-                    })
-                })
-        })
-        .catch(() => {
-            return res
-                .status(500)
-                .json({
-                    general: "Something went wrong. Please try again"
-                });
-        });
-};
-
-/**
- * Removes the queue slot from the queueSlots collection
- */
-const removeQueueSlot = async (customerIdentifier: string, res: Response) => {
-    const queueSlot = await db
-        .collection('queueSlots')
-        .doc(customerIdentifier)
-        .get()
-        .then((docSnapshot)=> docSnapshot.data())
-        .catch(()=> null);
-    if (!queueSlot) {
-        return res.status(404).json({
-            general:'could not find the queueSlot',
-        })
-    }
-    return db
-        .collection('queueSlots')
-        .doc(customerIdentifier)
-        .delete()
-        .then(()=> res.status(200).json({
-            general:'Customer deleted to the queue',
-        }))
-        .catch(() => {
-            return res.status(500).json({
-                    general: "Something went wrong. Please try again"
-                });
-        });
-};
-/**
- * Remoces the QueueSlot from the Queue
- */
-const removeQueueSlotFromQueue = async (req: Request, res: Response) => {
-    const removedSlotRes = await removeQueueSlot(req.body.customerIdentifier, res);
-    if (removedSlotRes.statusCode !== 200) {
-        return res.status(500).json({
-            general: "Something went wrong. Please try again"
-        });
-    }
-    return db
+const removeBoothOrCustomer = async (req: Request, res: Response) => {
+    await db
         .collection('queues')
-        .doc(req.body.customerIndentifier)
+        .where('queueName', '==', req.body.queueName)
         .get()
-        .then((docSnapshot) => {
-            const queue: any = docSnapshot.data();
-            queue.queueSlots = queue.queueSlots.filter((value: string, _: number, __: Array<string>) => {
-                return removedSlotRes.get('deletedQueue') !== value;
+        .then((data) => {
+            const usableData = data.docs[0].data();
+            const removableIndex = usableData.queueSlots.findIndex((object: any) => {
+                return object.email === req.body.customerIdentifier;
             });
-            return db
+            usableData.queueSlots.splice(removableIndex, 1);
+            db
                 .collection('queues')
-                .doc(req.body.customerIndentifier)
-                .update(queue)
-                .then(()=> res.status(200).json({
-                    general:'successfully removed the customer from the queue'
-                }))
-        })
-        .catch(() => {
-            return res.status(500).json({
-                general: "Something went wrong. Please try again"
-            });
-        });
-};
-
-/**
- * Removes a customer from a queue by deleting their queue slot
- */
-const removeFromQueue = (req: Request, res: Response) => {
-    const requestData = {
-        queueName: req.body.queueName,
-        customerIdentifier: req.body.customerIdentifier,
-    };
-
-    db
-        .collection('users')
-        .doc(requestData.customerIdentifier)
-        .get()
-        .then((docSnapshot) => {
-            if (docSnapshot.exists) {
-               return removeCurrentQueueFromCustomer(requestData.customerIdentifier, res);
-            }
-            return;
-        })
-        .then(()=> removeQueueSlotFromQueue(req, res))
-        .catch(() => {
-            return res.status(500).json({
-                general: "Something went wrong. Please try again"
-            });
-        });
-};
-
-/**
- * Adjusts the timing of the queued users by inserting a VIP to the list
- */
-const VIPEnterQueue = async (req: Request, res: Response) => {
-    const requestData = {
-        queueName: req.body.queueName,
-    };
-    const queueLookUp = await db
-        .collection('queues')
-        .doc(requestData.queueName)
-        .get()
-        .then((data)=> data.data())
-        .catch(()=> null);
-    if(!queueLookUp) {
-        return res.status(404).json({
-            general:'The Queue does not exist!',
-        })
-    }
-    const newQueueSlot = addQueueSlot(
-        'VIP' + '0' + (Math.random()*10000).toString(),requestData.queueName, res);
-    let newQueue: Array<string> = queueLookUp.queueSlots;
-    newQueue.unshift(newQueueSlot.queue);
-    return db
-        .collection('queues')
-        .doc(requestData.queueName)
-        .update(newQueue)
-        .then(()=> {
+                .doc(req.body.queueName)
+                .update(usableData)
             return res.status(200).json({
-                general:'Adjusted the queue successfully',
+                general: 'removed successfully',
             })
         })
-        .catch(() => {
-            return res
-                .status(500).json({
-                    general: "Something went wrong. Please try again"
-                });
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Something went wrong. Please try again",
+                error: err
+            });
         });
 };
+
+
+const removeQueueSlot = async (req: Request, res: Response) => {
+    const requestData = {
+        customerIdentifier: req.body.customerIdentifier,
+        queueName: req.body.currentQueue,
+    };
+    await db
+        .collection('users')
+        .where('email', '==', requestData.customerIdentifier)
+        .get()
+        .then((customerData) => {
+            const usableData = customerData.docs[0].data();
+            if (usableData.userType === 'customer') {
+                usableData.currentQueue = null;
+                db
+                    .collection('users')
+                    .doc(usableData.email)
+                    .update(usableData);
+            }
+            return removeBoothOrCustomer(req, res);
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Something went wrong. Please try again",
+                error: err
+            });
+        });
+};
+
+// /**
+//  * Adjusts the timing of the queued users by inserting a VIP to the list
+//  */
+// const VIPEnterQueue = async (req: Request, res: Response) => {
+//     const requestData = {
+//         queueName: req.body.queueName,
+//     };
+//     const queueLookUp = await db
+//         .collection('queues')
+//         .doc(requestData.queueName)
+//         .get()
+//         .then((data)=> data.data())
+//         .catch(()=> null);
+//     if(!queueLookUp) {
+//         return res.status(404).json({
+//             general:'The Queue does not exist!',
+//         })
+//     }
+//     const newQueueSlot = addQueueSlot(
+//         'VIP' + '0' + (Math.random()*10000).toString(),requestData.queueName, res);
+//     let newQueue: Array<string> = queueLookUp.queueSlots;
+//     newQueue.unshift(newQueueSlot.queue);
+//     return db
+//         .collection('queues')
+//         .doc(requestData.queueName)
+//         .update(newQueue)
+//         .then(()=> {
+//             return res.status(200).json({
+//                 general:'Adjusted the queue successfully',
+//             })
+//         })
+//         .catch(() => {
+//             return res
+//                 .status(500).json({
+//                     general: "Something went wrong. Please try again"
+//                 });
+//         });
+// };
 
 /**
  * Activates or deactivates,
@@ -435,9 +313,7 @@ const changeQueueStatus = (req: Request, res: Response)=> {
             })
         })
         .catch(() => {
-            return res
-                .status(500)
-                .json({
+            return res.status(500).json({
                     general: "Something went wrong. Please try again"
                 });
         });
@@ -509,8 +385,8 @@ export {
     getQueueSlotInfo,
     customerEnterQueue,
     boothEnterQueue,
-    VIPEnterQueue,
-    removeFromQueue,
+    // VIPEnterQueue,
+    removeQueueSlot,
     changeQueueStatus,
     getFavouriteQueuesForCustomer,
 };

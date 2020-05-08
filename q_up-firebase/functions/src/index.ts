@@ -5,8 +5,8 @@ import {
     getQueueSlotInfo,
     customerEnterQueue,
     boothEnterQueue,
-    VIPEnterQueue,
-    removeFromQueue,
+    // VIPEnterQueue,
+    removeQueueSlot,
     changeQueueStatus,
     getFavouriteQueuesForCustomer
 } from "./handlers/queues";
@@ -38,8 +38,8 @@ app.post('/businessQueueInfo', FBAuth, getQueueInfoForBusiness);
 app.post('/customerQueueInfo', FBAuth, getQueueSlotInfo);
 app.post('/customerEnterQueue', FBAuth, customerEnterQueue);
 app.post('/boothEnterQueue', FBAuth, boothEnterQueue);
-app.post('/VIPEnterQueue', FBAuth, VIPEnterQueue);
-app.post('/removeFromQueue', FBAuth, removeFromQueue);
+// app.post('/VIPEnterQueue', FBAuth, VIPEnterQueue);
+app.post('/removeFromQueue', FBAuth, removeQueueSlot);
 app.post('/changeQueueStatus', FBAuth, changeQueueStatus);
 app.post('/getFavouriteQueues', FBAuth, getFavouriteQueuesForCustomer);
 
