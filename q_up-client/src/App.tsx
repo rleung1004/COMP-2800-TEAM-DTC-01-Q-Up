@@ -19,17 +19,33 @@ function App() {
       <Router>
          <div className='App'>
             <ThemeProvider theme={theme}>
-            <Switch>
-               <Route path='/' component={LandingPage} exact />
-               <Route path='/login' component={LoginPage} exact />
-               <Route path='/signup' component={SignupPage} exact />
-               <Route path='/aboutUs' component={aboutUsPage} exact/>
-               <Route path='/consumerRegistration' component={ConsumerRegistrationPage} exact/>
-               <Route path='/businessRegistration' component={BusinessRegistrationPage} exact/>
-               <Route path='/termsAndConditions' component={TermsPage} exact/>
-               <Route path='/PrivacyPolicy' component={PrivacyPage} exact/>
-               <Route path='/ConsumerDashboard' component={ConsumerDashboard} exact/>
-            </Switch> 
+               <Switch>
+                  <Route path='/' component={LandingPage} exact />
+                  <Route path='/login' component={LoginPage} exact />
+                  <Route path='/signup' component={SignupPage} exact />
+                  <Route path='/aboutUs' component={aboutUsPage} exact />
+                  <Route
+                     path='/consumerRegistration'
+                     component={ConsumerRegistrationPage}
+                     exact
+                  />
+                  <Route
+                     path='/businessRegistration'
+                     component={BusinessRegistrationPage}
+                     exact
+                  />
+                  <Route
+                     path='/termsAndConditions'
+                     component={TermsPage}
+                     exact
+                  />
+                  <Route path='/PrivacyPolicy' component={PrivacyPage} exact />
+                  <Route
+                     path='/consumerDashboard'
+                     component={ConsumerDashboard}
+                     exact
+                  />
+               </Switch>
             </ThemeProvider>
          </div>
       </Router>
