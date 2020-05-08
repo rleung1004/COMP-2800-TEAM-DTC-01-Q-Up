@@ -11,7 +11,7 @@ export default function Header(props: any) {
           <h1>QUP</h1>
         </Grid>
         <Grid item container xs={8} justify="center">
-          <img src={require("../../img/temp_logo_png.png")} alt="QUP logo" />
+          <img src={require("../../img/logo.png")} alt="QUP logo" />
         </Grid>
       </Grid>
       {Navbar}
