@@ -1,14 +1,14 @@
 import * as functions from "firebase-functions";
 import {
-    getTellerQueueList,
-    getQueueInfoForBusiness,
-    getQueueSlotInfo,
-    customerEnterQueue,
-    boothEnterQueue,
-    // VIPEnterQueue,
-    removeQueueSlot,
-    changeQueueStatus,
-    getFavouriteQueuesForCustomer
+  getTellerQueueList,
+  getQueueInfoForBusiness,
+  getQueueSlotInfo,
+  customerEnterQueue,
+  boothEnterQueue,
+  VIPEnterQueue,
+  // removeQueueSlot,
+  changeQueueStatus,
+  getFavouriteQueuesForCustomer,
 } from "./handlers/queues";
 import * as express from "express";
 import { signup, login, updateCustomerInfo } from "./handlers/users";
@@ -19,7 +19,6 @@ import { FBAuth } from "./util/fbAuth";
 const app = express();
 
 // all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
-
 
 // Signup route
 app.post("/signup", signup);
@@ -33,14 +32,14 @@ app.post("/updateBusiness", FBAuth, updateBusiness);
 app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
 
 //Queue routes
-app.post('/tellerQueueList', FBAuth, getTellerQueueList);
-app.post('/businessQueueInfo', FBAuth, getQueueInfoForBusiness);
-app.post('/customerQueueInfo', FBAuth, getQueueSlotInfo);
-app.post('/customerEnterQueue', FBAuth, customerEnterQueue);
-app.post('/boothEnterQueue', FBAuth, boothEnterQueue);
-// app.post('/VIPEnterQueue', FBAuth, VIPEnterQueue);
-app.post('/removeFromQueue', FBAuth, removeQueueSlot);
-app.post('/changeQueueStatus', FBAuth, changeQueueStatus);
-app.post('/getFavouriteQueues', FBAuth, getFavouriteQueuesForCustomer);
+app.post("/tellerQueueList", FBAuth, getTellerQueueList);
+app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
+app.post("/customerQueueInfo", FBAuth, getQueueSlotInfo);
+app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
+app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
+app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
+// app.post('/removeFromQueue', FBAuth, removeQueueSlot);
+app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
+app.post("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
 exports.api = functions.https.onRequest(app);
