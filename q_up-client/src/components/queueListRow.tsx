@@ -12,18 +12,15 @@ import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 
-function isWeekend() {
-  return false;
-}
-
-function getStartTime(times: Array<string>) {
-  console.log(times, isWeekend());
-  return "poop";
-}
-
-function getEndTtime(times: Array<string>) {
-  console.log(times);
-  return "pop";
+function formatTime(time24h: string) {
+  const [hours, mins] = time24h.split(":");
+  const intHours = parseInt(hours);
+  return (
+    (intHours % 12 || 12) +
+    ":" +
+    mins +
+    (intHours >= 12 ? "PM" : "AM")
+  );
 }
 
 export default function QueueListRow(props: any) {
@@ -77,7 +74,7 @@ export default function QueueListRow(props: any) {
   const closedQueueHeader = (
     <Grid container item xs={4}>
       <Typography variant="body2">
-        Now closed. Opens at {getStartTime(data.hours)}
+        Now closed. Opens at {formatTime(data.startTime)}
       </Typography>
     </Grid>
   );
@@ -92,15 +89,11 @@ export default function QueueListRow(props: any) {
         <Typography variant="caption">Queue Size</Typography>
         <Typography variant="body2">{data.size}</Typography>
       </Grid>
-      <Grid item xs={2}>
-        {favicon}
-      </Grid>
     </>
   );
 
   const queueUp = () => {
     console.log("");
-    getEndTtime(data.hours);
   };
   return (
     <ExpansionPanel expanded={expanded} onChange={handleChange}>
@@ -114,7 +107,10 @@ export default function QueueListRow(props: any) {
           <Grid item xs={6}>
             <Typography variant="body1">{data.name}</Typography>
           </Grid>
-          {data.active? openQueueHeader : closedQueueHeader}
+          {data.active ? openQueueHeader : closedQueueHeader}
+          <Grid item xs={2}>
+            {favicon}
+          </Grid>
         </Grid>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
@@ -162,7 +158,7 @@ export default function QueueListRow(props: any) {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Button variant="contained" color="primary" onClick={queueUp}>
+              <Button variant="contained" color="primary" onClick={queueUp} disabled={data.active}>
                 Queue up
               </Button>
             </Grid>
