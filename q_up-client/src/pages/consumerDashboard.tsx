@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import ConsumerNav from '../components/consumerNav';
 import { Button, Grid, Typography } from '@material-ui/core';
 import CurrentQueueInfo from '../components/currentQueueInfo';
+import QueueList from '../components/queueList';
+import { mockFavs, mockQueues } from '../mockData';
 
 const useStyles = makeStyles((theme) => ({
    root: {
@@ -66,6 +68,9 @@ export default function ClientDashboardPage() {
                      Search Queues
                   </Button>
                </Grid>
+            </section>
+            <section>
+               <QueueList dataList={mockQueues()} favs={mockFavs()} />
             </section>
          </main>
          <Footer />
