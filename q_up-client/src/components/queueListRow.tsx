@@ -12,6 +12,20 @@ import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 
+function isWeekend() {
+  return false;
+}
+
+function getStartTime(times: Array<string>) {
+  console.log(times, isWeekend());
+  return "poop";
+}
+
+function getEndTtime(times: Array<string>) {
+  console.log(times);
+  return "pop";
+}
+
 export default function QueueListRow(props: any) {
   const data = props.data;
   const address = data.address;
@@ -26,7 +40,6 @@ export default function QueueListRow(props: any) {
         <Typography variant="body2">{address.unit}</Typography>
       </Grid>
     );
-
   const handleFavClick = (fav: Boolean) => () => {
     if (props.isFavList) {
       props.remove();
@@ -61,8 +74,33 @@ export default function QueueListRow(props: any) {
     props.isFav ? favButtonModel : notFavButtonModel
   );
 
+  const closedQueueHeader = (
+    <Grid container item xs={4}>
+      <Typography variant="body2">
+        Now closed. Opens at {getStartTime(data.hours)}
+      </Typography>
+    </Grid>
+  );
+
+  const openQueueHeader = (
+    <>
+      <Grid container item xs={2} direction="column">
+        <Typography variant="caption">Wait time</Typography>
+        <Typography variant="body2">{data.wait}</Typography>
+      </Grid>
+      <Grid container item xs={2} direction="column">
+        <Typography variant="caption">Queue Size</Typography>
+        <Typography variant="body2">{data.size}</Typography>
+      </Grid>
+      <Grid item xs={2}>
+        {favicon}
+      </Grid>
+    </>
+  );
+
   const queueUp = () => {
     console.log("");
+    getEndTtime(data.hours);
   };
   return (
     <ExpansionPanel expanded={expanded} onChange={handleChange}>
@@ -76,17 +114,7 @@ export default function QueueListRow(props: any) {
           <Grid item xs={6}>
             <Typography variant="body1">{data.name}</Typography>
           </Grid>
-          <Grid container item xs={2} direction="column">
-            <Typography variant="caption">Wait time</Typography>
-            <Typography variant="body2">{data.wait}</Typography>
-          </Grid>
-          <Grid container item xs={2} direction="column">
-            <Typography variant="caption">Queue Size</Typography>
-            <Typography variant="body2">{data.size}</Typography>
-          </Grid>
-          <Grid item xs={2}>
-            {favicon}
-          </Grid>
+          {data.active? openQueueHeader : closedQueueHeader}
         </Grid>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
