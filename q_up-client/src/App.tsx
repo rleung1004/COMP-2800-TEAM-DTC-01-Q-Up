@@ -6,8 +6,8 @@ import LoginPage from './pages/login';
 import SignupPage from './pages/signup';
 import aboutUsPage from './pages/aboutUs';
 import themes from './mui-theming/themes';
-import termsPage from './pages/termsAndConditions';
-import privacyPage from './pages/privaryPolicy';
+import TermsPage from './pages/termsAndConditions';
+import PrivacyPage from './pages/privaryPolicy';
 import { ThemeProvider } from '@material-ui/core';
 import ConsumerRegistrationPage from './pages/consumerRegistration';
 import ConsumerDashboard from './pages/consumerDashboard';
@@ -19,33 +19,17 @@ function App() {
       <Router>
          <div className='App'>
             <ThemeProvider theme={theme}>
-               <Switch>
-                  <Route path='/' component={LandingPage} exact />
-                  <Route path='/login' component={LoginPage} exact />
-                  <Route path='/signup' component={SignupPage} exact />
-                  <Route path='/aboutUs' component={aboutUsPage} exact />
-                  <Route
-                     path='/consumerRegistration'
-                     component={ConsumerRegistrationPage}
-                     exact
-                  />
-                  <Route
-                     path='/consumerDashboard'
-                     component={ConsumerDashboard}
-                     exact
-                  />
-                  <Route
-                     path='/businessRegistration'
-                     component={BusinessRegistrationPage}
-                     exact
-                  />
-                  <Route
-                     path='/termsAndConditions'
-                     component={termsPage}
-                     exact
-                  />
-                  <Route path='/PrivacyPolicy' component={privacyPage} exact />
-               </Switch>
+            <Switch>
+               <Route path='/' component={LandingPage} exact />
+               <Route path='/login' component={LoginPage} exact />
+               <Route path='/signup' component={SignupPage} exact />
+               <Route path='/aboutUs' component={aboutUsPage} exact/>
+               <Route path='/consumerRegistration' component={ConsumerRegistrationPage} exact/>
+               <Route path='/businessRegistration' component={BusinessRegistrationPage} exact/>
+               <Route path='/termsAndConditions' component={TermsPage} exact/>
+               <Route path='/PrivacyPolicy' component={PrivacyPage} exact/>
+               <Route path='/ConsumerDashboard' component={ConsumerDashboard} exact/>
+            </Switch> 
             </ThemeProvider>
          </div>
       </Router>

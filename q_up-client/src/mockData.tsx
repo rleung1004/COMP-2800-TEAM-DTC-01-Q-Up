@@ -15,183 +15,25 @@ export function mockProvinces() {
    ];
 }
 
-export function mockCategories() {
-   return ['Clinic', 'Restaurant', 'Government', 'Grocer', 'Hairdresser'];
+export function mockCategories(){
+    return ["Clinic", "Restaurant", "Government", "Grocer", "Hairdresser"];
 }
 
-export function mockFavQueues() {
-   return [
-      {
-         name: 'acme',
-         address: {
-            unit: '1',
-            streetAddress: '3779 Sexsmith Rd Unit 1178, Richmond, BC V6X 3Z9',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 'costco',
-         address: {
-            unit: '2',
-            streetAddress: '3700 Number 3 Rd, Richmond, BC V6X 3X2',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 'new hong kong',
-         address: {
-            unit: '3',
-            streetAddress: '8231 Cambie Rd #105, Richmond, BC V6X 1J8',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 't&t',
-         address: {
-            unit: '4',
-            streetAddress:
-               'Hazelbridge Way #1780-4151 #1780, #4151, Richmond, BC V6X 4J7',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 'H-mart',
-         address: {
-            unit: '5',
-            streetAddress: '4600 Number 3 Rd #111, Richmond, BC V6X 2C2',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 'Yes',
-         address: {
-            unit: '6',
-            streetAddress: '4400 Hazelbridge Way #780, Richmond, BC V6X 3R8',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 'Darumaya',
-         address: {
-            unit: '7',
-            streetAddress: '4700 Mcclelland Rd, Richmond, BC V6X 0M6',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 'Sea Value Foods Inc',
-         address: {
-            unit: '8',
-            streetAddress:
-               'Airport Industrial Park, 4751 Shell Rd, Richmond, BC V6X 3H4',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 'Pricesmart',
-         address: {
-            unit: '9',
-            streetAddress: '8200 Ackroyd Rd, Richmond, BC V6X 1B5',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-      {
-         name: 'Tindahan',
-         address: {
-            unit: '0',
-            streetAddress: '5960 Minoru Blvd, Richmond, BC V6X 3J3',
-            city: 'shitty city',
-            province: 'BC',
-            postalCode: 'V2V 2V2',
-         },
-         wait: 30,
-         size: 44,
-         email: 'fake@fakeAsKardashian.ca',
-         website: 'WWW.fakeAsKardashian.ca',
-         phone: '7789899999',
-         startTime: '10:30',
-         closeTime: '8:30',
-      },
-   ];
+export function mockQueues(){
+    return [
+{name:"mock business1", address:{unit:"1", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: true, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business2", address:{unit:"2", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: false, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business3", address:{unit:"3", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: true, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business4", address:{unit:"4", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: true, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business5", address:{unit:"5", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: true, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business6", address:{unit:"6", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: false, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business7", address:{unit:"7", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: false, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business8", address:{unit:"8", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: true, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business9", address:{unit:"9", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: true, startTime:"10:30", closeTime:"8:30"},
+{name:"mock business0", address:{unit:"0", streetAddress:"love st", city:"shitty city", province:"BC", postalCode: "V2V 2V2"}, wait:30, size:44, email:"fake@fakeAsKardashian.ca", website:"WWW.fakeAsKardashian.ca", phoneNumber:"7789899999", active: true, startTime:"10:30", closeTime:"8:30"},
+    ];
+}
+
+export function mockFavs() {
+    return ["mock business5", "mock business9", "mock business1", "mock business6"];
 }
