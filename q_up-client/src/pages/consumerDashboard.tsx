@@ -56,8 +56,10 @@ export default function ClientDashboardPage() {
                      aria-controls='simple-menu'
                      aria-haspopup='true'
                      onClick={handleClick}
+                     className={classes.button}
+                     style={{ color: 'white' }}
                   >
-                     Open Menu
+                     Categories
                   </Button>
                   <Menu
                      id='simple-menu'
