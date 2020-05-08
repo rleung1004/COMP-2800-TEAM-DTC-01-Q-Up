@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
   pageTitle: {
     margin: "20px auto 20px auto",
+    fontSize: '1.7rem',
   },
   subHeading: {
     margin: "20px auto 20px auto",
@@ -37,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
     background: "white",
     padding: "20px",
   },
+  pageTitleContainer: {
+    borderBottom: "thin solid black"
+  }
 }));
 
 export default function BusinessDashboardPage() {
@@ -67,7 +71,7 @@ export default function BusinessDashboardPage() {
   return (
     <>
       <Header Nav={ConsumerNav} />
-      <header>
+      <header className={classes.pageTitleContainer}>
         <Typography variant="h2" className={classes.pageTitle}>
           Business Name
         </Typography>

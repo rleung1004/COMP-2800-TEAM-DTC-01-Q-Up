@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import axios from 'axios';
 import { mockProvinces, mockCategories } from 'src/mockData';
+import '../styles/businessDashboard.scss';
 
 const useStyles = makeStyles((theme) => ({
    root: {
