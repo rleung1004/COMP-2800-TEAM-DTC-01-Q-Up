@@ -1,72 +1,34 @@
 import {db} from '../util/admin';
 import {Request, Response} from 'express';
 import {createQueueSlotCredentials} from "../util/helpers";
-import {validateQueue} from "../util/validators";
-
-
-const getSlotInfoForTeller = (queueSlotName: string)=> {
-    return db
-        .collection('queueSlots')
-        .doc(queueSlotName)
-        .get()
-        .then((docSnapshot) => {
-            if (!docSnapshot) {
-                return null;
-            }
-            const queueSlot: any = docSnapshot.data();
-            return {
-                customer: queueSlot.customer,
-                ticketNumber: queueSlot.ticketNumber,
-                password: queueSlot.password,
-            }
-
-        })
-        .catch(()=> null);
-};
-
 
 
 /**
- * get the queue isActive, listOfQueueSlots (with their ticket, pass) for the teller
- */
+ * * get the queue isActive, listOfQueueSlots (with their ticket, pass) for the teller
+*/
 const getTellerQueueList = async (req: Request, res: Response) => {
     const requestData = {
         queueName: req.body.queueName,
     };
-    return db
+
+    await db
         .collection('queues')
-        .doc(requestData.queueName)
+        .where('queueName', '==', requestData.queueName)
         .get()
-        .then((docSnapshot) => {
-            const doc: any = docSnapshot.data();
-            const { valid, errors } = validateQueue(doc);
-
-            if (!valid) {
-                return res.status(400).json(errors);
-            }
-
-            // creates queueSlots for response
-            const queueSlotsInfo: Array<any> = [];
-            doc.queueSlots.forEach( (qs: string) => {
-                    const queueSlotInfo: any = getSlotInfoForTeller(qs);
-                    if (queueSlotInfo) {
-                        queueSlotsInfo.push(queueSlotInfo);
-                    }
-            });
-            return res
-                .status(200)
-                .json({
-                    isActive: true,
-                    queueSlots: queueSlotsInfo,
-                    general: 'successfully got the queueSlotInfo',
-                });
+        .then((data) => {
+            const queueList = data.docs[0].data().queueSlots;
+            return res.status(200).json({
+                general:'success!',
+                queueList: queueList,
+                isActive: data.docs[0].data().isActive,
+            })
         })
-        .catch(() => {
-            return res
-                .status(500)
-                .json({
-                    general: "Something went wrong. Please try again"
-                });
+        .catch((err)=> {
+            console.error(err);
+            return res.status(404).json({
+                general:'something went wront!',
+                error: err,
+            })
         });
 };
 
@@ -76,36 +38,31 @@ const getTellerQueueList = async (req: Request, res: Response) => {
 
 const getQueueInfoForBusiness = async (req: Request, res: Response) => {
     const requestData = {
-        // queue names are essentially the same as the business names, therefore
-        //customers can pass their queueName
-        //businesses can pass their businessName (managers and employees)
         queueName: req.body.queueName,
     };
-    return db
+    await db
         .collection('queues')
-        .doc(requestData.queueName)
+        .where('queueName', '==', requestData.queueName)
         .get()
-        .then( (docSnapshot) => {
-            const doc: any = docSnapshot.data();
-            const { valid, errors } = validateQueue(doc);
-            if (!valid) {
-                return res.status(400).json(errors);
-            }
-            const currentWaitTime = doc.queueSlots.length * doc.averageWaitTime;
-            const queueLength = doc.queueSlots.length;
+        .then( (data) => {
+            const usableData = data.docs[0].data();
+            const currentWaitTime = usableData.queueSlots.length * usableData.averageWaitTime.toString();
+            const queueLength = usableData.queueSlots.length;
             return res
-                .status(200)
-                .json({
+                .status(200).json({
                     currentWaitTime: currentWaitTime,
                     queueLength: queueLength,
-                    general: 'successful',
+                    isActive: usableData.isActive,
+                    general: 'successful'
                 });
         })
-        .catch(() => {
+        .catch((err) => {
+            console.error(err);
             return res
                 .status(500)
                 .json({
-                    general: "Something went wrong. Please try again"
+                    general: "Something went wrong. Please try again",
+                    error: err
                 });
         });
 };

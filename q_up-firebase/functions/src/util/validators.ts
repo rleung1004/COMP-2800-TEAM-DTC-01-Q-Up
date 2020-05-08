@@ -168,21 +168,6 @@ const validateBusinessData = (data: businessData) => {
   };
 };
 
-const validateQueue = (data: queueData) => {
-  let errors = {};
-
-  if (!data == null) {
-    Object.assign(errors, { general: "The Queue does not exist!"});
-  }
-  if (!data.isActive) {
-    Object.assign(errors, { general: "The Queue is inactive"});
-  }
-  return {
-    errors,
-    valid: Object.keys(errors).length === 0,
-  };
-};
-
 
 export {
   validateSignUpData,
@@ -191,5 +176,4 @@ export {
   isEmpty,
   validateBusinessData,
   validateCustomerData,
-  validateQueue,
 };
