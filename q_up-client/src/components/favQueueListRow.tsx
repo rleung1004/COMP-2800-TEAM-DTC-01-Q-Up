@@ -6,10 +6,10 @@ import {
   Typography,
   IconButton,
   Button,
+  ExpansionPanel,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
-import { mockFavQueues } from "src/mockData";
 
 export default function FavQueueListRow(props: any) {
   const data = props.data;
@@ -18,23 +18,36 @@ export default function FavQueueListRow(props: any) {
     address.unit === "" ? (
       <div></div>
     ) : (
-      <Grid container item xs={12}>
-        <Typography variant="body1">unit</Typography>
+      <Grid container item xs={2}>
         <Typography variant="body2">{address.unit}</Typography>
       </Grid>
     );
-  const queueUp = () ={
 
+  const [expanded, setExpanded] = React.useState<string | false>(false);
+
+  const handleChange = (panel: string) => (
+    event: React.ChangeEvent<{}>,
+    isExpanded: boolean
+  ) => {
+    console.log(event);
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  const queueUp = () => {
+    console.log("");
   };
   return (
-    <>
+    <ExpansionPanel
+      expanded={expanded === "panel1"}
+      onChange={handleChange("panel1")}
+    >
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         aria-controls="panel1bh-content"
         id="panel1bh-header"
       >
         {/* the header of expansion */}
-        <Grid container>
+        <Grid container alignItems="center">
           <Grid item xs={6}>
             <Typography variant="body1">{data.name}</Typography>
           </Grid>
@@ -56,39 +69,46 @@ export default function FavQueueListRow(props: any) {
       <ExpansionPanelDetails>
         {/* the body */}
         <Grid container>
-          <Grid container item xs={8}>
+          <Grid container item xs={8} justify="flex-start">
             {" "}
             {/* address*/}
-            <address>
-              <Typography variant="h3">Address</Typography>
-              {unit}
-              <Grid item xs={12}>
-                <Typography variant="body1">Street address</Typography>
-                <Typography variant="body2">{address.streetAddress}</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body1">City</Typography>
-                <Typography variant="body2">{address.city}</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant="body1">Province</Typography>
-                <Typography variant="body2">{address.province}</Typography>
-              </Grid>
-              <Grid item xs={8}>
-                <Typography variant="body1">Postal Code</Typography>
-                <Typography variant="body2">{address.postalCode}</Typography>
-              </Grid>
-            </address>
+            {unit}
+            <Grid item xs={10}>
+              <Typography variant="body2" align="left">
+                {address.streetAddress}
+              </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant="body2" align="left">
+                {address.city}
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant="body2" align="left">
+                {address.province}
+              </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Typography variant="body2" align="left">
+                {address.postalCode}
+              </Typography>
+            </Grid>
           </Grid>
           <Grid container item xs={4}>
             <Grid item xs={12}>
-              <Typography variant="body2">{data.phoneNumber}</Typography>
+              <Typography variant="body2" align="left">
+                {data.phoneNumber}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body2">{data.email}</Typography>
+              <Typography variant="body2" align="left">
+                {data.email}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body2">{data.website}</Typography>
+              <Typography variant="body2" align="left">
+                {data.website}
+              </Typography>
             </Grid>
             <Grid item xs={12}>
               <Button variant="contained" color="primary" onClick={queueUp}>
@@ -98,6 +118,6 @@ export default function FavQueueListRow(props: any) {
           </Grid>
         </Grid>
       </ExpansionPanelDetails>
-    </>
+    </ExpansionPanel>
   );
 }
