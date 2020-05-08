@@ -4,7 +4,8 @@ import Footer from '../components/static/Footer';
 import Header from '../components/static/Header';
 import { makeStyles } from '@material-ui/core/styles';
 import ConsumerNav from '../components/consumerNav';
-import { Button, Grid, Menu, MenuItem } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
+import CurrentQueueInfo from '../components/currentQueueInfo';
 
 const useStyles = makeStyles((theme) => ({
    root: {
@@ -26,22 +27,36 @@ export default function ClientDashboardPage() {
    //     let lon = position.coords.longitude;
    //     console.log(lat, lon);
    //  });
-   const [anchorEl, setAnchorEl] = React.useState(null);
+   // const [anchorEl, setAnchorEl] = React.useState(null);
 
-   const handleClick = (event: any) => {
-      setAnchorEl(event.currentTarget);
-   };
+   // const handleClick = (event: any) => {
+   //    setAnchorEl(event.currentTarget);
+   // };
 
-   const handleClose = () => {
-      setAnchorEl(null);
-   };
+   // const handleClose = () => {
+   //    setAnchorEl(null);
+   // };
+   const noQueue = (
+      <Grid container justify='center' alignItems='center'>
+         <Typography variant='h2'>Not currently queued</Typography>
+      </Grid>
+   );
 
    return (
       <>
          <Header Nav={ConsumerNav} />
          <main>
-            <Grid container spacing={0} justify='center'>
-               <Grid item xs={2}>
+            <section>{true ? <CurrentQueueInfo /> : noQueue}</section>
+            <section>
+               <Grid container direction='column'>
+                  <Button
+                     type='submit'
+                     variant='contained'
+                     color='primary'
+                     className={classes.button}
+                  >
+                     Abandon Queue
+                  </Button>
                   <Button
                      type='submit'
                      variant='contained'
@@ -51,29 +66,7 @@ export default function ClientDashboardPage() {
                      Search Queues
                   </Button>
                </Grid>
-               <Grid item xs={2}>
-                  <Button
-                     aria-controls='simple-menu'
-                     aria-haspopup='true'
-                     onClick={handleClick}
-                     className={classes.button}
-                     style={{ color: 'white' }}
-                  >
-                     Categories
-                  </Button>
-                  <Menu
-                     id='simple-menu'
-                     anchorEl={anchorEl}
-                     keepMounted
-                     open={Boolean(anchorEl)}
-                     onClose={handleClose}
-                  >
-                     <MenuItem onClick={handleClose}>Grocers</MenuItem>
-                     <MenuItem onClick={handleClose}>Clinic</MenuItem>
-                     <MenuItem onClick={handleClose}>Government</MenuItem>
-                  </Menu>
-               </Grid>
-            </Grid>
+            </section>
          </main>
          <Footer />
       </>
