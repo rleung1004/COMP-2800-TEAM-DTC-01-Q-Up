@@ -34,6 +34,16 @@ interface businessData {
   lastUpdated: string;
 }
 
+interface queueData {
+  averageWaitTime: string;
+  business: string;
+  startTime: string;
+  endTime: string;
+  isActive: boolean;
+  queueSlots: Array<string>;
+}
+
+
 interface customerData {
   phoneNumber: string;
   postalCode: string;
@@ -158,6 +168,22 @@ const validateBusinessData = (data: businessData) => {
   };
 };
 
+const validateQueue = (data: queueData) => {
+  let errors = {};
+
+  if (!data == null) {
+    Object.assign(errors, { general: "The Queue does not exist!"});
+  }
+  if (!data.isActive) {
+    Object.assign(errors, { general: "The Queue is inactive"});
+  }
+  return {
+    errors,
+    valid: Object.keys(errors).length === 0,
+  };
+};
+
+
 export {
   validateSignUpData,
   validateLoginData,
@@ -165,4 +191,5 @@ export {
   isEmpty,
   validateBusinessData,
   validateCustomerData,
+  validateQueue,
 };
