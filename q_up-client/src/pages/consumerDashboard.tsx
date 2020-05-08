@@ -4,8 +4,7 @@ import Footer from '../components/static/Footer';
 import Header from '../components/static/Header';
 import { makeStyles } from '@material-ui/core/styles';
 import ConsumerNav from '../components/consumerNav';
-import { Button, Grid } from '@material-ui/core';
-import Dropdown from 'react-bootstrap/Dropdown';
+import { Button, Grid, Menu, MenuItem } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
    root: {
@@ -27,6 +26,15 @@ export default function ClientDashboardPage() {
    //     let lon = position.coords.longitude;
    //     console.log(lat, lon);
    //  });
+   const [anchorEl, setAnchorEl] = React.useState(null);
+
+   const handleClick = (event: any) => {
+      setAnchorEl(event.currentTarget);
+   };
+
+   const handleClose = () => {
+      setAnchorEl(null);
+   };
 
    return (
       <>
@@ -44,29 +52,24 @@ export default function ClientDashboardPage() {
                   </Button>
                </Grid>
                <Grid item xs={2}>
-                  <Dropdown className={classes.button}>
-                     <Dropdown.Toggle id='dropdown-basic'>
-                        Dropdown Button
-                     </Dropdown.Toggle>
-
-                     <Dropdown.Menu>
-                        <Dropdown.Item style={{ textDecoration: 'none' }}>
-                           Grocer
-                        </Dropdown.Item>
-                        <Dropdown.Item style={{ textDecoration: 'none' }}>
-                           Restaurant
-                        </Dropdown.Item>
-                        <Dropdown.Item style={{ textDecoration: 'none' }}>
-                           Government
-                        </Dropdown.Item>
-                        <Dropdown.Item style={{ textDecoration: 'none' }}>
-                           Hairdresser
-                        </Dropdown.Item>
-                        <Dropdown.Item style={{ textDecoration: 'none' }}>
-                           Clinic
-                        </Dropdown.Item>
-                     </Dropdown.Menu>
-                  </Dropdown>
+                  <Button
+                     aria-controls='simple-menu'
+                     aria-haspopup='true'
+                     onClick={handleClick}
+                  >
+                     Open Menu
+                  </Button>
+                  <Menu
+                     id='simple-menu'
+                     anchorEl={anchorEl}
+                     keepMounted
+                     open={Boolean(anchorEl)}
+                     onClose={handleClose}
+                  >
+                     <MenuItem onClick={handleClose}>Grocers</MenuItem>
+                     <MenuItem onClick={handleClose}>Clinic</MenuItem>
+                     <MenuItem onClick={handleClose}>Government</MenuItem>
+                  </Menu>
                </Grid>
             </Grid>
          </main>
