@@ -39,12 +39,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const axiosConfig = {
-  headers: { Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}` }
-};
-
 export default function ConsumerRegistrationPage() {
   const classes = useStyles();
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+    },
+  };
   interface errors {
     hours?: {
       startTime?: string;
@@ -73,7 +74,15 @@ export default function ConsumerRegistrationPage() {
     description: "",
     email: "",
     hours: {
-      startTime: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"],
+      startTime: [
+        "00:00",
+        "00:00",
+        "00:00",
+        "00:00",
+        "00:00",
+        "00:00",
+        "00:00",
+      ],
       endTime: ["00:01", "00:01", "00:01", "00:01", "00:01", "00:01", "00:01"],
     },
     address: {
@@ -99,15 +108,15 @@ export default function ConsumerRegistrationPage() {
     const value = event.target.value;
     if (fieldCategory === "address") {
       setFormState((prevState) => ({
-          ...prevState,
-          address: { ...prevState.address, [name]: value },
-        }));
+        ...prevState,
+        address: { ...prevState.address, [name]: value },
+      }));
     } else {
       setFormState((prevState) => ({ ...prevState, [name]: value }));
     }
   };
 
-  const handleHourChange = (event:ChangeEvent<HTMLInputElement>) => {
+  const handleHourChange = (event: ChangeEvent<HTMLInputElement>) => {
     const fieldNameTokens = event.target.name.split("-");
     const newValue = event.target.value;
     const timeType = fieldNameTokens[2];
@@ -119,8 +128,8 @@ export default function ConsumerRegistrationPage() {
         newHours[index] = newValue;
       }
       if (timeType === "startTime") {
-      newHours[0] = oldHours.startTime[0];
-      newHours[6] = oldHours.startTime[0];
+        newHours[0] = oldHours.startTime[0];
+        newHours[6] = oldHours.startTime[0];
       } else {
         newHours[0] = oldHours.endTime[0];
         newHours[6] = oldHours.endTime[0];
@@ -146,11 +155,11 @@ export default function ConsumerRegistrationPage() {
         hours: { ...prevState.hours, [timeType]: newHours },
       }));
     }
-  } 
+  };
 
   const handleSftChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-    if (newValue === '') {
+    if (newValue === "") {
       setFormState((prevState) => ({ ...prevState, sft: newValue }));
       return;
     }
@@ -174,14 +183,14 @@ export default function ConsumerRegistrationPage() {
       website: formState.website,
       hours: formState.hours,
       description: formState.description,
-      email: formState.email
+      email: formState.email,
     };
 
     axios
       .post("/updateBusiness", userData, axiosConfig)
       .then(() => {
         console.log("success registering business");
-        
+
         window.location.href = "/businessDashboard";
       })
       .catch((err: any) => {
@@ -353,18 +362,18 @@ export default function ConsumerRegistrationPage() {
                   </Select>
                 </FormControl>
                 <Grid item xs={12}>
-                <TextField
-                  color="secondary"
-                  id="postalCode"
-                  label="Postal Code"
-                  name="address-postalCode"
-                  onChange={handleOnFieldChange}
-                  value={formState.address.postalCode}
-                  className={classes.textField}
-                  helperText={formState.errors.address?.postalCode}
-                  error={formState.errors.address?.postalCode ? true : false}
-                />
-              </Grid>
+                  <TextField
+                    color="secondary"
+                    id="postalCode"
+                    label="Postal Code"
+                    name="address-postalCode"
+                    onChange={handleOnFieldChange}
+                    value={formState.address.postalCode}
+                    className={classes.textField}
+                    helperText={formState.errors.address?.postalCode}
+                    error={formState.errors.address?.postalCode ? true : false}
+                  />
+                </Grid>
               </Grid>
 
               <Grid container item direction="column">
