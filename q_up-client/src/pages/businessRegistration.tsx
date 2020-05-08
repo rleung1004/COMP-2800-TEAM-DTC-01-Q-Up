@@ -163,6 +163,11 @@ export default function ConsumerRegistrationPage() {
       setFormState((prevState) => ({ ...prevState, sft: newValue }));
       return;
     }
+    const newChar = newValue[newValue.length - 1];
+    if (!('0' <= newChar && newChar <= '9')) {
+      setFormState((prevState) => ({ ...prevState, sft: newValue.slice(0,-1)}));
+      return;
+    }
     const valueAsInt = parseInt(newValue);
     if (valueAsInt < 1) {
       setFormState((prevState) => ({ ...prevState, sft: "1" }));
