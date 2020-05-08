@@ -11,16 +11,12 @@ import {
 import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
+import MapIcon from '@material-ui/icons/Map';
 
 function formatTime(time24h: string) {
   const [hours, mins] = time24h.split(":");
   const intHours = parseInt(hours);
-  return (
-    (intHours % 12 || 12) +
-    ":" +
-    mins +
-    (intHours >= 12 ? "PM" : "AM")
-  );
+  return (intHours % 12 || 12) + ":" + mins + (intHours >= 12 ? "PM" : "AM");
 }
 
 export default function QueueListRow(props: any) {
@@ -29,14 +25,14 @@ export default function QueueListRow(props: any) {
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
 
-  const unit =
-    address.unit === "" ? (
-      <div></div>
-    ) : (
-      <Grid container item xs={2}>
-        <Typography variant="body2">{address.unit}</Typography>
-      </Grid>
-    );
+  // const unit =
+  //   address.unit === "" ? (
+  //     <div></div>
+  //   ) : (
+  //     <Grid container item xs={1}>
+  //       <Typography variant="body2">{address.unit}</Typography>
+  //     </Grid>
+  //   );
   const handleFavClick = (fav: Boolean) => () => {
     if (props.isFavList) {
       props.remove();
@@ -116,32 +112,34 @@ export default function QueueListRow(props: any) {
       <ExpansionPanelDetails>
         {/* the body */}
         <Grid container>
-          <Grid container item xs={8} justify="flex-start">
+          <Grid container item xs={6} justify="flex-start">
             {" "}
             {/* address*/}
-            {unit}
-            <Grid item xs={10}>
+            <Grid item xs={12} >
               <Typography variant="body2" align="left">
-                {address.streetAddress}
+                {address.unit +
+                  " " +
+                  address.streetAddress +
+                  ", " +
+                  address.city}{" "}
+                <br />
+                {address.province + ", " + address.postalCode}
               </Typography>
             </Grid>
-            <Grid item xs={8}>
-              <Typography variant="body2" align="left">
-                {address.city}
-              </Typography>
+            <Grid container item xs={12}  justify="flex-start">
+              <IconButton size="small">
+                <MapIcon color="primary"/>
+              </IconButton>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12}>
               <Typography variant="body2" align="left">
-                {address.province}
-              </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <Typography variant="body2" align="left">
-                {address.postalCode}
+                {data.active
+                  ? "Closes at " + formatTime(data.closeTime)
+                  : "Opens at " + formatTime(data.startTime)}
               </Typography>
             </Grid>
           </Grid>
-          <Grid container item xs={4}>
+          <Grid container item xs={6}>
             <Grid item xs={12}>
               <Typography variant="body2" align="left">
                 {data.phoneNumber}
@@ -158,7 +156,12 @@ export default function QueueListRow(props: any) {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Button variant="contained" color="primary" onClick={queueUp} disabled={data.active}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={queueUp}
+                disabled={!data.active}
+              >
                 Queue up
               </Button>
             </Grid>
