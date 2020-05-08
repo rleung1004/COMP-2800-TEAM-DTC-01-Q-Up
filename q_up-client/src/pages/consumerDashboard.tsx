@@ -22,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
 export default function ClientDashboardPage() {
    const classes = useStyles();
 
+   //  navigator.geolocation.getCurrentPosition((position) => {
+   //     let lat = position.coords.latitude;
+   //     let lon = position.coords.longitude;
+   //     console.log(lat, lon);
+   //  });
+
    return (
       <>
          <Header Nav={ConsumerNav} />
