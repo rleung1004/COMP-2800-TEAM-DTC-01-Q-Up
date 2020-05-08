@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useState } from "react";
 // import { Link } from 'react-router-dom';
-// import Footer from "../components/static/Footer";
-// import Header from "../components/static/Header";
-// import ConsumerNav from "../components/consumerNav";
+import Footer from "../components/static/Footer";
+import Header from "../components/static/Header";
+import ConsumerNav from "../components/consumerNav";
 // import axios from "axios";
 // material-ui components
 import Grid from "@material-ui/core/Grid";
@@ -31,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
+  },
+  mainSection: {
+    color: "black",
+    background: "white",
   },
 }));
 
@@ -61,15 +65,20 @@ export default function BusinessDashboardPage() {
 
   return (
     <>
-      {/* <Header Nav={ConsumerNav} /> */}
-      <Grid container direction="column" alignItems="center">
+      <Header Nav={ConsumerNav} />
+      <Grid container direction="column" alignItems="center" spacing={5}>
         <Grid item xs={12}>
           <Typography variant="h2" className={classes.pageTitle}>
             Business Name
           </Typography>
         </Grid>
         <Grid item xs={12} direction="row">
-          <Grid container alignItems="center" justify="space-between">
+          <Grid
+            container
+            alignItems="center"
+            justify="space-between"
+            spacing={10}
+          >
             <Grid item xs={6}>
               <Typography variant="h5" className={classes.subHeading}>
                 Queue Status
@@ -87,7 +96,12 @@ export default function BusinessDashboardPage() {
           </Grid>
         </Grid>
         <Grid item xs={12} direction="row">
-          <Grid container justify="space-between" alignItems="center">
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            className={classes.mainSection}
+          >
             <Grid item xs={6}>
               <Typography variant="h5">
                 Current Size <br /> 20
@@ -96,30 +110,34 @@ export default function BusinessDashboardPage() {
 
             <Grid item xs={6}>
               <Typography variant="h5">
-                Current Wait Time <br /> 120*
+                Queue Duration <br /> 1h20m*
               </Typography>
             </Grid>
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
-          <ExpansionPanel>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-              color="primary"
-            >
-              <Typography className={classes.heading}>
-                Employee Status
-              </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails color="secondary">
-              <Typography>
-                Employees Logged In <br /> 5
-              </Typography>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+          <Grid container>
+            <Grid item xs={12}>
+              <ExpansionPanel>
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                  color="primary"
+                >
+                  <Typography className={classes.heading}>
+                    Employee Status
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails color="secondary">
+                  <Typography>
+                    Employees Logged In <br /> 5
+                  </Typography>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12}>
           <ExpansionPanel>
@@ -138,7 +156,7 @@ export default function BusinessDashboardPage() {
             </ExpansionPanelDetails>
           </ExpansionPanel>
         </Grid>
-        {/* <Footer /> */}
+        <Footer />
       </Grid>
     </>
   );
