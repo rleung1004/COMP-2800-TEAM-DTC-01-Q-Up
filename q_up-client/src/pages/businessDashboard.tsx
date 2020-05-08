@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
   mainSection: {
     color: "black",
     background: "white",
+    padding: "20px",
   },
 }));
 
@@ -66,98 +67,91 @@ export default function BusinessDashboardPage() {
   return (
     <>
       <Header Nav={ConsumerNav} />
-      <Grid container direction="column" alignItems="center" spacing={5}>
-        <Grid item xs={12}>
-          <Typography variant="h2" className={classes.pageTitle}>
-            Business Name
+      <header>
+        <Typography variant="h2" className={classes.pageTitle}>
+          Business Name
+        </Typography>
+      </header>
+
+      <Grid container alignItems="center" justify="space-around">
+        <Grid item xs={7}>
+          <Typography
+            variant="subtitle1"
+            className={classes.subHeading}
+            align="center"
+          >
+            Queue Status
           </Typography>
         </Grid>
-        <Grid item xs={12} direction="row">
-          <Grid
-            container
-            alignItems="center"
-            justify="space-between"
-            spacing={10}
-          >
-            <Grid item xs={6}>
-              <Typography variant="h5" className={classes.subHeading}>
-                Queue Status
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Switch
-                checked={switchState.queueSwitch}
-                onChange={handleSwitchChange}
-                name="queueSwitch"
-                inputProps={{ "aria-label": "secondary checkbox" }}
-                className={classes.switch}
-              />
-            </Grid>
-          </Grid>
+        <Grid item xs={5}>
+          <Switch
+            checked={switchState.queueSwitch}
+            onChange={handleSwitchChange}
+            name="queueSwitch"
+            inputProps={{ "aria-label": "secondary checkbox" }}
+            className={classes.switch}
+          />
         </Grid>
-        <Grid item xs={12} direction="row">
-          <Grid
-            container
-            justify="space-between"
-            alignItems="center"
-            className={classes.mainSection}
-          >
-            <Grid item xs={6}>
-              <Typography variant="h5">
-                Current Size <br /> 20
-              </Typography>
-            </Grid>
-
-            <Grid item xs={6}>
-              <Typography variant="h5">
-                Queue Duration <br /> 1h20m*
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Grid container>
-            <Grid item xs={12}>
-              <ExpansionPanel>
-                <ExpansionPanelSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                  color="primary"
-                >
-                  <Typography className={classes.heading}>
-                    Employee Status
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails color="secondary">
-                  <Typography>
-                    Employees Logged In <br /> 5
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <ExpansionPanel>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-              color="primary"
-            >
-              <Typography className={classes.heading}>
-                Today's Analytics
-              </Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails color="secondary">
-              <Typography>Under construction</Typography>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        </Grid>
-        <Footer />
       </Grid>
+
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        className={classes.mainSection}
+      >
+        <Grid item xs={6}>
+          <Typography variant="h5">Current Size</Typography>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Typography variant="h5">Queue Duration*</Typography>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Typography variant="h5">
+            <b>20</b>
+          </Typography>
+        </Grid>
+
+        <Grid item xs={6}>
+          <Typography variant="h5">
+            <b>1h20m</b>
+          </Typography>
+        </Grid>
+      </Grid>
+
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+          color="primary"
+        >
+          <Typography className={classes.heading}>Employee Status</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails color="secondary">
+          <Typography>
+            Employees Logged In <br /> 5
+          </Typography>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+
+      <ExpansionPanel>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+          color="primary"
+        >
+          <Typography className={classes.heading}>Today's Analytics</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails color="secondary">
+          <Typography>Under construction</Typography>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+
+      <Footer />
     </>
   );
 }
