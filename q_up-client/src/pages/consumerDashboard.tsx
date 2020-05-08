@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Link } from 'react-router-dom';
 import Footer from '../components/static/Footer';
 import Header from '../components/static/Header';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,6 +7,10 @@ import { Button, Grid, Typography } from '@material-ui/core';
 import CurrentQueueInfo from '../components/currentQueueInfo';
 import QueueList from '../components/queueList';
 import { mockFavs, mockQueues } from '../mockData';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
    root: {
@@ -24,20 +27,6 @@ const useStyles = makeStyles((theme) => ({
 export default function ClientDashboardPage() {
    const classes = useStyles();
 
-   //  navigator.geolocation.getCurrentPosition((position) => {
-   //     let lat = position.coords.latitude;
-   //     let lon = position.coords.longitude;
-   //     console.log(lat, lon);
-   //  });
-   // const [anchorEl, setAnchorEl] = React.useState(null);
-
-   // const handleClick = (event: any) => {
-   //    setAnchorEl(event.currentTarget);
-   // };
-
-   // const handleClose = () => {
-   //    setAnchorEl(null);
-   // };
    const noQueue = (
       <Grid container justify='center' alignItems='center'>
          <Typography variant='h2'>Not currently queued</Typography>
@@ -70,7 +59,19 @@ export default function ClientDashboardPage() {
                </Grid>
             </section>
             <section>
-               <QueueList dataList={mockQueues()} favs={mockFavs()} />
+               <ExpansionPanel>
+                  <ExpansionPanelSummary
+                     aria-controls='panel1a-content'
+                     expandIcon={<ExpandMoreIcon />}
+                  >
+                     <Typography>Favorite queues</Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                     <div>
+                        <QueueList dataList={mockQueues()} favs={mockFavs()} />
+                     </div>
+                  </ExpansionPanelDetails>
+               </ExpansionPanel>
             </section>
          </main>
          <Footer />
