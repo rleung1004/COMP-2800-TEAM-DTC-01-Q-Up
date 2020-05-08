@@ -233,7 +233,7 @@ const VIPEnterQueue = async (req: Request, res: Response) => {
   };
 
   await db
-    .collection("queue")
+    .collection("queues")
     .where("queueName", "==", requestData.queueName)
     .get()
     .then((data) => {
@@ -241,7 +241,7 @@ const VIPEnterQueue = async (req: Request, res: Response) => {
       const vipSlot = createVIPSlotCredentials();
       usableData.queueSlots.unshift(vipSlot);
 
-      db.collection("queue").doc(requestData.queueName).update(usableData);
+      db.collection("queues").doc(requestData.queueName).update(usableData);
       return res.status(201).json({
         general: `${vipSlot.customer} has been successfully added into the queue`,
       });
@@ -256,11 +256,11 @@ const VIPEnterQueue = async (req: Request, res: Response) => {
  * Activates or deactivates,
  * for activation, it checks whether the queue is within the start and end time
  */
-const changeQueueStatus = (req: Request, res: Response) => {
+const changeQueueStatus = async (req: Request, res: Response) => {
   const requestData = {
     queueName: req.body.queueName,
   };
-  return db
+  await db
     .collection("queues")
     .doc(requestData.queueName)
     .get()
@@ -276,85 +276,70 @@ const changeQueueStatus = (req: Request, res: Response) => {
           .update({ isActive: !isActive, queueSlots: new Array<string>() })
           .then(() => {
             return res.status(200).json({
-              general: "Adjusted the queue successfully",
+              general: "Queue deactivated successfully",
+            });
+          });
+      } else {
+        return db
+          .collection("queues")
+          .doc(requestData.queueName)
+          .update({ isActive: !isActive })
+          .then(() => {
+            return res.status(200).json({
+              general: "Queue activated successfully",
             });
           });
       }
-      return db
-        .collection("queues")
-        .doc(requestData.queueName)
-        .update({ isActive: !isActive })
-        .then(() => {
-          return res.status(200).json({
-            general: "Adjusted the queue successfully",
-          });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(404).json({
+        general: "Queue does not exist",
+        error: err,
+      });
+    });
+};
+
+const getFavouriteQueuesForCustomer = async (req: Request, res: Response) => {
+  if (req.body.userType === "customer") {
+    await db
+      .collection("users")
+      .where("email", "==", req.body.userEmail)
+      .get()
+      .then((data) => {
+        let resData: any = {};
+        const businessList = data.docs[0].data().favoriteBusinesses;
+
+        businessList.forEach((businessName: string) => {
+          db.collection("queues")
+            .doc(businessName)
+            .get()
+            .then((docSnapshot) => {
+              if (docSnapshot.exists) {
+                const queueData: any = docSnapshot.data();
+                let totalWaitTime =
+                  queueData.averageWaitTime * queueData.queueSlots.length;
+                resData[businessName] = {
+                  isActive: queueData.isActive,
+                  totalWaitTime,
+                  queueLength: queueData.queueSlots.length,
+                };
+                return resData;
+              }
+            });
         });
-    })
-    .catch(() => {
-      return res.status(500).json({
-        general: "Something went wrong. Please try again",
-      });
-    });
-};
 
-/**
- * Gets the Queue info.
- */
-const getQueueInfo = (queueName: string) => {
-  return db
-    .collection("queues")
-    .doc(queueName)
-    .get()
-    .then((docSnapshot) => {
-      if (!docSnapshot.exists) {
-        return null;
-      }
-      const queueObject: any = docSnapshot.data();
-      return {
-        queueName: queueName,
-        isActive: queueObject.isActive,
-        queueLength: queueObject.queueSlots.length,
-        currentWaitTime:
-          queueObject.queueSlots.length * queueObject.averageWaitTime,
-      };
-    })
-    .catch(() => null);
-};
+        return res.status(200).json(resData);
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(404).json({ general: "User does not exist" });
+      });
 
-/**
- * Gets the favourite queue information for a user.
- */
-const getFavouriteQueuesForCustomer = (req: Request, res: Response) => {
-  const requestData = {
-    customerIdentifier: req.body.customerIdentifier,
-  };
-  let queueInfoList: Array<any> = [];
-  return db
-    .collection("users")
-    .doc(requestData.customerIdentifier)
-    .get()
-    .then((docSnapshot) => {
-      const user: any = docSnapshot.data();
-      return user.favouriteBusinesses;
-    })
-    .then((favouriteList) => {
-      const favs: Array<string> = favouriteList.data();
-      favs.forEach((queueName) => {
-        const queueInfo = getQueueInfo(queueName);
-        if (queueInfo) {
-          queueInfoList.push(queueInfo);
-        }
-      });
-      return res.status(200).json({
-        general: "successfully obtained the favourite list of all queues",
-        favouriteQueues: queueInfoList,
-      });
-    })
-    .catch(() => {
-      return res.status(500).json({
-        general: "Something went wrong. Please try again",
-      });
-    });
+    return res.status(200);
+  } else {
+    return res.status(403).json({ general: "Please login as a customer" });
+  }
 };
 
 export {
