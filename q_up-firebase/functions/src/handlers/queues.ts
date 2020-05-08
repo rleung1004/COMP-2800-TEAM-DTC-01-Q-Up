@@ -1,15 +1,37 @@
 import {db} from '../util/admin';
 import {Request, Response} from 'express';
-import {createQueueSlot, createQueueSlotCredentials} from "../util/helpers";
+import {createQueueSlotCredentials} from "../util/helpers";
 import {validateQueue} from "../util/validators";
 
 
+const getSlotInfoForTeller = (queueSlotName: string)=> {
+    return db
+        .collection('queueSlots')
+        .doc(queueSlotName)
+        .get()
+        .then((docSnapshot) => {
+            if (!docSnapshot) {
+                return null;
+            }
+            const queueSlot: any = docSnapshot.data();
+            return {
+                customer: queueSlot.customer,
+                ticketNumber: queueSlot.ticketNumber,
+                password: queueSlot.password,
+            }
+
+        })
+        .catch(()=> null);
+};
+
+
+
 /**
- * get the queue isActive, listOfQueueSlots (with their ticket, pass)
+ * get the queue isActive, listOfQueueSlots (with their ticket, pass) for the teller
  */
-const getQueueList = async (req: Request, res: Response) => {
+const getTellerQueueList = async (req: Request, res: Response) => {
     const requestData = {
-        queueName: req.body.businessName,
+        queueName: req.body.queueName,
     };
     return db
         .collection('queues')
@@ -24,13 +46,19 @@ const getQueueList = async (req: Request, res: Response) => {
             }
 
             // creates queueSlots for response
-            const queueSlots: Array<string> = doc.queueSlots
-                .map((queueSlot: any) => createQueueSlot(queueSlot));
+            const queueSlotsInfo: Array<any> = [];
+            doc.queueSlots.forEach( (qs: string) => {
+                    const queueSlotInfo: any = getSlotInfoForTeller(qs);
+                    if (queueSlotInfo) {
+                        queueSlotsInfo.push(queueSlotInfo);
+                    }
+            });
             return res
                 .status(200)
                 .json({
-                    queueSlots: queueSlots,
-                    general: 'successful',
+                    isActive: true,
+                    queueSlots: queueSlotsInfo,
+                    general: 'successfully got the queueSlotInfo',
                 });
         })
         .catch(() => {
@@ -373,9 +401,9 @@ const removeFromQueue = (req: Request, res: Response) => {
 };
 
 /**
- * Adjusts the timing of the queued users by inserting a HW to the list
+ * Adjusts the timing of the queued users by inserting a VIP to the list
  */
-const insertInQueue = async (req: Request, res: Response) => {
+const VIPEnterQueue = async (req: Request, res: Response) => {
     const requestData = {
         queueName: req.body.queueName,
     };
@@ -391,7 +419,7 @@ const insertInQueue = async (req: Request, res: Response) => {
         })
     }
     const newQueueSlot = addQueueSlot(
-        'healthWorker' + '0' + (Math.random()*10000).toString(),requestData.queueName, res);
+        'VIP' + '0' + (Math.random()*10000).toString(),requestData.queueName, res);
     let newQueue: Array<string> = queueLookUp.queueSlots;
     newQueue.unshift(newQueueSlot.queue);
     return db
@@ -519,12 +547,12 @@ const getFavouriteQueuesForCustomer = (req: Request, res: Response)=>{
 };
 
 export {
-    getQueueList,
+    getTellerQueueList,
     getQueueInfoForBusiness,
     getQueueSlotInfo,
     customerEnterQueue,
     boothEnterQueue,
-    insertInQueue,
+    VIPEnterQueue,
     removeFromQueue,
     changeQueueStatus,
     getFavouriteQueuesForCustomer,

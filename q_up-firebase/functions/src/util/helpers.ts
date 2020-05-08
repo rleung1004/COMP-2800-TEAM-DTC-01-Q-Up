@@ -1,10 +1,3 @@
-interface queueSlot {
-    customer: string;
-    password: string;
-    ticketNumber: number
-}
-
-
 const cities: Array<string> = [
     'moscow', 'HonKong', 'Singapore', 'Bangkok', 'London', 'Macau', 'Kuala', 'Shenzhen', 'New York City'
     , 'Antalya', 'Paris', 'Istanbul', 'Rome', 'Dubai', 'Guangzhou', 'Phuket', 'Mecca', 'Pattaya', 'Taipei City'
@@ -20,16 +13,6 @@ const cities: Array<string> = [
 ];
 
 
-const createQueueSlot = (data: any) => {
-    let returnData: queueSlot = {
-        customer: data.customer,
-        password: data.password,
-        ticketNumber: data.ticketNumber
-    };
-    return returnData;
-
-};
-
 const createQueueSlotCredentials = (data: any) => {
     return {
         queue: data.queue,
@@ -41,6 +24,5 @@ const createQueueSlotCredentials = (data: any) => {
 
 
 export {
-    createQueueSlot,
     createQueueSlotCredentials,
 }

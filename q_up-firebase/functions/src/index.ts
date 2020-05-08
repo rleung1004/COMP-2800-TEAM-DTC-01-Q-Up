@@ -1,5 +1,15 @@
 import * as functions from "firebase-functions";
-import { getQueues, enterQueue } from "./handlers/queues";
+import {
+    getTellerQueueList,
+    getQueueInfoForBusiness,
+    getQueueSlotInfo,
+    customerEnterQueue,
+    boothEnterQueue,
+    VIPEnterQueue,
+    removeFromQueue,
+    changeQueueStatus,
+    getFavouriteQueuesForCustomer
+} from "./handlers/queues";
 import * as express from "express";
 import { signup, login, updateCustomerInfo } from "./handlers/users";
 import { updateBusiness, uploadBusinessImage } from "./handlers/businesses";
@@ -10,9 +20,6 @@ const app = express();
 
 // all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
 
-// Queue routes
-app.get("/getQueue", getQueues);
-app.post("/enterQueue", FBAuth, enterQueue);
 
 // Signup route
 app.post("/signup", signup);
@@ -24,5 +31,16 @@ app.post("/login", login);
 app.post("/updateCustomerInfo", FBAuth, updateCustomerInfo);
 app.post("/updateBusiness", FBAuth, updateBusiness);
 app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
+
+//Queue routes
+app.post('/tellerQueueList', FBAuth, getTellerQueueList);
+app.post('/businessQueueInfo', FBAuth, getQueueInfoForBusiness);
+app.post('/customerQueueInfo', FBAuth, getQueueSlotInfo);
+app.post('/customerEnterQueue', FBAuth, customerEnterQueue);
+app.post('/boothEnterQueue', FBAuth, boothEnterQueue);
+app.post('/VIPEnterQueue', FBAuth, VIPEnterQueue);
+app.post('/removeFromQueue', FBAuth, removeFromQueue);
+app.post('/changeQueueStatus', FBAuth, changeQueueStatus);
+app.post('/getFavouriteQueues', FBAuth, getFavouriteQueuesForCustomer);
 
 exports.api = functions.https.onRequest(app);
