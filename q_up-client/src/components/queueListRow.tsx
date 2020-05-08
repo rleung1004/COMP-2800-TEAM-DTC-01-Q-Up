@@ -11,9 +11,11 @@ import {
 import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
 
-export default function FavQueueListRow(props: any) {
+export default function QueueListRow(props: any) {
   const data = props.data;
   const address = data.address;
+  const expanded = props.isExpanded;
+  const handleChange = props.handleChange;
   const unit =
     address.unit === "" ? (
       <div></div>
@@ -21,25 +23,24 @@ export default function FavQueueListRow(props: any) {
       <Grid container item xs={2}>
         <Typography variant="body2">{address.unit}</Typography>
       </Grid>
-    );
+  );
 
-  const [expanded, setExpanded] = React.useState<string | false>(false);
-
-  const handleChange = (panel: string) => (
-    event: React.ChangeEvent<{}>,
-    isExpanded: boolean
-  ) => {
-    console.log(event);
-    setExpanded(isExpanded ? panel : false);
-  };
+  
+  
+  const handleFavClick = () =>{
+    if(props.favList) {
+      props.remove();
+    }
+    console.log(props.favList);
+  }
 
   const queueUp = () => {
     console.log("");
   };
   return (
     <ExpansionPanel
-      expanded={expanded === "panel1"}
-      onChange={handleChange("panel1")}
+      expanded={expanded}
+      onChange={handleChange}
     >
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
@@ -60,8 +61,8 @@ export default function FavQueueListRow(props: any) {
             <Typography variant="body2">{data.size}</Typography>
           </Grid>
           <Grid item xs={2}>
-            <IconButton color="secondary">
-              <StarIcon />
+            <IconButton color="secondary" onClick={handleFavClick} name='fav'>
+              <StarIcon name='fav' />
             </IconButton>
           </Grid>
         </Grid>
