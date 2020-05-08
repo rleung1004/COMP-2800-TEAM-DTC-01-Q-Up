@@ -12,7 +12,7 @@ export default function ClientDashboardPage() {
     <>
       <Header Nav={ConsumerNav} />
       <main>
-        <QueueList dataList={mockFavQueues()} favList/>
+        <QueueList dataList={mockFavQueues()}/>
       </main>
       <Footer />
     </>

@@ -6,7 +6,6 @@ export default function QueueList(props: any) {
   const [dataList, setDataList] = useState(props.dataList);
 
   const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
-    console.log(event);
     if (event.target.name === "fav") {
       return;
     }

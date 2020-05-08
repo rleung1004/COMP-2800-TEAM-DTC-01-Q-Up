@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
@@ -10,12 +10,14 @@ import {
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
+import StarBorderIcon from "@material-ui/icons/StarBorder";
 
 export default function QueueListRow(props: any) {
   const data = props.data;
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
+
   const unit =
     address.unit === "" ? (
       <div></div>
@@ -23,25 +25,35 @@ export default function QueueListRow(props: any) {
       <Grid container item xs={2}>
         <Typography variant="body2">{address.unit}</Typography>
       </Grid>
-  );
+    );
 
-  
-  
-  const handleFavClick = () =>{
-    if(props.favList) {
+  const handleFavClick = (fav: Boolean) => () => {
+    if (props.favList) {
       props.remove();
+      return;
     }
-    console.log(props.favList);
-  }
+    if (fav) {
+      setFavicon(<IconButton color="secondary" onClick={handleFavClick(false)}>
+      <StarBorderIcon color="primary" />
+    </IconButton>);
+    } else {
+      setFavicon(<IconButton color="secondary" onClick={handleFavClick(true)}>
+      <StarIcon />
+    </IconButton>);
+    }
+  };
+
+  const [favicon, setFavicon] = useState(
+    <IconButton color="secondary" onClick={handleFavClick(true)}>
+      <StarIcon />
+    </IconButton>
+  );
 
   const queueUp = () => {
     console.log("");
   };
   return (
-    <ExpansionPanel
-      expanded={expanded}
-      onChange={handleChange}
-    >
+    <ExpansionPanel expanded={expanded} onChange={handleChange}>
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         aria-controls="panel1bh-content"
@@ -60,11 +72,7 @@ export default function QueueListRow(props: any) {
             <Typography variant="caption">Queue Size</Typography>
             <Typography variant="body2">{data.size}</Typography>
           </Grid>
-          <Grid item xs={2}>
-            <IconButton color="secondary" onClick={handleFavClick} name='fav'>
-              <StarIcon name='fav' />
-            </IconButton>
-          </Grid>
+          <Grid item xs={2}>{favicon}</Grid>          
         </Grid>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
