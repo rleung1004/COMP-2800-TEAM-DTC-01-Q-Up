@@ -1,7 +1,7 @@
 import { admin, db } from "../util/admin";
 import { Request, Response } from "express";
 
-export const FBAuth = (req: Request, res: Response, next: Function) => {
+export const FBAuth = async (req: Request, res: Response, next: Function) => {
   let idToken: string;
   if (
     req.headers.authorization &&
@@ -13,7 +13,7 @@ export const FBAuth = (req: Request, res: Response, next: Function) => {
     return res.status(403).json({ error: "Unauthorized" });
   }
 
-  admin
+  await admin
     .auth()
     .verifyIdToken(idToken)
     .then((decodedToken) => {
@@ -25,8 +25,13 @@ export const FBAuth = (req: Request, res: Response, next: Function) => {
         .get()
         .then((data) => {
           let userEmail = data.docs[0].data().email;
-          let accountType = data.docs[0].data().accountType;
-          Object.assign(req.body, { userEmail, accountType });
+          let userType = data.docs[0].data().userType;
+          if (userType === "manager") {
+            let businessName = data.docs[0].data().businessName;
+            Object.assign(req.body, { userEmail, userType, businessName });
+          } else {
+            Object.assign(req.body, { userEmail, userType });
+          }
           return next();
         });
     })

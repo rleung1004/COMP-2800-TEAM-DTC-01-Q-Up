@@ -1,24 +1,61 @@
-import React from 'react';
-import './App.css';
-import {
-  BrowserRouter as Router, Route, Switch
-} from 'react-router-dom';
-import LandingPage from './pages/landing';
-import LoginPage from './pages/login';
-import SignupPage from './pages/signup';
+import React from "react";
+import "./App.css";
+import axios from "axios";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import LandingPage from "./pages/landing";
+import LoginPage from "./pages/login";
+import SignupPage from "./pages/signup";
+import aboutUsPage from "./pages/aboutUs";
+import themes from "./mui-theming/themes";
+import termsPage from "./pages/termsAndConditions";
+import privacyPage from "./pages/privaryPolicy";
+import { ThemeProvider } from "@material-ui/core";
+import ConsumerRegistrationPage from "./pages/consumerRegistration";
+import BusinessRegistrationPage from "./pages/businessRegistration";
+import BusinessDashboardPage from "./pages/businessDashboard";
+import ConsumerDashboard from "./pages/consumerDashboard";
+
+axios.defaults.baseURL =
+  "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
 
 function App() {
-   return (
-      <Router>
-         <div className='App'>
-            <Switch>
-               <Route path='/' component={LandingPage} exact />
-               <Route path='/login' component={LoginPage} exact />
-               <Route path='/signup' component={SignupPage} exact />
-            </Switch>
-         </div>
-      </Router>
-   );
+  const theme = themes();
+  return (
+    <Router>
+      <div className="App">
+        <ThemeProvider theme={theme}>
+          <Switch>
+            <Route path="/" component={LandingPage} exact />
+            <Route path="/login" component={LoginPage} exact />
+            <Route path="/signup" component={SignupPage} exact />
+            <Route path="/aboutUs" component={aboutUsPage} exact />
+            <Route
+              path="/consumerRegistration"
+              component={ConsumerRegistrationPage}
+              exact
+            />
+            <Route
+              path="/businessRegistration"
+              component={BusinessRegistrationPage}
+              exact
+            />
+            <Route path="/termsAndConditions" component={termsPage} exact />
+            <Route path="/PrivacyPolicy" component={privacyPage} exact />
+            <Route
+              path="/businessDashboard"
+              component={BusinessDashboardPage}
+              exact
+            />
+            <Route
+              path="/consumerDashboard"
+              component={ConsumerDashboard}
+              exact
+            />
+          </Switch>
+        </ThemeProvider>
+      </div>
+    </Router>
+  );
 }
 
 export default App;

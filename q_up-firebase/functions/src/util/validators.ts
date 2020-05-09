@@ -2,6 +2,8 @@ interface signupData {
   email: string;
   password: string;
   confirmPassword: string;
+  userType: string;
+  business: string;
 }
 
 interface loginData {
@@ -9,10 +11,32 @@ interface loginData {
   password: string;
 }
 
-interface errors {
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
+interface businessData {
+  name: string;
+  category: Array<string>;
+  description: string;
+  email: string;
+  employees: Array<string>;
+  hours: {
+    startTime: Array<string>;
+    endTime: Array<string>;
+  };
+  address: {
+    streetAddress: string;
+    postalCode: string;
+    city: string;
+    province: string;
+    unit: string;
+  };
+  website: string;
+  phoneNumber: string;
+  lastUpdated: string;
+}
+
+
+interface customerData {
+  phoneNumber: string;
+  postalCode: string;
 }
 
 const isEmpty = (string: string) => {
@@ -24,22 +48,39 @@ const isEmail = (email: string) => {
   return !!email.match(regEx);
 };
 
+const isPostalCode = (string: string) => {
+  const regEx = /^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$/;
+  return !!string.match(regEx);
+};
+
+const isPhoneNumber = (string: string) => {
+  const regEx = /^\d{10}$/;
+  return !!string.match(regEx);
+};
+
 const validateSignUpData = (data: signupData) => {
-  let errors: errors = {};
+  let errors = {};
 
   if (isEmpty(data.email)) {
-    errors.email = "Must not be empty";
-  }
-  else if (!isEmail(data.email)) {
-    errors.email = "Must be a valid email address";
+    Object.assign(errors, { email: "Must not be empty" });
+  } else if (!isEmail(data.email)) {
+    Object.assign(errors, { email: "Must be a valid email address" });
   }
 
   if (isEmpty(data.password)) {
-    errors.password = "Must not be empty";
+    Object.assign(errors, { password: "Must not be empty" });
   }
 
   if (data.password !== data.confirmPassword) {
-    errors.confirmPassword = "Passwords must match";
+    Object.assign(errors, { confirmPassword: "Passwords must match" });
+  }
+
+  if (
+    data.userType !== "customer" &&
+    data.userType !== "manager" &&
+    data.userType !== "employee"
+  ) {
+    Object.assign(errors, { userType: "Invalid user type" });
   }
 
   return {
@@ -49,14 +90,14 @@ const validateSignUpData = (data: signupData) => {
 };
 
 const validateLoginData = (data: loginData) => {
-  let errors: errors = {};
+  let errors = {};
 
   if (isEmpty(data.email)) {
-    errors.email = "Must not be empty";
+    Object.assign(errors, { email: "Must not be empty" });
   }
 
   if (isEmpty(data.password)) {
-    errors.password = "Must not be empty";
+    Object.assign(errors, { password: "Must not be empty" });
   }
 
   return {
@@ -65,4 +106,64 @@ const validateLoginData = (data: loginData) => {
   };
 };
 
-export { validateSignUpData, validateLoginData, isEmail, isEmpty};
+const validateCustomerData = (data: customerData) => {
+  let errors = {};
+
+  if (isEmpty(data.phoneNumber)) {
+    Object.assign(errors, { phoneNumber: "Must not be empty" });
+  } else if (!isPhoneNumber(data.phoneNumber)) {
+    Object.assign(errors, { phoneNumber: "Invalid phone number" });
+  }
+  if (isEmpty(data.postalCode)) {
+    Object.assign(errors, { postalCode: "Must not be empty" });
+  } else if (!isPostalCode(data.postalCode)) {
+    Object.assign(errors, { postalCode: "Invalid postal code" });
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length === 0,
+  };
+};
+
+const validateBusinessData = (data: businessData) => {
+  let errors = {};
+
+  if (isEmpty(data.name)) {
+    Object.assign(errors, { name: "Must not be empty" });
+  }
+  if (isEmpty(data.phoneNumber)) {
+    Object.assign(errors, { phoneNumber: "Must not be empty" });
+  } else if (!isPhoneNumber(data.phoneNumber)) {
+    Object.assign(errors, { phoneNumber: "Invalid phone number" });
+  }
+  if (isEmpty(data.address.city)) {
+    Object.assign(errors, { city: "Must not be empty" });
+  }
+  if (isEmpty(data.address.streetAddress)) {
+    Object.assign(errors, { streetAddress: "Must not be empty" });
+  }
+  if (isEmpty(data.address.province)) {
+    Object.assign(errors, { province: "Must not be empty" });
+  }
+  if (isEmpty(data.address.postalCode)) {
+    Object.assign(errors, { postalCode: "Must not be empty" });
+  } else if (!isPostalCode(data.address.postalCode)) {
+    Object.assign(errors, { postalCode: "Invalid postal code" });
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length === 0,
+  };
+};
+
+
+export {
+  validateSignUpData,
+  validateLoginData,
+  isEmail,
+  isEmpty,
+  validateBusinessData,
+  validateCustomerData,
+};
