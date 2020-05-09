@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import LandingPage from "./pages/landing";
 import LoginPage from "./pages/login";
@@ -12,7 +13,10 @@ import { ThemeProvider } from "@material-ui/core";
 import ConsumerRegistrationPage from "./pages/consumerRegistration";
 import BusinessRegistrationPage from "./pages/businessRegistration";
 import BusinessDashboardPage from "./pages/businessDashboard";
-import ConsumerDashboard from './pages/consumerDashboard';
+import ConsumerDashboard from "./pages/consumerDashboard";
+
+axios.defaults.baseURL =
+  "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
 
 function App() {
   const theme = themes();
@@ -25,12 +29,28 @@ function App() {
             <Route path="/login" component={LoginPage} exact />
             <Route path="/signup" component={SignupPage} exact />
             <Route path="/aboutUs" component={aboutUsPage} exact />
-            <Route path="/consumerRegistration" component={ConsumerRegistrationPage} exact/>
-            <Route path="/businessRegistration" component={BusinessRegistrationPage} exact/>
+            <Route
+              path="/consumerRegistration"
+              component={ConsumerRegistrationPage}
+              exact
+            />
+            <Route
+              path="/businessRegistration"
+              component={BusinessRegistrationPage}
+              exact
+            />
             <Route path="/termsAndConditions" component={termsPage} exact />
             <Route path="/PrivacyPolicy" component={privacyPage} exact />
-            <Route path="/businessDashboard" component={BusinessDashboardPage} exact/>
-            <Route path="/consumerDashboard" component={ConsumerDashboard} exact/>
+            <Route
+              path="/businessDashboard"
+              component={BusinessDashboardPage}
+              exact
+            />
+            <Route
+              path="/consumerDashboard"
+              component={ConsumerDashboard}
+              exact
+            />
           </Switch>
         </ThemeProvider>
       </div>

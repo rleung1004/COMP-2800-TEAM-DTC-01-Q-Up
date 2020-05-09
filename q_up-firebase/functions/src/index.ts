@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import { getQueues, enterQueue } from "./handlers/queues";
 import * as express from "express";
+import * as cors from "cors";
 import { signup, login, updateCustomerInfo } from "./handlers/users";
 import {
   updateBusiness,
@@ -11,6 +12,7 @@ import { FBAuth } from "./util/fbAuth";
 // TODO: bring in express-rate-limit (https://www.npmjs.com/package/express-rate-limit)
 
 const app = express();
+app.use(cors());
 
 // all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
 

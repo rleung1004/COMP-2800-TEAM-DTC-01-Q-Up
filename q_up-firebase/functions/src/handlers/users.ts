@@ -51,7 +51,7 @@ const signup = async (req: Request, res: Response) => {
           } else if (newUser.userType === "manager") {
             const userCredentials = {
               email: newUser.email,
-              businessName: req.body.businessName,
+              businessName: newUser.business,
               userId,
               userType: newUser.userType,
             };
