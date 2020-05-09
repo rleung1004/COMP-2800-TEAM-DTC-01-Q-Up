@@ -104,7 +104,7 @@ const cities: Array<string> = [
 
 const createQueueSlotCredentials = (data: any) => {
   return {
-    customer: data.customerIdentifier,
+    customer: data.userEmail,
     ticketNumber: Math.floor(Math.random() * 10000),
     password: cities[Math.floor(Math.random() * cities.length)],
   };

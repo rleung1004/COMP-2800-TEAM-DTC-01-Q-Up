@@ -117,8 +117,8 @@ const getQueueSlotInfo = async (req: Request, res: Response) => {
  */
 const boothEnterQueue = async (req: Request, res: Response) => {
   const requestData = {
-    customerIdentifier: req.body.customerIdentifier,
-    queueName: req.body.currentQueue,
+    userEmail: req.body.userEmail,
+    queueName: req.body.queueName,
   };
   let newSlot = createQueueSlotCredentials(requestData);
 
@@ -148,16 +148,16 @@ const boothEnterQueue = async (req: Request, res: Response) => {
  */
 const customerEnterQueue = async (req: Request, res: Response) => {
   const requestData = {
-    customerIdentifier: req.body.customerIdentifier,
-    queueName: req.body.currentQueue,
+    userEmail: req.body.userEmail,
+    queueName: req.body.queueName,
   };
   await db
     .collection("users")
-    .doc(requestData.customerIdentifier)
+    .doc(requestData.userEmail)
     .update({ currentQueue: requestData.queueName })
     .then(() =>
       res.status(200).json({
-        general: `${requestData.customerIdentifier} is now in ${requestData.queueName}`,
+        general: `${requestData.userEmail} is now in ${requestData.queueName}`,
       })
     )
     .catch((err) => {
@@ -167,6 +167,7 @@ const customerEnterQueue = async (req: Request, res: Response) => {
         error: err,
       });
     });
+  Object.assign(req.body, { customerId: requestData.userEmail });
   return boothEnterQueue(req, res);
 };
 
@@ -300,47 +301,47 @@ const changeQueueStatus = async (req: Request, res: Response) => {
     });
 };
 
-const getFavouriteQueuesForCustomer = async (req: Request, res: Response) => {
-  if (req.body.userType === "customer") {
-    await db
-      .collection("users")
-      .where("email", "==", req.body.userEmail)
-      .get()
-      .then((data) => {
-        let resData: any = {};
-        const businessList = data.docs[0].data().favoriteBusinesses;
+// const getFavouriteQueuesForCustomer = async (req: Request, res: Response) => {
+//   if (req.body.userType === "customer") {
+//     await db
+//       .collection("users")
+//       .where("email", "==", req.body.userEmail)
+//       .get()
+//       .then((data) => {
+//         let resData: any = {};
+//         const businessList = data.docs[0].data().favoriteBusinesses;
 
-        businessList.forEach((businessName: string) => {
-          db.collection("queues")
-            .doc(businessName)
-            .get()
-            .then((docSnapshot) => {
-              if (docSnapshot.exists) {
-                const queueData: any = docSnapshot.data();
-                let totalWaitTime =
-                  queueData.averageWaitTime * queueData.queueSlots.length;
-                resData[businessName] = {
-                  isActive: queueData.isActive,
-                  totalWaitTime,
-                  queueLength: queueData.queueSlots.length,
-                };
-                return resData;
-              }
-            });
-        });
+//         businessList.forEach((businessName: string) => {
+//           db.collection("queues")
+//             .doc(businessName)
+//             .get()
+//             .then((docSnapshot) => {
+//               if (docSnapshot.exists) {
+//                 const queueData: any = docSnapshot.data();
+//                 let totalWaitTime =
+//                   queueData.averageWaitTime * queueData.queueSlots.length;
+//                 resData[businessName] = {
+//                   isActive: queueData.isActive,
+//                   totalWaitTime,
+//                   queueLength: queueData.queueSlots.length,
+//                 };
+//                 return resData;
+//               }
+//             });
+//         });
 
-        return res.status(200).json(resData);
-      })
-      .catch((err) => {
-        console.error(err);
-        return res.status(404).json({ general: "User does not exist" });
-      });
+//         return res.status(200).json(resData);
+//       })
+//       .catch((err) => {
+//         console.error(err);
+//         return res.status(404).json({ general: "User does not exist" });
+//       });
 
-    return res.status(200);
-  } else {
-    return res.status(403).json({ general: "Please login as a customer" });
-  }
-};
+//     return res.status(200);
+//   } else {
+//     return res.status(403).json({ general: "Please login as a customer" });
+//   }
+// };
 
 export {
   getTellerQueueList,
@@ -351,5 +352,5 @@ export {
   VIPEnterQueue,
   //   removeQueueSlot,
   changeQueueStatus,
-  getFavouriteQueuesForCustomer,
+  // getFavouriteQueuesForCustomer,
 };

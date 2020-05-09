@@ -8,7 +8,7 @@ import {
   VIPEnterQueue,
   // removeQueueSlot,
   changeQueueStatus,
-  getFavouriteQueuesForCustomer,
+  //   getFavouriteQueuesForCustomer,
 } from "./handlers/queues";
 import * as express from "express";
 import { signup, login, updateCustomerInfo } from "./handlers/users";
@@ -40,6 +40,6 @@ app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
 app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
 // app.post('/removeFromQueue', FBAuth, removeQueueSlot);
 app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
-app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
+// app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
 exports.api = functions.https.onRequest(app);
