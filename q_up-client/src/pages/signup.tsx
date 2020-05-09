@@ -41,7 +41,7 @@ export default function SignupPage() {
     password?: string;
     confirmPassword?: string;
     userType?: string;
-    businessName?: string;
+    business?: string;
   }
   let errorObject: errors = {};
   const [formState, setFormState] = useState({
@@ -49,7 +49,7 @@ export default function SignupPage() {
     email: "",
     confirmPassword: "",
     userType: "customer",
-    businessName: "",
+    business: "",
     loading: false,
     errors: errorObject,
   });
@@ -156,14 +156,14 @@ export default function SignupPage() {
                 <TextField
                   color="secondary"
                   required
-                  id="businessName"
+                  id="business"
                   label="Business Name"
-                  name="businessName"
-                  type="password"
+                  name="business"
+                  type="text"
                   onChange={handleOnFieldChange}
-                  value={formState.businessName}
-                  helperText={formState.errors.businessName}
-                  error={formState.errors.businessName ? true : false}
+                  value={formState.business}
+                  helperText={formState.errors.business}
+                  error={formState.errors.business ? true : false}
                 />
               )}
               <FormControl component="fieldset">
