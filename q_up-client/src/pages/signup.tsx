@@ -68,7 +68,9 @@ export default function SignupPage() {
       password: formState.password,
       confirmPassword: formState.confirmPassword,
       userType: formState.userType,
+      business: formState.business,
     };
+
     axios
       .post("/signup", userData)
       .then((res) => {
