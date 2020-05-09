@@ -1,5 +1,15 @@
 import * as functions from "firebase-functions";
-import { getQueues, enterQueue } from "./handlers/queues";
+import {
+  getTellerQueueList,
+  getQueueInfoForBusiness,
+  getQueueSlotInfo,
+  customerEnterQueue,
+  boothEnterQueue,
+  VIPEnterQueue,
+  // removeQueueSlot,
+  changeQueueStatus,
+  //   getFavouriteQueuesForCustomer,
+} from "./handlers/queues";
 import * as express from "express";
 import * as cors from "cors";
 import { signup, login, updateCustomerInfo } from "./handlers/users";
@@ -18,9 +28,6 @@ app.use(cors());
 
 // Get route
 app.get("/getBusiness", FBAuth, getBusiness);
-// Queue routes
-app.get("/getQueue", FBAuth, getQueues);
-app.post("/enterQueue", FBAuth, enterQueue);
 
 // Signup route
 app.post("/signup", signup);
@@ -32,5 +39,16 @@ app.post("/login", login);
 app.post("/updateCustomer", FBAuth, updateCustomerInfo);
 app.post("/updateBusiness", FBAuth, updateBusiness);
 app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
+
+//Queue routes
+app.post("/tellerQueueList", FBAuth, getTellerQueueList);
+app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
+app.post("/customerQueueInfo", FBAuth, getQueueSlotInfo);
+app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
+app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
+app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
+// app.post('/removeFromQueue', FBAuth, removeQueueSlot);
+app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
+// app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
 exports.api = functions.https.onRequest(app);

@@ -33,6 +33,7 @@ interface businessData {
   lastUpdated: string;
 }
 
+
 interface customerData {
   phoneNumber: string;
   postalCode: string;
@@ -156,6 +157,7 @@ const validateBusinessData = (data: businessData) => {
     valid: Object.keys(errors).length === 0,
   };
 };
+
 
 export {
   validateSignUpData,
