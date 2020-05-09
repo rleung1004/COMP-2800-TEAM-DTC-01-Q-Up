@@ -44,26 +44,34 @@ export default function ConsumerRegistrationPage() {
     const value = event.target.value;
     setFormState((prevState) => ({ ...prevState, [name]: value }));
   };
-  const handleSkipOnClick = ()=>{
-    const skip = window.confirm("Are you sure? This information be used to provide you better functionality.");
+  const handleSkipOnClick = () => {
+    const skip = window.confirm(
+      "Are you sure? This information be used to provide you better functionality."
+    );
     if (skip) {
-      window.location.href = window.location.hostname + '/consumerDashboard';
+      window.location.href = window.location.hostname + "/consumerDashboard";
     }
-  }
+  };
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     setFormState((prevState) => ({ ...prevState, loading: true }));
     const userData = {
       phoneNumber: formState.phoneNumber,
-      postalCode: formState.postalCode
+      postalCode: formState.postalCode,
+    };
+
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+      },
     };
 
     axios
-      .post("/consumerRegistration", userData)
+      .post("/updateCustomer", userData, axiosConfig)
       .then(() => {
-        window.location.href = window.location.hostname + '/consumerDashboard';
+        window.location.href = "/consumerDashboard";
       })
-      .catch((err:any) => {
+      .catch((err: any) => {
         setFormState((prevState) => ({
           ...prevState,
           errors: err.response.data,
@@ -77,7 +85,11 @@ export default function ConsumerRegistrationPage() {
       <Header />
       <main>
         <Grid container direction="column" justify="center" alignItems="center">
-          <form className={classes.root} autoComplete="off" onSubmit={handleSubmit}>
+          <form
+            className={classes.root}
+            autoComplete="off"
+            onSubmit={handleSubmit}
+          >
             <Grid
               container
               className="form"
@@ -120,10 +132,12 @@ export default function ConsumerRegistrationPage() {
               </Button>
             </Grid>
           </form>
-          <Button variant="contained" onClick={handleSkipOnClick}>Skip</Button>
+          <Button variant="contained" onClick={handleSkipOnClick}>
+            Skip
+          </Button>
         </Grid>
       </main>
-      <Footer/>
+      <Footer />
     </>
   );
 }
