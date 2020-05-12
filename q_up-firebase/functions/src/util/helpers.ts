@@ -118,4 +118,12 @@ const createVIPSlotCredentials = () => {
   };
 };
 
-export { createQueueSlotCredentials, createVIPSlotCredentials };
+const createBoothQueueSlot = (customerIdentifier: string, lastTicketNumber: number) => {
+  return {
+    customer: customerIdentifier,
+    ticketNumber: lastTicketNumber + 1,
+    password: cities[Math.floor(Math.random() * cities.length)],
+  }
+};
+
+export { createQueueSlotCredentials, createVIPSlotCredentials, createBoothQueueSlot };
