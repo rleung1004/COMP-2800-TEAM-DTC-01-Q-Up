@@ -6,7 +6,7 @@ import {
   customerEnterQueue,
   boothEnterQueue,
   VIPEnterQueue,
-  // removeQueueSlot,
+  abandonQueueSlot,
   changeQueueStatus,
   //   getFavouriteQueuesForCustomer,
 } from "./handlers/queues";
@@ -47,7 +47,7 @@ app.post("/customerQueueInfo", FBAuth, getQueueSlotInfo);
 app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
 app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
 app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
-// app.post('/removeFromQueue', FBAuth, removeQueueSlot);
+app.post("/abandonQueueSLot", FBAuth, abandonQueueSlot);
 app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
 // app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
