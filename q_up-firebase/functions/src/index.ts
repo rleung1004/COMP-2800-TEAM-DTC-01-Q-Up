@@ -4,20 +4,12 @@ import {
   getQueueInfoForBusiness,
   getQueueSlotInfo,
   customerEnterQueue,
-<<<<<<< HEAD
-  // boothEnterQueue,
-=======
->>>>>>> origin/booth-backend
   VIPEnterQueue,
   abandonQueueSlot,
   changeQueueStatus,
   //   getFavouriteQueuesForCustomer,
 } from "./handlers/queues";
-import {
-  boothEnterQueue,
-  createNewBooth,
-
-} from "./handlers/booths";
+import { boothEnterQueue, createNewBooth } from "./handlers/booths";
 import * as express from "express";
 import * as cors from "cors";
 import { signup, login, updateCustomerInfo } from "./handlers/users";
@@ -53,11 +45,6 @@ app.post("/tellerQueueList", FBAuth, getTellerQueueList);
 app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
 app.get("/getCustomerQueueInfo", FBAuth, getQueueSlotInfo);
 app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
-<<<<<<< HEAD
-// app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
-=======
-
->>>>>>> origin/booth-backend
 app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
 app.post("/abandonQueueSLot", FBAuth, abandonQueueSlot);
 app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
@@ -65,7 +52,6 @@ app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
 
 // booth routes
 app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
-app.post('/createNewBooth', FBAuth, createNewBooth);
-
+app.post("/createNewBooth", FBAuth, createNewBooth);
 
 exports.api = functions.https.onRequest(app);
