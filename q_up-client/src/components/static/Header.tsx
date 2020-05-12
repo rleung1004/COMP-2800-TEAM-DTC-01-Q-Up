@@ -32,6 +32,10 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       nodecor: {
          textDecoration: 'none',
+         '&:hover': {
+            color: 'white',
+            textDecoration: 'none',
+         },
       },
       menuButton: {
          marginRight: theme.spacing(2),
