@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../styles/easterEgg.scss";
 import isMobile from "../utils/mobileDetection";
 
-export default function EasterEgg() {
+export default function EasterEgg(props: any) {
   const array: Array<any> = [];
   const [cracks, setCracks] = useState(array);
   const [hammer, setHammer] = useState({ img: <img /> });
@@ -73,8 +73,13 @@ export default function EasterEgg() {
     }
   };
 
+  const exitClickHandler = () => {
+    props.exitEaster();
+  };
+
   return (
     <div id="container" onClick={clickHandler}>
+      <h1 onClick={exitClickHandler}>Do not smash this!</h1>
       {cracks.map((crack, key) => (
         <div key={key}>{crack}</div>
       ))}
