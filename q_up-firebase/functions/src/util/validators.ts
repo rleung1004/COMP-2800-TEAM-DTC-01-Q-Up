@@ -3,7 +3,7 @@ interface signupData {
   password: string;
   confirmPassword: string;
   userType: string;
-  business: string;
+  businessName: string;
 }
 
 interface loginData {
@@ -32,7 +32,6 @@ interface businessData {
   phoneNumber: string;
   lastUpdated: string;
 }
-
 
 interface customerData {
   phoneNumber: string;
@@ -157,7 +156,6 @@ const validateBusinessData = (data: businessData) => {
     valid: Object.keys(errors).length === 0,
   };
 };
-
 
 export {
   validateSignUpData,
