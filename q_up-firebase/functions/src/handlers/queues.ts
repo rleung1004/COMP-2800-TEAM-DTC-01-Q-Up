@@ -1,5 +1,6 @@
 import { db } from "../util/admin";
 import { Request, Response } from "express";
+import * as firebase from "firebase-admin";
 import {
   createQueueSlotCredentials,
   createVIPSlotCredentials,
@@ -78,7 +79,7 @@ const getQueueInfoForBusiness = async (req: Request, res: Response) => {
  */
 const getQueueSlotInfo = async (req: Request, res: Response) => {
   const requestData = {
-    customerIdentifier: req.body.customerIdentifier,
+    userEmail: req.body.userEmail,
     queueName: req.body.currentQueue,
   };
   await db
@@ -86,28 +87,38 @@ const getQueueSlotInfo = async (req: Request, res: Response) => {
     .where("queueName", "==", requestData.queueName)
     .get()
     .then((data) => {
-      const usableData: any = data.docs[0].data();
-      const queueSlotIndex: number = usableData.queueSlots.findIndex(
-        (object: any) => {
-          return object.customer === requestData.customerIdentifier;
-        }
-      );
-      if (queueSlotIndex === -1) {
-        return res.status(404).json({
-          general: "could not find the customer position.",
+      const isActive = data.docs[0].data().isActive;
+      if (!isActive) {
+        db.collection("users")
+          .doc(requestData.userEmail)
+          .update({ currentQueue: null });
+        return res.status(403).json({
+          general:
+            "Queue is no longer available, queue up for another business",
         });
-      }
+      } else {
+        const averageWaitTime = data.docs[0].data().averageWaitTime;
+        const queueSlots = data.docs[0].data().queueSlots;
+        const queueSlotIndex: number = queueSlots.findIndex((object: any) => {
+          return object.customer === requestData.userEmail;
+        });
+        if (queueSlotIndex === -1) {
+          return res.status(404).json({
+            general: "could not find the customer position.",
+          });
+        }
 
-      const currentWaitTime: number =
-        queueSlotIndex * usableData.averageWaitTime;
-      const queuePosition: number = queueSlotIndex + 1;
-      return res.status(200).json({
-        ticketNumber: usableData.queueSlots[queueSlotIndex].ticketNumber,
-        password: usableData.queueSlots[queueSlotIndex].password,
-        currentWaitTime: currentWaitTime,
-        queuePosition: queuePosition,
-        general: "successful",
-      });
+        const currentWaitTime: number = queueSlotIndex * averageWaitTime;
+        const queuePosition: number = queueSlotIndex + 1;
+        const slotInfo = {
+          ticketNumber: queueSlots[queueSlotIndex].ticketNumber,
+          password: queueSlots[queueSlotIndex].password,
+          currentWaitTime: currentWaitTime,
+          queuePosition: queuePosition,
+          general: "successful",
+        };
+        return res.status(200).json(slotInfo);
+      }
     })
     .catch((err) => {
       console.error(err);
@@ -121,33 +132,33 @@ const getQueueSlotInfo = async (req: Request, res: Response) => {
 /**
  * Adds a booth customer to a queue
  */
-const boothEnterQueue = async (req: Request, res: Response) => {
-  const requestData = {
-    userEmail: req.body.userEmail,
-    queueName: req.body.queueName,
-  };
-  let newSlot = createQueueSlotCredentials(requestData);
+// const boothEnterQueue = async (req: Request, res: Response) => {
+//   const requestData = {
+//     userEmail: req.body.userEmail,
+//     queueName: req.body.queueName,
+//   };
+//   let newSlot = createQueueSlotCredentials(requestData);
 
-  await db
-    .collection("queues")
-    .where("queueName", "==", requestData.queueName)
-    .get()
-    .then((data) => {
-      const usableData = data.docs[0].data();
-      usableData.queueSlots.push(newSlot);
-      db.collection("queues").doc(usableData.queueName).update(usableData);
-      return res.status(201).json({
-        general: `${newSlot} has been added to ${usableData.queueName} successfully`,
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-      return res.status(500).json({
-        general: "Something went wrong. Please try again",
-        error: err,
-      });
-    });
-};
+//   await db
+//     .collection("queues")
+//     .where("queueName", "==", requestData.queueName)
+//     .get()
+//     .then((data) => {
+//       const usableData = data.docs[0].data();
+//       usableData.queueSlots.push(newSlot);
+//       db.collection("queues").doc(usableData.queueName).update(usableData);
+//       return res.status(201).json({
+//         general: `${newSlot} has been added to ${usableData.queueName} successfully`,
+//       });
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       return res.status(500).json({
+//         general: "Something went wrong. Please try again",
+//         error: err,
+//       });
+//     });
+// };
 
 /**
  * Adds a logged in customer to a queue
@@ -157,24 +168,37 @@ const customerEnterQueue = async (req: Request, res: Response) => {
     userEmail: req.body.userEmail,
     queueName: req.body.queueName,
   };
-  await db
-    .collection("users")
-    .doc(requestData.userEmail)
-    .update({ currentQueue: requestData.queueName })
-    .then(() =>
-      res.status(200).json({
-        general: `${requestData.userEmail} is now in ${requestData.queueName}`,
-      })
-    )
+
+  let customer = createQueueSlotCredentials(requestData.userEmail);
+
+  db.collection("queues")
+    .where("queueName", "==", requestData.queueName)
+    .get()
+    .then((data) => {
+      let isActive = data.docs[0].data().isActive;
+      if (isActive) {
+        db.collection("queues")
+          .doc(requestData.queueName)
+          .update({
+            queueSlots: firebase.firestore.FieldValue.arrayUnion(customer),
+          });
+        db.collection("users")
+          .doc(requestData.userEmail)
+          .update({ currentQueue: requestData.queueName });
+
+        return res.status(201).json({
+          general: `${requestData.userEmail} has been added into queue ${requestData.queueName} successfully`,
+        });
+      } else {
+        return res
+          .status(403)
+          .json({ general: "Queue is currently not active" });
+      }
+    })
     .catch((err) => {
       console.error(err);
-      return res.status(500).json({
-        general: "Something went wrong. Please try again",
-        error: err,
-      });
+      return res.status(404).json({ general: "Queue is not found" });
     });
-  Object.assign(req.body, { customerId: requestData.userEmail });
-  return boothEnterQueue(req, res);
 };
 
 /**
@@ -357,7 +381,7 @@ export {
   getQueueInfoForBusiness,
   getQueueSlotInfo,
   customerEnterQueue,
-  boothEnterQueue,
+  // boothEnterQueue,
   VIPEnterQueue,
   abandonQueueSlot,
   changeQueueStatus,

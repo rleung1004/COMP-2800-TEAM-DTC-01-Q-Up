@@ -4,7 +4,7 @@ import {
   getQueueInfoForBusiness,
   getQueueSlotInfo,
   customerEnterQueue,
-  boothEnterQueue,
+  // boothEnterQueue,
   VIPEnterQueue,
   abandonQueueSlot,
   changeQueueStatus,
@@ -43,9 +43,9 @@ app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
 //Queue routes
 app.post("/tellerQueueList", FBAuth, getTellerQueueList);
 app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
-app.post("/customerQueueInfo", FBAuth, getQueueSlotInfo);
+app.get("/getCustomerQueueInfo", FBAuth, getQueueSlotInfo);
 app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
-app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
+// app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
 app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
 app.post("/abandonQueueSLot", FBAuth, abandonQueueSlot);
 app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
