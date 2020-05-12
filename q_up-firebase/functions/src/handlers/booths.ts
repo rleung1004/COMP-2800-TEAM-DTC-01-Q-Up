@@ -62,3 +62,7 @@ const boothEnterQueue = async (req: Request, res: Response) => {
 };
 
 
+export {
+    createNewBooth,
+    boothEnterQueue,
+}
