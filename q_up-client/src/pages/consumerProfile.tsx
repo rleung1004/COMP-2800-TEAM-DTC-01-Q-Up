@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
 
 export default function ConsumerProfilePage() {
   interface errors {
-    oldPassword?: string,
+    // oldPassword?: string,
     newPassword?:string,
     newPasswordConfirm?: string
   }
@@ -39,7 +39,7 @@ export default function ConsumerProfilePage() {
   const [postalCode, setPostalCode] = useState("");
   const [passDialogOpen, setPassDialogOpen] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
-    oldPassword: "",
+    // oldPassword: "",
     newPassword: "",
     newPasswordConfirm: "",
     errors: errorObj
@@ -74,7 +74,7 @@ export default function ConsumerProfilePage() {
       return;
     }
     axios
-      .get("/deleteCustomer", axiosConfig)
+      .delete("/deleteCustomer", axiosConfig)
       .then(() => {
         window.location.href = "/";
         window.alert("Your account has been deleted");
@@ -90,7 +90,7 @@ export default function ConsumerProfilePage() {
       return;
     }
     const packet = {
-      oldPassword: passwordForm.oldPassword,
+      // oldPassword: passwordForm.oldPassword,
       newPassword: passwordForm.newPassword,
       newPasswordConfirm: passwordForm.newPasswordConfirm
     }
@@ -179,7 +179,7 @@ export default function ConsumerProfilePage() {
       <Dialog open={passDialogOpen} onClose={handlePassChangeCancel}>
         <DialogTitle>Change Password</DialogTitle>
         <DialogContent>
-          <TextField
+          {/* <TextField
           type="password"
             color="secondary"
             id="oldPassText"
@@ -190,7 +190,7 @@ export default function ConsumerProfilePage() {
             className={classes.textField}
             helperText={passwordForm.errors.oldPassword}
             error={passwordForm.errors.oldPassword ? true : false}
-          />
+          /> */}
           <TextField
           type="password"
             color="secondary"
