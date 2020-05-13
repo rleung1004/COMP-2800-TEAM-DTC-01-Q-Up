@@ -16,8 +16,8 @@ const useStyles = makeStyles(() => ({
 export default function ConsumerProfilePage() {
   const classes = useStyles();
   const [email, setEmail] = useState("some@email.ca");
-  const [phoneNumber, setPhoneNumber] = usestate("(778)898-9898");
-  const [postalCode, setPostalCode] = usestate("");
+  const [phoneNumber, setPhoneNumber] = useState("(778)898-9898");
+  const [postalCode, setPostalCode] = useState("");
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
