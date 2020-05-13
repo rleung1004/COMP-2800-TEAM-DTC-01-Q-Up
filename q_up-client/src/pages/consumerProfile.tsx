@@ -5,7 +5,7 @@ import Header from "../components/static/Header";
 import ConsumerNav from "../components/consumerNav";
 import { Grid, Button, Typography, makeStyles } from "@material-ui/core";
 import Axios from "axios";
-import {formatNumber} from '../utils/formatting';
+import {formatPhone} from '../utils/formatting';
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -27,7 +27,7 @@ export default function ConsumerProfilePage() {
   Axios.get("/customerInfo", axiosConfig)
   .then((data:any) => {
     setEmail(data.email);
-    setPhoneNumber(formatNumber(data.phoneNumber));
+    setPhoneNumber(formatPhone(data.phoneNumber));
     setPostalCode(data.postalCode);
   })
   .catch(err => {
