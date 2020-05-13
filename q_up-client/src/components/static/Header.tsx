@@ -3,8 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import '../../styles/staticHeader.scss';
 
 export default function Header(props: any) {
-   const Navbar = props.Nav ? props.Nav : null;
-   console.log(props.Nav);
+   const Navbar = props.Nav ? props.Nav : () => <></>;
 
    return (
       <header style={{ backgroundColor: '#242323' }}>
