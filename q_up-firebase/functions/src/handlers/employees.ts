@@ -9,6 +9,8 @@ const createNewEmployee = async (req: Request, res: Response) => {
   const requestData = {
     userType: req.body.userType,
     password: req.body.password,
+    businessName: req.body.businessName,
+    email: req.body.email,
   };
   if (requestData.userType !== "manager") {
     return res.status(401).json({
@@ -17,7 +19,23 @@ const createNewEmployee = async (req: Request, res: Response) => {
   }
   Object.assign(req.body, { userType: "employee" });
   Object.assign(req.body, { confirmPassword: requestData.password });
-  return await signup(req, res);
+  await signup(req, res);
+  return await db
+      .collection('businesses')
+      .where('name', '==', requestData.businessName)
+      .get()
+      .then(data => {
+        const employeeList: Array<string> = data.docs[0].data().employees;
+        employeeList.push(requestData.email);
+        db.collection('businesses').doc(requestData.businessName).update({employees: employeeList});
+      })
+      .catch((err) => {
+          console.error(err);
+          return res.status(400).json({
+              general: "Something went wrong",
+              error: err,
+          });
+      });
 };
 
 /**
