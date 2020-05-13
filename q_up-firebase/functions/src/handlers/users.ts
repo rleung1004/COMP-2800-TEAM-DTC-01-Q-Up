@@ -149,9 +149,13 @@ const login = async (req: Request, res: Response) => {
                 .limit(1)
                 .get()
                 .then((data) => {
-                  let userId = data.docs[0].data().userId;
-                  let userEmail = data.docs[0].data().email;
-                  let userType = data.docs[0].data().userType;
+                  const usableData: any =  data.docs[0].data();
+                  const userId = usableData.userId;
+                  const userEmail = usableData.email;
+                  const userType = usableData.userType;
+                  if (userType === 'employee') {
+                    db.collection('users').doc(userEmail).update({isOnline: true});
+                  }
                   Object.assign(resData, { userId, userType, userEmail });
                   return res.status(201).json(resData);
                 });
@@ -166,6 +170,27 @@ const login = async (req: Request, res: Response) => {
     return res.status(200);
   }
 };
+
+const logout = async (req: Request, res: Response) => {
+  const requestData = {
+    email: req.body.email,
+    userType : req.body.userType,
+  };
+  await firebase
+      .auth()
+      .signOut()
+      .then(()=> {
+        if (requestData.userType === 'employee') {
+          db.collection('users').doc(requestData.email).update({isOnline: false});
+        }
+      })
+      .catch(() => {
+        return res
+            .status(401).json({ general: "Logout unsuccessful!" });
+      });
+};
+
+
 const updateCustomerInfo = (req: Request, res: Response) => {
   const userType = req.body.userType;
   const userEmail = req.body.userEmail;
@@ -209,4 +234,4 @@ const updateCustomerInfo = (req: Request, res: Response) => {
   }
 };
 
-export { signup, login, updateCustomerInfo };
+export { signup, login, updateCustomerInfo, logout };
