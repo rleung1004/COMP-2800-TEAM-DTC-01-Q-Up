@@ -102,10 +102,10 @@ const cities: Array<string> = [
     "Nanjing",
 ];
 
-const createQueueSlotCredentials = (userEmail: string) => {
+const createQueueSlotCredentials = (userEmail: string,  lastTicketNumber: number) => {
     return {
         customer: userEmail,
-        ticketNumber: Math.floor(Math.random() * 10000),
+        ticketNumber: lastTicketNumber + 1,
         password: cities[Math.floor(Math.random() * cities.length)],
     };
 };
