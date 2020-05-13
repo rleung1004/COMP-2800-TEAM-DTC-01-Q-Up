@@ -7,12 +7,12 @@ import {
   VIPEnterQueue,
   abandonQueueSlot,
   changeQueueStatus,
-  //   getFavouriteQueuesForCustomer,
+  getFavouriteQueuesForCustomer,
 } from "./handlers/queues";
 import { boothEnterQueue, createNewBooth } from "./handlers/booths";
 import * as express from "express";
 import * as cors from "cors";
-import { signup, login, changePassword } from "./handlers/users";
+import {signup, login, changePassword, logout} from "./handlers/users";
 import {
   updateCustomerInfo,
   deleteCustomer,
@@ -25,7 +25,13 @@ import {
 } from "./handlers/businesses";
 import { FBAuth } from "./util/fbAuth";
 import algoliasearch from "algoliasearch";
-// TODO: bring in express-rate-limit (https://www.npmjs.com/package/express-rate-limit)
+import {
+  checkInQueue,
+  createNewEmployee,
+  deleteEmployee,
+  getListOfAllEmployees, getOnlineEmployees,
+  updateEmployee
+} from "./handlers/employees";
 
 const app = express();
 app.use(cors());
@@ -38,24 +44,20 @@ const index = client.initIndex("businesses");
 
 // all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
 
-// Get route
-app.get("/getBusiness", FBAuth, getBusiness);
-
-// Signup route
+// Signup /login routes
 app.post("/signup", signup);
-
-// login route
 app.post("/login", login);
+app.get('/logout', FBAuth, logout);
 
 // change password route
 app.post("/changePassword", FBAuth, changePassword);
 
-// add or update customer and business information
-app.post("/updateCustomer", FBAuth, updateCustomerInfo);
-app.post("/updateBusiness", FBAuth, updateBusiness);
+// business routes
 app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
+app.get("/getBusiness", FBAuth, getBusiness);
+app.post("/updateBusiness", FBAuth, updateBusiness);
 
-//Queue routes
+// Queue routes
 app.post("/tellerQueueList", FBAuth, getTellerQueueList);
 app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
 app.get("/getCustomerQueueInfo", FBAuth, getQueueSlotInfo);
@@ -63,15 +65,26 @@ app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
 app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
 app.post("/abandonQueueSlot", FBAuth, abandonQueueSlot);
 app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
-// app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
+app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
 // customer routes
 app.get("/getCustomerInfo", FBAuth, getCustomerInfo);
 app.delete("/deleteCustomer", FBAuth, deleteCustomer);
+app.post("/updateCustomer", FBAuth, updateCustomerInfo);
 
 // booth routes
 app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
 app.post("/createNewBooth", FBAuth, createNewBooth);
+
+// employee routes
+app.post('/createEmployee', FBAuth, createNewEmployee);
+app.post('/updateEmployee', FBAuth, updateEmployee);
+app.post('/deleteEmployee', FBAuth, deleteEmployee);
+app.post('/checkInQueue', FBAuth, checkInQueue);
+app.post('/getListOfAllEmployees', FBAuth, getListOfAllEmployees);
+app.post('/getOnlineEmployees', FBAuth, getOnlineEmployees);
+
+
 
 exports.addToIndex = functions.firestore
   .document("businesses/{businessId}")
