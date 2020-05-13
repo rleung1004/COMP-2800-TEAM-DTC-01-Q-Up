@@ -1,12 +1,26 @@
 #container {
     position: absolute;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
     z-index: 10;
-    cursor: url('../img/easter-egg/hammerFrame.png'), auto;
+    
+    img {
+        z-index: 15;
+        height: 20vh;
+        width: 20vw;
+    }
+
+    h1 {
+    background-color: #F00;
+    border-radius: 15px;
+}
 }
 
-h1 {
-    color: #F00;
+.applyCursor {
+    cursor: url(../img/easter-egg/staticHammer.png), auto;
+}
+
+.removeCursor {
+    cursor: none;
 }

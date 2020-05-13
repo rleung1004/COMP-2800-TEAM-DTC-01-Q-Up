@@ -3,35 +3,49 @@ import "../styles/easterEgg.scss";
 import isMobile from "../utils/mobileDetection";
 
 export default function EasterEgg(props: any) {
-  const array: Array<any> = [];
-  const [cracks, setCracks] = useState(array);
-  const [hammer, setHammer] = useState({ img: <img /> });
-
+  const arr:Array<any> = [];
+  const [cracks, setCracks] = useState(arr);
+  const [hammer, setHammer] = useState({ img: <></> });
   const clickHandler = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-    const containerStyle = document.getElementById("container")?.style;
+    const container = document.getElementById("container");
     const x = event.clientX;
     const y = event.clientY;
 
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const imgWidth = Math.round(screenWidth * 0.2);
+    const imgHeight = Math.round(screenHeight * 0.2);
     const styles = {
       glass: {
         position: "absolute" as "absolute",
-        top: y,
-        left: x,
+        top: y - Math.round(imgHeight * 0.15),
+        left: x - Math.round(imgWidth * 0.8),
+        zIndex: 20,
       },
       hammer: {
         position: "absolute" as "absolute",
-        top: y - 15,
-        left: x + 10,
+        top: y - Math.round(imgHeight * 0.15),
+        left: x - Math.round(imgWidth * 0.6),
+        zIndex: 30,
       },
     };
-    const newCrack = (
-      <img src="../img/easter-egg/breakingGlass.gif" style={styles.glass} />
+
+    const staticCrack = (
+      <img
+        src={require("../img/easter-egg/statickBreak.png")}
+        style={styles.glass}
+        alt="broken glass"
+      />
     );
 
     const newHammer = (
-      <img src="../img/easter-egg/hammer.gif" style={styles.hammer} />
+      <img
+        src={require("../img/easter-egg/animatedHammer.gif")}
+        style={styles.hammer}
+        alt="hammer"
+      />
     );
 
     const whenIsMobile = () => {
@@ -39,17 +53,17 @@ export default function EasterEgg(props: any) {
     };
 
     const whenNotMobile = () => {
-      if (!containerStyle) {
+      if (!container) {
         return;
       }
-      containerStyle.cursor = "none";
+      container.className = "removeCursor";
       always();
       setTimeout(
-        () =>
-          (containerStyle.cursor =
-            "url('../img/easter-egg/hammerFrame.png'), auto"),
-        48
-      );
+        () =>{
+          container.className = "applyCursor"
+          },
+        700
+        );
     };
 
     const always = () => {
@@ -57,33 +71,31 @@ export default function EasterEgg(props: any) {
       setHammer({ img: newHammer });
       // insert crack
       setTimeout(() => {
-        setCracks([newCrack].concat(cracks.slice()));
-        const audio = new Audio("../rsc/breakingGlass.wav");
+        setCracks([staticCrack].concat(cracks.slice()));
+        const audio = new Audio(require("../rsc/breakingGlass.mp3"));
         audio.play(); // remove animated hammer
         setTimeout(() => {
-          setHammer({ img: <img /> });
-        }, 40);
-      }, 5);
+          setHammer({ img: <></> });
+        }, 200);
+      }, 400);
     };
 
     if (isMobile()) {
-      whenIsMobile;
+      whenIsMobile();
     } else {
       whenNotMobile();
     }
   };
 
   const exitClickHandler = () => {
-    props.exitEaster();
+    props.exitEgg();
   };
 
   return (
-    <div id="container" onClick={clickHandler}>
+    <div id="container" onClick={clickHandler} className="applyCursor">
       <h1 onClick={exitClickHandler}>Do not smash this!</h1>
-      {cracks.map((crack, key) => (
-        <div key={key}>{crack}</div>
-      ))}
-      {hammer}
+      {cracks}
+      {hammer.img}
     </div>
   );
 }
