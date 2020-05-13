@@ -35,7 +35,7 @@ describe("Validators", () => {
         password: "123123",
         confirmPassword: "123123",
         userType: "customer",
-        business: "",
+        businessName: "",
       };
       const actualData = validateSignUpData(mockData);
       console.log(actualData);
@@ -50,7 +50,7 @@ describe("Validators", () => {
         password: "123123",
         confirmPassword: "123123",
         userType: "customer",
-        business: "",
+        businessName: "",
       };
       const actualData = validateSignUpData(mockData);
       assert.deepEqual(actualData, {
@@ -64,7 +64,7 @@ describe("Validators", () => {
         password: "",
         confirmPassword: "",
         userType: "customer",
-        business: "",
+        businessName: "",
       };
       const actualData = validateSignUpData(mockData);
       assert.deepEqual(actualData, {
@@ -78,7 +78,7 @@ describe("Validators", () => {
         password: "123112",
         confirmPassword: "123111",
         userType: "customer",
-        business: "",
+        businessName: "",
       };
       const actualData = validateSignUpData(mockData);
       assert.deepEqual(actualData, {
@@ -92,7 +92,7 @@ describe("Validators", () => {
         password: "123112",
         confirmPassword: "123111",
         userType: "invalidType",
-        business: "",
+        businessName: "",
       };
       const actualData = validateSignUpData(mockData);
       assert.deepEqual(actualData, {
@@ -106,7 +106,7 @@ describe("Validators", () => {
         password: "123123",
         confirmPassword: "123123",
         userType: "customer",
-        business: "",
+        businessName: "",
       };
       const actualData = validateSignUpData(mockData);
       assert.deepEqual(actualData, { errors: {}, valid: true });
@@ -117,7 +117,7 @@ describe("Validators", () => {
         password: "123123",
         confirmPassword: "123123",
         userType: "customer",
-        business: "",
+        businessName: "",
       };
       const actualData = validateSignUpData(mockData);
       assert.deepEqual(actualData, { errors: {}, valid: true });
@@ -128,7 +128,7 @@ describe("Validators", () => {
         password: "123123",
         confirmPassword: "123123",
         userType: "employee",
-        business: "Ali Apple",
+        businessName: "Ali Apple",
       };
       const actualData = validateSignUpData(mockData);
       assert.deepEqual(actualData, { errors: {}, valid: true });

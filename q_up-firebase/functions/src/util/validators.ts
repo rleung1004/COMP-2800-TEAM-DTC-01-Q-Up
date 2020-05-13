@@ -3,7 +3,7 @@ interface signupData {
   password: string;
   confirmPassword: string;
   userType: string;
-  business: string;
+  businessName: string;
 }
 
 interface loginData {
@@ -32,7 +32,6 @@ interface businessData {
   phoneNumber: string;
   lastUpdated: string;
 }
-
 
 interface customerData {
   phoneNumber: string;
@@ -78,7 +77,8 @@ const validateSignUpData = (data: signupData) => {
   if (
     data.userType !== "customer" &&
     data.userType !== "manager" &&
-    data.userType !== "employee"
+    data.userType !== "employee" &&
+    data.userType !== "booth"
   ) {
     Object.assign(errors, { userType: "Invalid user type" });
   }
@@ -157,7 +157,6 @@ const validateBusinessData = (data: businessData) => {
     valid: Object.keys(errors).length === 0,
   };
 };
-
 
 export {
   validateSignUpData,
