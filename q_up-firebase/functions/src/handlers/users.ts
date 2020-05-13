@@ -2,11 +2,7 @@ import { db, admin } from "../util/admin";
 import * as firebase from "firebase";
 import { firebaseConfig } from "../util/config";
 import { Request, Response } from "express";
-import {
-  validateSignUpData,
-  validateLoginData,
-  validateCustomerData,
-} from "../util/validators";
+import { validateSignUpData, validateLoginData } from "../util/validators";
 
 firebase.initializeApp(firebaseConfig);
 
@@ -166,47 +162,46 @@ const login = async (req: Request, res: Response) => {
     return res.status(200);
   }
 };
-const updateCustomerInfo = (req: Request, res: Response) => {
-  const userType = req.body.userType;
-  const userEmail = req.body.userEmail;
-  const userRef = db.collection("users").doc(userEmail);
-  const userInfo = {
-    phoneNumber: req.body.phoneNumber,
-    postalCode: req.body.postalCode,
+
+const changePassword = async (req: Request, res: Response) => {
+  const requestData = {
+    password: req.body.password,
+    confirmPassword: req.body.confirmPassword,
   };
 
-  const { errors, valid } = validateCustomerData(userInfo);
+  const userEmail = req.body.userEmail;
 
-  if (!valid) {
-    return res.status(400).json(errors);
-  } else {
-    if (userType === "customer") {
-      userRef
-        .get()
-        .then((docSnapshot) => {
-          if (docSnapshot.exists) {
-            userRef.update(userInfo);
-          } else {
-            res.status(403).json({
-              general:
-                "Access forbidden. Please login as a customer to gain access.",
-            });
-          }
-        })
-        .catch(() => {
-          return res
-            .status(500)
-            .json({ general: "Something went wrong. Please try again" });
-        });
-      return res.status(201).json({
-        general: `${userEmail} phone number and postal code have been updated`,
-      });
-    } else {
-      return res.status(403).json({
-        general: "Access forbidden. Please login as a customer to gain access.",
-      });
-    }
+  if (requestData.confirmPassword !== requestData.password) {
+    return res.status(400).json({ confirmPassword: "Password must match" });
   }
+
+  const userUID = await db
+    .collection("users")
+    .where("email", "==", userEmail)
+    .limit(1)
+    .get()
+    .then((data) => {
+      return data.docs[0].data().userId;
+    })
+    .catch((err) => {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+
+  await admin
+    .auth()
+    .updateUser(userUID, { password: requestData.password })
+    .then(() => {
+      return res.status(200).json({ general: "Password updated successfully" });
+    })
+    .catch(() => {
+      return res
+        .status(500)
+        .json({ general: "Something went wrong, please try again" });
+    });
+  return res.status(200);
 };
 
-export { signup, login, updateCustomerInfo };
+export { signup, login, changePassword };

@@ -12,7 +12,12 @@ import {
 import { boothEnterQueue, createNewBooth } from "./handlers/booths";
 import * as express from "express";
 import * as cors from "cors";
-import { signup, login, updateCustomerInfo } from "./handlers/users";
+import { signup, login, changePassword } from "./handlers/users";
+import {
+  updateCustomerInfo,
+  deleteCustomer,
+  getCustomerInfo,
+} from "./handlers/customers";
 import {
   updateBusiness,
   uploadBusinessImage,
@@ -42,6 +47,9 @@ app.post("/signup", signup);
 // login route
 app.post("/login", login);
 
+// change password route
+app.post("/changePassword", FBAuth, changePassword);
+
 // add or update customer and business information
 app.post("/updateCustomer", FBAuth, updateCustomerInfo);
 app.post("/updateBusiness", FBAuth, updateBusiness);
@@ -56,6 +64,10 @@ app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
 app.post("/abandonQueueSlot", FBAuth, abandonQueueSlot);
 app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
 // app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
+
+// customer routes
+app.get("/getCustomerInfo", FBAuth, getCustomerInfo);
+app.delete("/deleteCustomer", FBAuth, deleteCustomer);
 
 // booth routes
 app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
