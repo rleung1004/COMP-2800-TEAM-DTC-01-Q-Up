@@ -255,52 +255,69 @@ const VIPEnterQueue = async (req: Request, res: Response) => {
     });
 };
 
+
+/**
+ * Removes the currentQueue of the customer.
+ */
+const removeCustomerCurrentQueue = async (customerEmail: string) => {
+    await db
+        .collection('users')
+        .doc(customerEmail)
+        .update({currentQueue: null})
+        .catch();
+};
+
+
 /**
  * Activates or deactivates,
  * for activation, it checks whether the queue is within the start and end time
  */
 const changeQueueStatus = async (req: Request, res: Response) => {
-  const requestData = {
-    queueName: req.body.queueName,
-  };
-  await db
-    .collection("queues")
-    .doc(requestData.queueName)
-    .get()
-    .then((docSnapshot) => {
-      const queue: any = docSnapshot.data();
-      return queue.isActive;
-    })
-    .then((isActive) => {
-      if (isActive) {
-        return db
-          .collection("queues")
-          .doc(requestData.queueName)
-          .update({ isActive: !isActive, queueSlots: new Array<string>() })
-          .then(() => {
-            return res.status(200).json({
-              general: "Queue deactivated successfully",
+    const requestData = {
+      queueName: req.body.queueName,
+    };
+    const isQueueActive: boolean =
+        await db
+            .collection('queues')
+            .where('queueName', '==', requestData.queueName)
+            .get()
+            .then(data => data.docs[0].data().isActive)
+            .catch(err => {
+              console.error(err);
+              return false;
             });
-          });
-      } else {
-        return db
-          .collection("queues")
-          .doc(requestData.queueName)
-          .update({ isActive: !isActive })
-          .then(() => {
-            return res.status(200).json({
-              general: "Queue activated successfully",
+
+    if (isQueueActive) {
+        return await db
+            .collection('queues')
+            .where('queueName', '==', requestData.queueName)
+            .get()
+            .then(data => {
+                data.docs[0]
+                    .data().queueSlots
+                    .map((queueSlot: any) => queueSlot.customer)
+                    .forEach((customer: string) => removeCustomerCurrentQueue(customer));
+                db
+                    .collection('queues')
+                    .doc(requestData.queueName)
+                    .update({queueSlots: new Array<string>()});
+                return res.status(200).json({ general: 'successfully deactivated the queue!'});
+            })
+            .catch((err) => {
+                console.error(err);
+                return res.status(404).json({ error: "Queue does not exist"});
             });
-          });
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      return res.status(404).json({
-        general: "Queue does not exist",
-        error: err,
-      });
-    });
+    } else {
+        return await db
+            .collection('queues')
+            .doc(requestData.queueName)
+            .update({isActive: true})
+            .then(() => res.status(200).json({ general: 'successfully activated the queue!'}))
+            .catch((err) => {
+                console.error(err);
+                return res.status(404).json({ error: "Queue does not exist"});
+            });
+    }
 };
 
 /**
