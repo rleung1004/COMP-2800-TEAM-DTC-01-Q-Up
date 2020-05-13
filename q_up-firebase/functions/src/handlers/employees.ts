@@ -85,14 +85,76 @@ const updateEmployee = async (req: Request, res: Response) => {
 };
 
 /**
- *
+ * deletes the employee
  */
-//const deleteEmployee ;
+const deleteEmployee = async (req: Request, res: Response) => {
+    const requestData = {
+        userType: req.body.userType,
+        employeeEmail: req.body.employeeEmail,
+        businessName: req.body.businessName,
+    };
+    if (requestData.userType !== "manager") {
+        return res.status(401).json({
+            general: "unauthorized!",
+        });
+    }
+    const isEmployeeOfBusiness: boolean =
+        await db
+            .collection('businesses')
+            .where('businessName', '==', requestData.businessName)
+            .get()
+            .then((data) => {
+                let employeeList: Array<string> = data.docs[0].data().employees;
+                const result = employeeList.includes(requestData.employeeEmail);
+                employeeList = employeeList.filter(employee => employee !== requestData.employeeEmail);
+                db.collection('businesses').doc(requestData.businessName).update(employeeList);
+                return result;
+            })
+            .catch(()=> false);
+    if (!isEmployeeOfBusiness) {
+        return res.status(401).json({
+            general:'the employee is not enrolled in your the business',
+        })
+    }
+    const employeeUID: string =
+        await db
+            .collection('users')
+            .where('userType', '==', 'employee')
+            .where('email', '==', requestData.employeeEmail)
+            .get()
+            .then(data => {
+                return data.docs[0].data().userId;
+            })
+            .catch(()=> null);
+    if (employeeUID === null) {
+        return res.status(404).json({
+            general:'did not find the employee to delete',
+        })
+    }
+    return db
+        .collection('users')
+        .doc(requestData.employeeEmail)
+        .delete()
+        .then(()=> {
+            return admin
+                .auth()
+                .deleteUser(employeeUID)
+                .then(()=> res.status(200).json({general: 'deleted the employee successfully'}))
+        })
+        .catch((err)=> {
+            return res.status(400).json({
+                general: 'Something went wrong',
+                error: err,
+            })
+        })
+};
+
 
 // const removeFromQueue;
-
+// const getListOfAllEmployees;
 
 export {
     createNewEmployee,
     updateEmployee,
+    deleteEmployee,
 }
