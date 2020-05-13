@@ -149,12 +149,80 @@ const deleteEmployee = async (req: Request, res: Response) => {
         })
 };
 
+/**
+ * Remove the users from the queue by the employee
+ */
+const checkInQueue = async (req: Request, res: Response) => {
+    const requestData = {
+        userEmail: req.body.userEmail,
+        userType: req.body.userType,
+        queueName: req.body.queueName,
+        ticketNumber: req.body.ticketNumber,
+    };
+    if (requestData.userType !== "employee") {
+        return res.status(401).json({
+            general: "unauthorized!",
+        });
+    }
+    const isAuthorized: boolean =
+        await db
+            .collection('businesses')
+            .where('businessName', '==', requestData.queueName)
+            .get()
+            .then((data) => {
+                let employeeList: Array<string> = data.docs[0].data().employees;
+                return  employeeList.includes(requestData.userEmail);
+            })
+            .catch(()=> false);
+    if (!isAuthorized) {
+        return res.status(401).json({
+            general:'the employee is unauthorized to change the queue of another business',
+        })
+    }
+    const customerLookUp: any =
+        await db
+            .collection('queues')
+            .where('queueName', '==', requestData.queueName)
+            .get()
+            .then(data => {
+                let queueSlots: Array<any> = data.docs[0].data().queueSlots;
+                const result: boolean =  queueSlots.find( queueSlot => queueSlot.ticketNumber === requestData.ticketNumber);
+                queueSlots.splice(queueSlots.indexOf(result), 1);
+                db.collection('queues').doc(requestData.queueName).update({queueSlots: queueSlots});
+                return result;
+            })
+            .catch(() => null);
+    if (customerLookUp === null) {
+        return res.status(404).json({ general: 'Did not find the customer to checkIn!'});
+    }
+    return db
+        .collection('users')
+        .doc(customerLookUp.customer)
+        .get()
+        .then(docSnapshot => {
+            if (docSnapshot.exists) {
+                db.collection('users').doc(customerLookUp.customer).update({currentQueue: null});
+            }
+            return res.status(200).json({
+                general:'Removed the customer from the queue Successfully',
+            })
+        })
+        .catch((err)=> {
+            return res.status(400).json({
+                general: 'Something went wrong',
+                error: err,
+            })
+        })
+};
 
-// const removeFromQueue;
 // const getListOfAllEmployees;
+
+// const getOnlineEmployees;
 
 export {
     createNewEmployee,
     updateEmployee,
     deleteEmployee,
+    checkInQueue,
+
 }

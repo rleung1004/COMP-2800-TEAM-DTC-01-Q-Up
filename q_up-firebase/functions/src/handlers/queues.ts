@@ -130,37 +130,6 @@ const getQueueSlotInfo = async (req: Request, res: Response) => {
 };
 
 /**
- * Adds a booth customer to a queue
- */
-// const boothEnterQueue = async (req: Request, res: Response) => {
-//   const requestData = {
-//     userEmail: req.body.userEmail,
-//     queueName: req.body.queueName,
-//   };
-//   let newSlot = createQueueSlotCredentials(requestData);
-
-//   await db
-//     .collection("queues")
-//     .where("queueName", "==", requestData.queueName)
-//     .get()
-//     .then((data) => {
-//       const usableData = data.docs[0].data();
-//       usableData.queueSlots.push(newSlot);
-//       db.collection("queues").doc(usableData.queueName).update(usableData);
-//       return res.status(201).json({
-//         general: `${newSlot} has been added to ${usableData.queueName} successfully`,
-//       });
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       return res.status(500).json({
-//         general: "Something went wrong. Please try again",
-//         error: err,
-//       });
-//     });
-// };
-
-/**
  * Adds a logged in customer to a queue
  */
 const customerEnterQueue = async (req: Request, res: Response) => {
@@ -204,7 +173,6 @@ const customerEnterQueue = async (req: Request, res: Response) => {
 /**
  * Remove the customer's current queue from the
  */
-
 const abandonQueueSlot = async (req: Request, res: Response) => {
   const userData = {
     currentQueue: req.body.currentQueue,
@@ -381,7 +349,6 @@ export {
   getQueueInfoForBusiness,
   getQueueSlotInfo,
   customerEnterQueue,
-  // boothEnterQueue,
   VIPEnterQueue,
   abandonQueueSlot,
   changeQueueStatus,
