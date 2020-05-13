@@ -74,11 +74,27 @@ const signup = async (req: Request, res: Response) => {
               }
             });
             return res.status(201);
+          } else if (newUser.userType === "booth") {
+            const userCredentials = {
+              email: newUser.email,
+              isOnline: false,
+              businessName: newUser.businessName,
+              queueName: newUser.businessName,
+              userId,
+              userType: "booth",
+            };
+            return db
+              .doc(`/users/${newUser.email}`)
+              .set(userCredentials)
+              .then(() => {
+                return res.status(201).json({ token });
+              });
           } else {
             const userCredentials = {
               email: newUser.email,
               isOnline: false,
-              business: newUser.businessName,
+              businessName: newUser.businessName,
+              queueName: newUser.businessName,
               userId,
               userType: "employee",
             };

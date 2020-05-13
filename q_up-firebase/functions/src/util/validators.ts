@@ -77,7 +77,8 @@ const validateSignUpData = (data: signupData) => {
   if (
     data.userType !== "customer" &&
     data.userType !== "manager" &&
-    data.userType !== "employee"
+    data.userType !== "employee" &&
+    data.userType !== "booth"
   ) {
     Object.assign(errors, { userType: "Invalid user type" });
   }

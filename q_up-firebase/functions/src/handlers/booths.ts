@@ -8,9 +8,7 @@ import { createBoothQueueSlot } from "../util/helpers";
  */
 const createNewBooth = async (req: Request, res: Response) => {
   const requestData = {
-    businessName: req.body.businessName,
     userType: req.body.userType,
-    email: req.body.email,
     password: req.body.password,
   };
   if (requestData.userType !== "manager") {
@@ -18,8 +16,8 @@ const createNewBooth = async (req: Request, res: Response) => {
       general: "unauthorized!",
     });
   }
-  Object.assign(req.body.userType, "booth");
-  Object.assign(req.body.confirmPassword, requestData.password);
+  Object.assign(req.body, { userType: "booth" });
+  Object.assign(req.body, { confirmPassword: requestData.password });
   return await signup(req, res);
 };
 
@@ -35,7 +33,6 @@ const boothEnterQueue = async (req: Request, res: Response) => {
   if (requestData.userType !== "booth") {
     res.status(401).json({ general: "unauthorized!" });
   } else {
-    let newSlot: any;
     await db
       .collection("queues")
       .where("queueName", "==", requestData.queueName)
@@ -43,17 +40,16 @@ const boothEnterQueue = async (req: Request, res: Response) => {
       .then((data) => {
         const usableData = data.docs[0].data();
         const queueSlots: Array<any> = usableData.queueSlots;
-        Object.assign(
-          newSlot,
-          createBoothQueueSlot(
-            requestData.userName,
-            queueSlots[queueSlots.length - 1].ticketNumber
-          )
-        );
+        let newSlot = createBoothQueueSlot(requestData.userName, 0);
+        if (queueSlots.length !== 0) {
+          newSlot.ticketNumber =
+            queueSlots[queueSlots.length - 1].ticketNumber + 1;
+        }
+
         queueSlots.push(newSlot);
         db.collection("queues").doc(usableData.queueName).update(usableData);
         return res.status(201).json({
-          general: `${newSlot} has been added to ${usableData.queueName} successfully`,
+          general: `${newSlot.customer} has been added to ${usableData.queueName} successfully`,
         });
       })
       .catch((err) => {
