@@ -245,10 +245,42 @@ const getListOfAllEmployees = async (req: Request, res: Response) => {
                 resData: employeeInfoList,
             })
         })
-
 };
 
-// const getOnlineEmployees;
+/**
+ * Gets the number of online employees in a business.
+ */
+const getOnlineEmployees = async (req: Request, res: Response) => {
+    const requestData = {
+        userType: req.body.userType,
+        businessName: req.body.businessName,
+    };
+    if (requestData.userType !== "manager") {
+        return res.status(401).json({
+            general: "unauthorized!",
+        });
+    }
+    return await db
+        .collection('users')
+        .where('userType', '==', 'employee')
+        .where('businessName', '==', requestData.businessName)
+        .get()
+        .then(dataList => {
+            if (dataList.empty) {
+                return res.status(404).json({ general: 'did not find any employees!'});
+            }
+            let onlineEmployeeCount: number = 0;
+            dataList.forEach( data => {
+                if (data.data().isOnline) {
+                    onlineEmployeeCount++;
+                }
+            });
+            return res.status(200).json({
+                general: 'successful',
+                onlineEmployees: onlineEmployeeCount,
+            })
+        })
+};
 
 export {
     createNewEmployee,
@@ -256,5 +288,5 @@ export {
     deleteEmployee,
     checkInQueue,
     getListOfAllEmployees,
-
+    getOnlineEmployees,
 }
