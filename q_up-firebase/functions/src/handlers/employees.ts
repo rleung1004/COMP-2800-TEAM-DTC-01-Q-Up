@@ -77,6 +77,7 @@ const updateEmployee = async (req: Request, res: Response) => {
                 .then(()=> res.status(200).json({general: 'updated the employee successfully'}))
         })
         .catch((err)=> {
+            console.error(err);
             return res.status(400).json({
                 general: 'Something went wrong',
                 error: err,
@@ -142,6 +143,7 @@ const deleteEmployee = async (req: Request, res: Response) => {
                 .then(()=> res.status(200).json({general: 'deleted the employee successfully'}))
         })
         .catch((err)=> {
+            console.error(err);
             return res.status(400).json({
                 general: 'Something went wrong',
                 error: err,
@@ -208,6 +210,7 @@ const checkInQueue = async (req: Request, res: Response) => {
             })
         })
         .catch((err)=> {
+            console.error(err);
             return res.status(400).json({
                 general: 'Something went wrong',
                 error: err,
@@ -245,6 +248,13 @@ const getListOfAllEmployees = async (req: Request, res: Response) => {
                 resData: employeeInfoList,
             })
         })
+        .catch((err)=> {
+            console.error(err);
+            return res.status(400).json({
+                general: 'Something went wrong',
+                error: err,
+            })
+        })
 };
 
 /**
@@ -278,6 +288,13 @@ const getOnlineEmployees = async (req: Request, res: Response) => {
             return res.status(200).json({
                 general: 'successful',
                 onlineEmployees: onlineEmployeeCount,
+            })
+        })
+        .catch((err)=> {
+            console.error(err);
+            return res.status(400).json({
+                general: 'Something went wrong',
+                error: err,
             })
         })
 };
