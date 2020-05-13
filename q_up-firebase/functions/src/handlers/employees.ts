@@ -66,7 +66,7 @@ const updateEmployee = async (req: Request, res: Response) => {
             general:'did not find the employee to update',
         })
     }
-    return db
+    return await db
         .collection('users')
         .doc(requestData.employeePreviousCredentials.email)
         .update(requestData.employeeNewCredentials)
@@ -131,7 +131,7 @@ const deleteEmployee = async (req: Request, res: Response) => {
             general:'did not find the employee to delete',
         })
     }
-    return db
+    return await db
         .collection('users')
         .doc(requestData.employeeEmail)
         .delete()
@@ -195,7 +195,7 @@ const checkInQueue = async (req: Request, res: Response) => {
     if (customerLookUp === null) {
         return res.status(404).json({ general: 'Did not find the customer to checkIn!'});
     }
-    return db
+    return await db
         .collection('users')
         .doc(customerLookUp.customer)
         .get()
@@ -215,7 +215,38 @@ const checkInQueue = async (req: Request, res: Response) => {
         })
 };
 
-// const getListOfAllEmployees;
+
+/**
+ * Gets the list of all employees for a business.
+ */
+const getListOfAllEmployees = async (req: Request, res: Response) => {
+    const requestData = {
+        userType: req.body.userType,
+        businessName: req.body.businessName,
+    };
+    if (requestData.userType !== "manager") {
+        return res.status(401).json({
+            general: "unauthorized!",
+        });
+    }
+    let employeeInfoList: any = {};
+    return await db
+        .collection('users')
+        .where('userType', '==', 'employee')
+        .where('businessName', '==', requestData.businessName)
+        .get()
+        .then(dataList => {
+            if (dataList.empty) {
+               return res.status(404).json({ general: 'did not find any employees!'});
+            }
+            dataList.forEach( data => Object.assign(employeeInfoList, data.data()));
+            return res.status(200).json({
+                general: 'successful',
+                resData: employeeInfoList,
+            })
+        })
+
+};
 
 // const getOnlineEmployees;
 
@@ -224,5 +255,6 @@ export {
     updateEmployee,
     deleteEmployee,
     checkInQueue,
+    getListOfAllEmployees,
 
 }
