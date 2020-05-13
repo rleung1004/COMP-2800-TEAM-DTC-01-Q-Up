@@ -7,7 +7,7 @@ import {
   VIPEnterQueue,
   abandonQueueSlot,
   changeQueueStatus,
-  //   getFavouriteQueuesForCustomer,
+  getFavouriteQueuesForCustomer,
 } from "./handlers/queues";
 import { boothEnterQueue, createNewBooth } from "./handlers/booths";
 import * as express from "express";
@@ -19,6 +19,13 @@ import {
   getBusiness,
 } from "./handlers/businesses";
 import { FBAuth } from "./util/fbAuth";
+import {
+  checkInQueue,
+  createNewEmployee,
+  deleteEmployee,
+  getListOfAllEmployees, getOnlineEmployees,
+  updateEmployee
+} from "./handlers/employees";
 // TODO: bring in express-rate-limit (https://www.npmjs.com/package/express-rate-limit)
 
 const app = express();
@@ -48,10 +55,20 @@ app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
 app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
 app.post("/abandonQueueSLot", FBAuth, abandonQueueSlot);
 app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
-// app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
+app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
 // booth routes
 app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
 app.post("/createNewBooth", FBAuth, createNewBooth);
+
+// employee routes
+app.post('/createEmployee', FBAuth, createNewEmployee);
+app.post('/updateEmployee', FBAuth, updateEmployee);
+app.post('/deleteEmployee', FBAuth, deleteEmployee);
+app.post('/checkInQueue', FBAuth, checkInQueue);
+app.post('/getListOfAllEmployees', FBAuth, getListOfAllEmployees);
+app.post('/getOnlineEmployees', FBAuth, getOnlineEmployees);
+
+
 
 exports.api = functions.https.onRequest(app);
