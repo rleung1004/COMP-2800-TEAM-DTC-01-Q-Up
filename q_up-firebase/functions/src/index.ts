@@ -46,7 +46,7 @@ app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
 app.get("/getCustomerQueueInfo", FBAuth, getQueueSlotInfo);
 app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
 app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
-app.post("/abandonQueueSLot", FBAuth, abandonQueueSlot);
+app.post("/abandonQueueSlot", FBAuth, abandonQueueSlot);
 app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
 // app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
