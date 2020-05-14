@@ -42,15 +42,31 @@ export const createQueue = async (req:Request, res: Response) => {
 };
 
 /**
- * * get the queue isActive, listOfQueueSlots (with their ticket, pass) for the teller
+ * gets the queueList for the teller.
  */
 export const getQueueListForEmployee = async (req: Request, res: Response) => {
     const requestData = {
+        userEmail: req.body.userEmail,
         userType: req.body.userType,
         queueName: req.body.queueName,
     };
-
-    await db
+    if (requestData.userType !== 'employee') {
+        return res.status(401).json({general: 'unauthorized'});
+    }
+    const isEmployeeOfBusiness: boolean =
+        await db
+            .collection('users')
+            .where('email', '==', requestData.userEmail)
+            .get()
+            .then((data) => data.docs[0].data().businessName === requestData.queueName)
+            .catch((err) => {
+                console.error(err);
+                return false;
+            });
+    if (!isEmployeeOfBusiness) {
+        return res.status(401).json({general: 'employee is not part of the business'});
+    }
+    return await db
         .collection("queues")
         .where("queueName", "==", requestData.queueName)
         .get()
@@ -72,25 +88,61 @@ export const getQueueListForEmployee = async (req: Request, res: Response) => {
 };
 
 /**
+ * Gets the number of online Employees for the business.
+ */
+const getOnlineEmployees = async (businessName: string) => {
+    return await db
+            .collection("users")
+            .where("userType", "==", "employee")
+            .where("businessName", "==", businessName)
+            .get()
+            .then((dataList) => {
+                if (dataList.empty) {
+                    return -1
+                }
+                let onlineEmployeeCount: number = 0;
+                dataList.docs.forEach((data) => {
+                    if (data.data().isOnline) {
+                        onlineEmployeeCount++;
+                    }
+                });
+                return onlineEmployeeCount
+            })
+            .catch((err) => {
+                console.error(err);
+                return -1;
+            });
+};
+
+/**
  * shows the queue information, is Active, currentWaitTImeForWholeQueue and NumberOfQueueSlots
  */
 export const getQueueInfoForBusiness = async (req: Request, res: Response) => {
     const requestData = {
-        queueName: req.body.queueName,
+        userType: req.body.userType,
+        businessName: req.body.name,
     };
-    await db
+    if (requestData.userType !== 'manager') {
+        return res.status(401).json({general: 'unauthorized'});
+    }
+    return await db
         .collection("queues")
-        .where("queueName", "==", requestData.queueName)
+        .where("queueName", "==", requestData.businessName)
         .get()
-        .then((data) => {
+        .then(async (data) => {
             const usableData = data.docs[0].data();
-            const currentWaitTime =
-                usableData.queueSlots.length * usableData.averageWaitTime.toString();
-            const queueLength = usableData.queueSlots.length;
+            const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
+            if (onlineEmployees === -1) {
+                return res.status(401).json({
+                    general: "did not obtain the number of online employees correctly",
+                })
+            }
             return res.status(200).json({
-                currentWaitTime: currentWaitTime,
-                queueLength: queueLength,
-                isActive: usableData.isActive,
+                resData: {
+                    currentWaitTime: usableData.queueSlots.length * usableData.averageWaitTime / onlineEmployees,
+                    queueLength: usableData.queueSlots.length,
+                    isActive: usableData.isActive,
+                },
                 general: "successful",
             });
         })
@@ -108,50 +160,50 @@ export const getQueueInfoForBusiness = async (req: Request, res: Response) => {
  */
 export const getQueueSlotInfo = async (req: Request, res: Response) => {
     const requestData = {
+        userType: req.body.userType,
         userEmail: req.body.userEmail,
         queueName: req.body.currentQueue,
     };
-    await db
+    if (requestData.userType !== 'customer') {
+        return res.status(401).json({ general: 'unauthorized!'});
+    }
+    return await db
         .collection("queues")
         .where("queueName", "==", requestData.queueName)
         .get()
-        .then((data) => {
-            const isActive = data.docs[0].data().isActive;
+        .then(async (data) => {
+            const usableData = data.docs[0].data();
+            const isActive = usableData.isActive;
             if (!isActive) {
-                db.collection("users")
-                    .doc(requestData.userEmail)
-                    .update({currentQueue: null});
+                db.collection("users").doc(requestData.userEmail).update({currentQueue: null});
                 return res.status(403).json({
-                    general:
-                        "Queue is no longer available, queue up for another business",
+                    general: "Queue is no longer available, queue up for another business",
                 });
-            } else {
-                const averageWaitTime = data.docs[0].data().averageWaitTime;
-                const queueSlots = data.docs[0].data().queueSlots;
-                const queueSlotIndex: number = queueSlots.findIndex((object: any) => {
-                    return object.customer === requestData.userEmail;
+            }
+            const queueSlots = usableData.queueSlots;
+            const queueSlotIndex: number = queueSlots.findIndex((object: any) => {
+                return object.customer === requestData.userEmail;
+            });
+            if (queueSlotIndex === -1) {
+                return res.status(404).json({
+                    general: "could not find the customer position.",
                 });
-                if (queueSlotIndex === -1) {
-                    return res.status(404).json({
-                        general: "could not find the customer position.",
-                    });
-                }
-
-                const currentWaitTime: number = queueSlotIndex * averageWaitTime;
-                const queuePosition: number = queueSlotIndex + 1;
-                const slotInfo = {
+            }
+            const onlineEmployees: number = await getOnlineEmployees(requestData.queueName);
+            return res.status(200).json( {
+                general: "successful",
+                resData : {
                     ticketNumber: queueSlots[queueSlotIndex].ticketNumber,
                     password: queueSlots[queueSlotIndex].password,
-                    currentWaitTime: currentWaitTime,
-                    queuePosition: queuePosition,
-                    general: "successful",
-                };
-                return res.status(200).json(slotInfo);
-            }
+                    currentWaitTime: queueSlotIndex * usableData.averageWaitTime / onlineEmployees,
+                    queuePosition: queueSlotIndex + 1,
+                },
+            });
+
         })
         .catch((err) => {
             console.error(err);
-            return res.status(500).json({
+            return res.status(401).json({
                 general: "Something went wrong. Please try again",
                 error: err,
             });
@@ -261,10 +313,13 @@ export const abandonQueueSlot = async (req: Request, res: Response) => {
  */
 export const VIPEnterQueue = async (req: Request, res: Response) => {
     const requestData = {
+        userType: req.body.userType,
         queueName: req.body.queueName,
     };
-
-    await db
+    if (requestData.userType !== 'employee') {
+        return res.status(401).json({general: 'unauthorized!'});
+    }
+    return await db
         .collection("queues")
         .where("queueName", "==", requestData.queueName)
         .get()
@@ -272,7 +327,6 @@ export const VIPEnterQueue = async (req: Request, res: Response) => {
             const usableData = data.docs[0].data();
             const vipSlot = createVIPSlotCredentials();
             usableData.queueSlots.unshift(vipSlot);
-
             db.collection("queues").doc(requestData.queueName).update(usableData);
             return res.status(201).json({
                 general: `${vipSlot.customer} has been successfully added into the queue`,
