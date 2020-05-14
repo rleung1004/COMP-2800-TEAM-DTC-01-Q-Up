@@ -161,7 +161,7 @@ export const createBoothQueueSlot = (customerIdentifier: string, lastTicketNumbe
  * Gets the day of the week for today.
  */
 export const getTheDayOfTheWeekForArray = () => {
-    return new Date().getDay() - 1;
+    return new Date().getDay();
 
 };
 
