@@ -217,6 +217,10 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
   if (requestData.userType !== "customer") {
     return res.status(401).json({ general: "unauthorized!" });
   }
+
+  if (requestData.queueName === null) {
+    return res.status(404).json({ general: "You are not in a queue" });
+  }
   return await db
     .collection("queues")
     .where("queueName", "==", requestData.queueName)
