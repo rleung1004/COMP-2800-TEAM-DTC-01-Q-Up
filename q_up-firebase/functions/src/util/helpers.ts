@@ -1,3 +1,6 @@
+/**
+ * An Array of all cities as passwords.
+ */
 const cities: Array<string> = [
     "moscow",
     "HonKong",
@@ -102,7 +105,19 @@ const cities: Array<string> = [
     "Nanjing",
 ];
 
-const createQueueSlotCredentials = (userEmail: string,  lastTicketNumber: number) => {
+/**
+ * Represents a queueSlot.
+ */
+export interface queueSlot {
+    customer: string;
+    password: string;
+    ticketNumber: number;
+}
+
+/**
+ * Creates a customer queueSlot.
+ */
+export const createQueueSlotCredentials = (userEmail: string, lastTicketNumber: number) => {
     return {
         customer: userEmail,
         ticketNumber: lastTicketNumber + 1,
@@ -110,7 +125,10 @@ const createQueueSlotCredentials = (userEmail: string,  lastTicketNumber: number
     };
 };
 
-const createVIPSlotCredentials = () => {
+/**
+ * Creates a VIP queueSlot.
+ */
+export const createVIPSlotCredentials = () => {
     return {
         customer: `VIP-${Math.floor(Math.random() * 1000)}`,
         ticketNumber: Math.floor(Math.random() * 10000),
@@ -118,7 +136,10 @@ const createVIPSlotCredentials = () => {
     };
 };
 
-const createBoothQueueSlot = (customerIdentifier: string, lastTicketNumber: number) => {
+/**
+ * Creates a Booth QueueSlot.
+ */
+export const createBoothQueueSlot = (customerIdentifier: string, lastTicketNumber: number) => {
     return {
         customer: customerIdentifier,
         ticketNumber: lastTicketNumber + 1,
@@ -126,14 +147,11 @@ const createBoothQueueSlot = (customerIdentifier: string, lastTicketNumber: numb
     }
 };
 
-const getTheDayOfTheWeekForArray = () => {
+/**
+ * Gets the day of the week for today.
+ */
+export const getTheDayOfTheWeekForArray = () => {
     return new Date().getDay() - 1;
 
 };
 
-export {
-  createQueueSlotCredentials,
-  createVIPSlotCredentials,
-  createBoothQueueSlot,
-  getTheDayOfTheWeekForArray
-};

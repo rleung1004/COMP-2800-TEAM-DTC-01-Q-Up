@@ -7,6 +7,9 @@ import {
 } from "../../util/validators";
 const assert = chai.assert;
 
+/**
+ * Tests the validators of our application api.
+ */
 describe("Validators", () => {
   describe("isEmpty", () => {
     it("should return false for non-empty strings", function () {

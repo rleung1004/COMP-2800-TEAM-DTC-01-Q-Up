@@ -1,12 +1,12 @@
 import {db} from "../util/admin";
 import {Request, Response} from "express";
-import {signup} from "./users";
+import {signUp} from "./users";
 import {createBoothQueueSlot} from "../util/helpers";
 
 /**
  * Creates a new account for the booth.
  */
-const createNewBooth = async (req: Request, res: Response) => {
+export const createNewBooth = async (req: Request, res: Response) => {
     const requestData = {
         userType: req.body.userType,
         password: req.body.password,
@@ -18,13 +18,13 @@ const createNewBooth = async (req: Request, res: Response) => {
     }
     Object.assign(req.body, {userType: "booth"});
     Object.assign(req.body, {confirmPassword: requestData.password});
-    return await signup(req, res);
+    return await signUp(req, res);
 };
 
 /**
- * Adds a booth customer to a queue
+ * Adds a booth customer to a queue.
  */
-const boothEnterQueue = async (req: Request, res: Response) => {
+export const boothEnterQueue = async (req: Request, res: Response) => {
     const requestData = {
         userName: req.body.userName,
         userType: req.body.userType,
@@ -70,4 +70,3 @@ const boothEnterQueue = async (req: Request, res: Response) => {
     }
 };
 
-export {createNewBooth, boothEnterQueue};

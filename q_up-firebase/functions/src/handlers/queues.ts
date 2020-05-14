@@ -5,18 +5,13 @@ import {
     createQueueSlotCredentials,
     createVIPSlotCredentials,
     getTheDayOfTheWeekForArray,
+    queueSlot
 } from "../util/helpers";
-
-interface queueSlot {
-    customer: string;
-    password: string;
-    ticketNumber: number;
-}
 
 /**
  * * get the queue isActive, listOfQueueSlots (with their ticket, pass) for the teller
  */
-const getTellerQueueList = async (req: Request, res: Response) => {
+export const getTellerQueueList = async (req: Request, res: Response) => {
     const requestData = {
         queueName: req.body.queueName,
     };
@@ -45,8 +40,7 @@ const getTellerQueueList = async (req: Request, res: Response) => {
 /**
  * shows the queue information, is Active, currentWaitTImeForWholeQueue and NumberOfQueueSlots
  */
-
-const getQueueInfoForBusiness = async (req: Request, res: Response) => {
+export const getQueueInfoForBusiness = async (req: Request, res: Response) => {
     const requestData = {
         queueName: req.body.queueName,
     };
@@ -78,7 +72,7 @@ const getQueueInfoForBusiness = async (req: Request, res: Response) => {
 /**
  shows the queue position, current time wait, pass and ticketNumber
  */
-const getQueueSlotInfo = async (req: Request, res: Response) => {
+export const getQueueSlotInfo = async (req: Request, res: Response) => {
     const requestData = {
         userEmail: req.body.userEmail,
         queueName: req.body.currentQueue,
@@ -133,7 +127,7 @@ const getQueueSlotInfo = async (req: Request, res: Response) => {
 /**
  * Adds a logged in customer to a queue
  */
-const customerEnterQueue = async (req: Request, res: Response) => {
+export const customerEnterQueue = async (req: Request, res: Response) => {
     const requestData = {
         userEmail: req.body.userEmail,
         queueName: req.body.queueName,
@@ -175,7 +169,7 @@ const customerEnterQueue = async (req: Request, res: Response) => {
 /**
  * Remove the customer's current queue from the
  */
-const abandonQueueSlot = async (req: Request, res: Response) => {
+export const abandonQueueSlot = async (req: Request, res: Response) => {
     const userData = {
         currentQueue: req.body.currentQueue,
         userEmail: req.body.userEmail,
@@ -231,7 +225,7 @@ const abandonQueueSlot = async (req: Request, res: Response) => {
 /**
  * Adjusts the timing of the queued users by inserting a VIP to the list
  */
-const VIPEnterQueue = async (req: Request, res: Response) => {
+export const VIPEnterQueue = async (req: Request, res: Response) => {
     const requestData = {
         queueName: req.body.queueName,
     };
@@ -256,7 +250,6 @@ const VIPEnterQueue = async (req: Request, res: Response) => {
         });
 };
 
-
 /**
  * Removes the currentQueue of the customer.
  */
@@ -268,12 +261,11 @@ const removeCustomerCurrentQueue = async (customerEmail: string) => {
         .catch();
 };
 
-
 /**
  * Activates or deactivates,
  * for activation, it checks whether the queue is within the start and end time
  */
-const changeQueueStatus = async (req: Request, res: Response) => {
+export const changeQueueStatus = async (req: Request, res: Response) => {
     const requestData = {
         queueName: req.body.queueName,
     };
@@ -362,7 +354,7 @@ const getFavouriteQueueInfo = async (queueName: string) => {
 /**
  * Gets the favourite queues info for the customer.
  */
-const getFavouriteQueuesForCustomer = async (req: Request, res: Response) => {
+export const getFavouriteQueuesForCustomer = async (req: Request, res: Response) => {
     const requestData = {
         userType: req.body.userType,
         userEmail: req.body.userEmail,
@@ -397,15 +389,4 @@ const getFavouriteQueuesForCustomer = async (req: Request, res: Response) => {
         general: "successful",
         favouriteBusinesses: resData,
     });
-};
-
-export {
-    getTellerQueueList,
-    getQueueInfoForBusiness,
-    getQueueSlotInfo,
-    customerEnterQueue,
-    VIPEnterQueue,
-    abandonQueueSlot,
-    changeQueueStatus,
-    getFavouriteQueuesForCustomer,
 };

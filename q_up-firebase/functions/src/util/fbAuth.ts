@@ -1,6 +1,9 @@
 import { admin, db } from "../util/admin";
 import { Request, Response } from "express";
 
+/**
+ * Authenticates the users upon using this applications api routes.
+ */
 export const FBAuth = async (req: Request, res: Response, next: Function) => {
   let idToken: string;
   if (
@@ -28,7 +31,7 @@ export const FBAuth = async (req: Request, res: Response, next: Function) => {
           let userType = data.docs[0].data().userType;
           if (userType === "manager") {
             let businessName = data.docs[0].data().businessName;
-            Object.assign(req.body, { userEmail, userType, businessName });
+            Object.assign(req.body, {userEmail, userType, businessName });
           } else if (userType === "customer") {
             let currentQueue = data.docs[0].data().currentQueue;
             Object.assign(req.body, { userEmail, userType, currentQueue });
