@@ -7,7 +7,17 @@ import {validateSignUpData, validateLoginData} from "../util/validators";
 firebase.initializeApp(firebaseConfig);
 
 /**
- * Creates user accounts.
+ * Creates user accounts for this web-app.
+ * first validates the provided information, then creates a new user with email and password, and depending on the type
+ * of the requested user, it will create the appropriate user in the database.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 403 if the provided information is not valid
+ *                  - 400 if Email is already in use
+ *                  - 401 if This business already has an account
+ *                  - 500 if can not find any favourite businesses!
+ *                  - 201 if successful
  */
 export const signUp = async (req: Request, res: Response) => {
     const newUser = {
@@ -21,7 +31,7 @@ export const signUp = async (req: Request, res: Response) => {
     const {valid, errors} = validateSignUpData(newUser);
 
     if (!valid) {
-        return res.status(400).json(errors);
+        return res.status(403).json(errors);
     } else {
         let token: string;
         let userId: any;
@@ -60,7 +70,7 @@ export const signUp = async (req: Request, res: Response) => {
 
                         businessRef.get().then((docSnapshot) => {
                             if (docSnapshot.exists) {
-                                return res.status(500).json({
+                                return res.status(401).json({
                                     businessName: "This business already has an account",
                                 });
                             } else {
@@ -121,7 +131,15 @@ export const signUp = async (req: Request, res: Response) => {
 };
 
 /**
- * Logs in the users in our application.
+ * Logs in the users of this web-app.
+ * first validates the provided information, then signs in the user with email and password, and creates a new token for
+ * the specific user.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 400 if the provided information is not valid
+ *                  - 403 if the credentials provided are not correct
+ *                  - 201 if successful
  */
 export const login = async (req: Request, res: Response) => {
     const user = {
@@ -171,12 +189,19 @@ export const login = async (req: Request, res: Response) => {
                     .status(403)
                     .json({general: "Wrong credentials, please try again"});
             });
-        return res.status(200);
+        return res.status(201);
     }
 };
 
 /**
- * Logs our the users of our application.
+ * Logs out the users of our application.
+ * signs out the users and then if the user type is employee, it will update their isOnline to be false.
+ * TODO: delete their session token key so they wont be able to access the APIs until sing in again
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the log out was unsuccessful
+ *                  - 200 if successful
  */
 export const logout = async (req: Request, res: Response) => {
     const requestData = {
@@ -200,7 +225,14 @@ export const logout = async (req: Request, res: Response) => {
 };
 
 /**
- * Changes the password of our application users.
+ * Changes the password for the users of this web-app.
+ * first checks if the passwords are matching, then updates the authentication user with the updated password.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 400 if the provided passwords is not matching
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const changePassword = async (req: Request, res: Response) => {
     const requestData = {

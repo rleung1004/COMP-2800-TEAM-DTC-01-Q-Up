@@ -1,3 +1,6 @@
+/**
+ * Represents the sign up data.
+ */
 interface signupData {
     email: string;
     password: string;
@@ -6,11 +9,17 @@ interface signupData {
     businessName: string;
 }
 
+/**
+ * Represents the login data.
+ */
 interface loginData {
     email: string;
     password: string;
 }
 
+/**
+ * Represents the business data.
+ */
 interface businessData {
     name: string;
     category: Array<string>;
@@ -33,6 +42,9 @@ interface businessData {
     lastUpdated: string;
 }
 
+/**
+ * Represents the customer data.
+ */
 interface customerData {
     phoneNumber: string;
     postalCode: string;

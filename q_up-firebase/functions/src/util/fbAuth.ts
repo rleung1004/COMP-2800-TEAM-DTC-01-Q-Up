@@ -3,6 +3,13 @@ import { Request, Response } from "express";
 
 /**
  * Authenticates the users upon using this applications api routes.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @param next:     a function to be invoked at the end of this function
+ * @return          - 403 if unauthorized
+ *                  - 500 if an error occurs in the midst of query
+ *                  - the return response of the next function
  */
 export const FBAuth = async (req: Request, res: Response, next: Function) => {
   let idToken: string;
@@ -44,7 +51,7 @@ export const FBAuth = async (req: Request, res: Response, next: Function) => {
     })
     .catch((err) => {
       console.error("Error while verifying token", err);
-      return res.status(403).json(err);
+      return res.status(500).json(err);
     });
   return undefined;
 };
