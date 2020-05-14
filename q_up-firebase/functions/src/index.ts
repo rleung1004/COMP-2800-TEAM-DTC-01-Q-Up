@@ -58,10 +58,10 @@ app.put("/changePassword", FBAuth, changePassword);
 // ========================
 // Business Routes
 // ========================
+app.post('/registerBusiness', FBAuth, registerBusiness);
 app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
 app.get("/getBusiness", FBAuth, getBusiness);
 app.post("/updateBusiness", FBAuth, updateBusiness);
-app.post('/registerBusiness', FBAuth, registerBusiness);
 app.delete('/deleteBusiness', FBAuth, deleteBusiness);
 
 

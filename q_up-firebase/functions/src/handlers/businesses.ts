@@ -25,15 +25,16 @@ export const registerBusiness = async (req: Request, res: Response) => {
     const requestData = {
         userEmail: req.body.userEmail,
         userType: req.body.userType,
+        businessName: req.body.businessName,
     };
     const businessInfo = {
         averageWaitTime: req.body.averageWaitTime,
-        name: req.body.name,
+        name: requestData.businessName,
         category: req.body.category,
         description: req.body.description,
         email: req.body.email,
         employees: [],
-        queue: req.body.name,
+        queue: requestData.businessName,
         hours: req.body.hours,
         address: req.body.address,
         website: req.body.website,
