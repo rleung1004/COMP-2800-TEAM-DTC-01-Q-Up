@@ -132,6 +132,14 @@ export const updateBusiness = async (req: Request, res: Response) => {
 
 /**
  * Uploads the business image.
+ * first, checks if the user uploading an image is a manager, then it uploads the image to our storage, and update the
+ * business url in the database.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 403 if the user is not of type manager
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const uploadBusinessImage = (req: Request, res: Response) => {
     const busboy = new BusBoy({headers: req.headers});
@@ -176,7 +184,7 @@ export const uploadBusinessImage = (req: Request, res: Response) => {
                     return db.doc(`/businesses/${businessName}`).update({imageUrl});
                 })
                 .then(() => {
-                    return res.json({message: "Image uploaded successfully"});
+                    return res.status(200).json({message: "Image uploaded successfully"});
                 })
                 .catch((err) => {
                     console.error(err);
@@ -186,7 +194,7 @@ export const uploadBusinessImage = (req: Request, res: Response) => {
                 });
         });
         busboy.end(req.body);
-        return res.status(201);
+        return res.status(200).json({general: 'successful'});
     } else {
         return res.status(403).json({
             general: "Access forbidden. Please login as a business to gain access.",
@@ -196,6 +204,15 @@ export const uploadBusinessImage = (req: Request, res: Response) => {
 
 /**
  * Gets the business info.
+ * first, checks if the user uploading an image is a manager, then checks if the business exists, then it will get the
+ * information of the business.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type manager
+ *                  - 404 if the business is not registered
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const getBusiness = async (req: Request, res: Response) => {
     const requestData = {
@@ -219,7 +236,7 @@ export const getBusiness = async (req: Request, res: Response) => {
                     businessData: businessData,
                 })
             }
-            return res.status(500).json({
+            return res.status(404).json({
                 general: "Your business is not registered. Please register your business.",
             });
 
@@ -235,6 +252,15 @@ export const getBusiness = async (req: Request, res: Response) => {
 
 /**
  * Deletes a business.
+ * first, checks if the user uploading an image is a manager, then deletes the business and the queue, then deletes the
+ * user from database and the authentication.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type manager
+ *                  - 403 if the manger id is not found
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const deleteBusiness = async (req: Request, res: Response) => {
     const requestData = {

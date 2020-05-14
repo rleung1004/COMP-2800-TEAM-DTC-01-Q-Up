@@ -5,6 +5,14 @@ import * as firebase from "firebase-admin";
 
 /**
  * Creates a new Employee.
+ * first, checks if the user is a manager, then signs up the new employee and finally adds the new employee to the
+ * employee array in the business.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type manager
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 201 if successful
  */
 export const createNewEmployee = async (req: Request, res: Response) => {
     const requestData = {
@@ -31,10 +39,11 @@ export const createNewEmployee = async (req: Request, res: Response) => {
             db.collection("businesses")
                 .doc(requestData.businessName)
                 .update({employees: employeeList});
+            return res.status(200).json({general: 'created the employee successfully!'})
         })
         .catch((err) => {
             console.error(err);
-            return res.status(400).json({
+            return res.status(500).json({
                 general: "Something went wrong",
                 error: err,
             });
@@ -43,6 +52,16 @@ export const createNewEmployee = async (req: Request, res: Response) => {
 
 /**
  * Updates the employee credentials.
+ * first, checks if the user is a manager, then checks if the employee belongs to the business, and then updates the
+ * employee information in the users collection and businesses collection in the database.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type manager
+ *                  - 403 if the employee is not enrolled in the business
+ *                  - 404 if the employee is not found
+ *                  - 400 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const updateEmployee = async (req: Request, res: Response) => {
     const requestData = {
@@ -88,7 +107,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
             return false;
         });
     if (!isEmployeeOfBusiness) {
-        return res.status(401).json({
+        return res.status(403).json({
             general: "the employee is not enrolled in your the business",
         });
     }
@@ -143,7 +162,17 @@ export const updateEmployee = async (req: Request, res: Response) => {
 };
 
 /**
- * deletes the employee
+ * Deletes the employee.
+ * first, checks if the user is a manager, then checks if the employee belongs to the business, and then deletes the
+ * employee from the database and authentication. Also deletes the employee from the businesses collection.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type manager
+ *                  - 403 if the employee is not enrolled in the business
+ *                  - 404 if the employee is not found
+ *                  - 400 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const deleteEmployee = async (req: Request, res: Response) => {
     const requestData = {
@@ -177,7 +206,7 @@ export const deleteEmployee = async (req: Request, res: Response) => {
             return false;
         });
     if (!isEmployeeOfBusiness) {
-        return res.status(401).json({
+        return res.status(403).json({
             general: "the employee is not enrolled in your the business",
         });
     }
@@ -217,7 +246,18 @@ export const deleteEmployee = async (req: Request, res: Response) => {
 };
 
 /**
- * Remove the users from the queue by the employee
+ * Remove the users from the queue by the employee.
+ * first, checks if the user is an employee, then checks if the employee belongs to the business, and then deletes the
+ * customer (queueSlot belonging to the customer) from the queue of the business. If the deleted queue slot is a
+ * singed-in customer, changes the currentQueue of them as well.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type employee
+ *                  - 403 if the employee is not enrolled in the business
+ *                  - 404 if the employee is not found
+ *                  - 400 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const checkInQueue = async (req: Request, res: Response) => {
     const requestData = {
@@ -241,7 +281,7 @@ export const checkInQueue = async (req: Request, res: Response) => {
         })
         .catch(() => false);
     if (!isAuthorized) {
-        return res.status(401).json({
+        return res.status(403).json({
             general:
                 "the employee is unauthorized to change the queue of another business",
         });
@@ -292,6 +332,15 @@ export const checkInQueue = async (req: Request, res: Response) => {
 
 /**
  * Gets the list of all employees for a business.
+ * first, checks if the user is a manager, then queries all the employees of the business, and for each one of them,
+ * gets their appropriate information.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type manager
+ *                  - 404 if the employee is not found
+ *                  - 400 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const getListOfAllEmployees = async (req: Request, res: Response) => {
     const requestData = {
@@ -333,6 +382,15 @@ export const getListOfAllEmployees = async (req: Request, res: Response) => {
 
 /**
  * Gets the number of online employees in a business.
+ * first, checks if the user is a manager, then queries all the employees of the business, and counts the number of
+ * online employees for that business.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type manager
+ *                  - 404 if the employee is not found
+ *                  - 400 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const getOnlineEmployees = async (req: Request, res: Response) => {
     const requestData = {

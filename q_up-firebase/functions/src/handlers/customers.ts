@@ -4,6 +4,15 @@ import {validateCustomerData} from "../util/validators";
 
 /**
  * Updates the customer info.
+ * first, checks if the user is a customer, then checks if the provided info is valid, then it updates the customer
+ * information.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 403 if the user is not of type customer
+ *                  - 400 if the customer info is invalid
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 201 if successful
  */
 export const updateCustomerInfo = (req: Request, res: Response) => {
     const userType = req.body.userType;
@@ -50,6 +59,13 @@ export const updateCustomerInfo = (req: Request, res: Response) => {
 
 /**
  * Gets the customer info.
+ * first, checks if the user is a customer, then gets the customer information.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type customer
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const getCustomerInfo = async (req: Request, res: Response) => {
     const userType = req.body.userType;
@@ -85,7 +101,14 @@ export const getCustomerInfo = async (req: Request, res: Response) => {
 };
 
 /**
- * Deletes the customer info.
+ * Deletes the customer.
+ * first, checks if the user is a customer, then deletes the customer from the database.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type customer
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 201 if successful
  */
 export const deleteCustomer = async (req: Request, res: Response) => {
     const userEmail = req.body.userEmail;
@@ -110,6 +133,12 @@ export const deleteCustomer = async (req: Request, res: Response) => {
                 return res
                     .status(200)
                     .json({general: "account deleted successfully"});
+            })
+            .catch((err) => {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({general: "Something went wrong, please try again"});
             });
     }
     return res.status(200);
