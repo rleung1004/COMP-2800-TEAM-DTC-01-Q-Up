@@ -108,7 +108,7 @@ const getOnlineEmployees = async (businessName: string) => {
                 });
                 return onlineEmployeeCount
             })
-            .catch((err) => {
+            .catch( (err) => {
                 console.error(err);
                 return -1;
             });
