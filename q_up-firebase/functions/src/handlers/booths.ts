@@ -5,6 +5,12 @@ import {createBoothQueueSlot} from "../util/helpers";
 
 /**
  * Creates a new account for the booth.
+ * first Checks if the accessing user has the authority, then signs up a booth
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type manager
+ *                  - the return status of signUp function
  */
 export const createNewBooth = async (req: Request, res: Response) => {
     const requestData = {
@@ -22,7 +28,15 @@ export const createNewBooth = async (req: Request, res: Response) => {
 };
 
 /**
- * Adds a booth customer to a queue.
+ * Adds a walk-in customer to a queue.
+ * first Checks if the accessing user has the authority, then adds the customer to the queue of the business.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type booth
+ *                  - 403 if queue is not active
+ *                  - 404 if an error occurs in the midst of the query
+ *                  - 201 if successful
  */
 export const boothEnterQueue = async (req: Request, res: Response) => {
     const requestData = {

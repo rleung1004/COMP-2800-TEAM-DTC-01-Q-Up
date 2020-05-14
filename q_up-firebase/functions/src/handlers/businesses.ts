@@ -10,6 +10,15 @@ import {createQueue} from "./queues";
 
 /**
  * Registers a business.
+ * first Checks if the accessing user has the authority, then checks the validity of the provided info, then registers
+ * the user and creates a queue for it.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 403 if the user is not of type manager
+ *                  - 400 if provided information are not valid
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - return status of createQueue function
  */
 export const registerBusiness = async (req: Request, res: Response) => {
     const noImg = "no-img.png";
@@ -63,7 +72,16 @@ export const registerBusiness = async (req: Request, res: Response) => {
 };
 
 /**
- * Updates the business info
+ * Updates the business info.
+ * first Checks if the accessing user has the authority, then checks the validity of the provided info, then updates the
+ * business information.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 403 if the user is not of type manager
+ *                  - 400 if provided information are not valid
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
  */
 export const updateBusiness = async (req: Request, res: Response) => {
     const noImg = "no-img.png";
@@ -220,6 +238,7 @@ export const getBusiness = async (req: Request, res: Response) => {
  */
 export const deleteBusiness = async (req: Request, res: Response) => {
     const requestData = {
+        userEmail: req.body.userEmail,
         userType: req.body.userType,
         businessName: req.body.businessName,
     };
@@ -228,16 +247,39 @@ export const deleteBusiness = async (req: Request, res: Response) => {
             general: "unauthorized",
         })
     }
+    const managerID: string = await db
+        .collection('users')
+        .where('email', '==', requestData.userEmail)
+        .get()
+        .then(data => data.docs[0].data().userId)
+        .catch((err) => {
+            console.error(err);
+            return null;
+        });
+    if (!managerID) {
+        return res.status(403).json({general: 'could not find the manger id!',})
+    }
     return await db
         .collection('businesses')
         .doc(requestData.businessName)
         .delete()
-        .then(() => {
-            return db
+        .then(async () => {
+            return await db
                 .collection('queues')
                 .doc(requestData.businessName)
                 .delete()
-                .then(()=> res.status(200).json({general:'deleted the business and its queue successfully'}))
+                .then(async () => {
+                    return await db
+                        .collection('users')
+                        .doc(requestData.userEmail)
+                        .delete()
+                        .then(async () => {
+                            return await admin
+                                .auth()
+                                .deleteUser(managerID)
+                                .then(() => res.status(200).json({general: 'deleted the business and its queue successfully'}))
+                        })
+                })
         })
         .catch((err) => {
             console.error(err);
