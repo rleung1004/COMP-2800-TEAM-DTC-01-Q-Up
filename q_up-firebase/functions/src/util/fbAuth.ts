@@ -29,8 +29,12 @@ export const FBAuth = async (req: Request, res: Response, next: Function) => {
           if (userType === "manager") {
             let businessName = data.docs[0].data().businessName;
             Object.assign(req.body, { userEmail, userType, businessName });
+          } else if (userType === "customer") {
+            let currentQueue = data.docs[0].data().currentQueue;
+            Object.assign(req.body, { userEmail, userType, currentQueue });
           } else {
-            Object.assign(req.body, { userEmail, userType });
+            let queueName = data.docs[0].data().queueName;
+            Object.assign(req.body, { userEmail, userType, queueName });
           }
           return next();
         });
