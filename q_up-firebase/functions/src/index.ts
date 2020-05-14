@@ -36,9 +36,9 @@ import {
 const app = express();
 app.use(cors());
 
+// algolia config
 const APP_ID = functions.config().algolia.app;
 const ADMIN_KEY = functions.config().algolia.key;
-
 const client = algoliasearch(APP_ID, ADMIN_KEY);
 const index = client.initIndex("businesses");
 
@@ -69,12 +69,12 @@ app.delete('/deleteBusiness', FBAuth, deleteBusiness);
 // Queue Routes
 // ========================
 app.post("/tellerQueueList", FBAuth, getQueueListForEmployee);
-app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
+app.get("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
 app.get("/getCustomerQueueInfo", FBAuth, getQueueSlotInfo);
 app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
 app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
-app.post("/abandonQueueSlot", FBAuth, abandonQueueSlot);
-app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
+app.put("/abandonQueueSlot", FBAuth, abandonQueueSlot);
+app.put("/changeQueueStatus", FBAuth, changeQueueStatus);
 app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
 
@@ -97,11 +97,11 @@ app.post("/createNewBooth", FBAuth, createNewBooth);
 // Employee Routes
 // ========================
 app.post('/createEmployee', FBAuth, createNewEmployee);
-app.post('/updateEmployee', FBAuth, updateEmployee);
-app.post('/deleteEmployee', FBAuth, deleteEmployee);
+app.put('/updateEmployee', FBAuth, updateEmployee);
+app.delete('/deleteEmployee', FBAuth, deleteEmployee);
 app.post('/checkInQueue', FBAuth, checkInQueue);
-app.post('/getListOfAllEmployees', FBAuth, getListOfAllEmployees);
-app.post('/getOnlineEmployees', FBAuth, getOnlineEmployees);
+app.get('/getListOfAllEmployees', FBAuth, getListOfAllEmployees);
+app.get('/getOnlineEmployees', FBAuth, getOnlineEmployees);
 
 
 // ========================
