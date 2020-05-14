@@ -43,8 +43,8 @@ export const registerBusiness = async (req: Request, res: Response) => {
         imageUrl: `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${noImg}?alt=media`,
     };
 
-    if (requestData.userType == "manager") {
-        return res.status(403).json({general: "Access forbidden. Please login as a customer to gain access."});
+    if (requestData.userType !== "manager") {
+        return res.status(403).json({general: "Access forbidden. Please login as a manager to gain access."});
     }
 
     const {valid, errors} = validateBusinessData(businessInfo);
@@ -74,53 +74,144 @@ export const registerBusiness = async (req: Request, res: Response) => {
 
 /**
  * Updates the business info.
- * first Checks if the accessing user has the authority, then checks the validity of the provided info, then updates the
- * business information.
+ * first Checks if the accessing user has the authority, then checks the validity of the provided info, then gets the
+ * necessary information from the old business and queue, then deletes the business and queue, then creates a new
+ * business and queue and then upates the new information with the old necessary info.
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
  * @returns         - 403 if the user is not of type manager
  *                  - 400 if provided information are not valid
  *                  - 500 if an error occurs in the midst of the query
+ *                  - 404 if can not find the necessary information from the old business
  *                  - 200 if successful
  */
 export const updateBusiness = async (req: Request, res: Response) => {
-    const noImg = "no-img.png";
     const requestData = {
         userEmail: req.body.userEmail,
         userType: req.body.userType,
+        businessName: req.body.businessName,
     };
     const businessInfo = {
         name: req.body.name,
         category: req.body.category,
         description: req.body.description,
         email: req.body.email,
-        employees: [],
         hours: req.body.hours,
         address: req.body.address,
         website: req.body.website,
         phoneNumber: req.body.phoneNumber,
-        lastUpdated: new Date().toISOString(),
-        imageUrl: `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${noImg}?alt=media`,
     };
 
-    if (requestData.userType == "manager") {
-        return res.status(403).json({general: "Access forbidden. Please login as a customer to gain access."});
+    if (requestData.userType !== "manager") {
+        return res.status(403).json({general: "Access forbidden. Please login as a manager to gain access."});
     }
 
     const {valid, errors} = validateBusinessData(businessInfo);
     if (!valid) {
         return res.status(400).json(errors);
     }
-    return await db
-        .collection("businesses")
-        .doc(businessInfo.name)
+
+    //get the necessary info from the old queue and business.
+    const employeesOfBusiness: Array<string> = await db
+        .collection('businesses')
+        .where('name', '==', requestData.businessName)
         .get()
-        .then(() => {
-            db.collection("users").doc(req.body.userEmail).update({businessName: businessInfo.name});
-            return res.status(200).json({
-                general: `Business ${businessInfo.name} has been successfully updated`
-            });
+        .then(data => data.docs[0].data().employees)
+        .catch(err => {
+            console.error(err);
+            return null;
+        });
+    if (employeesOfBusiness === null) {
+        return res.status(404).json({general: 'did not find the employees before updating'})
+    }
+    const businessImage: string = await db
+        .collection('businesses')
+        .where('name', '==', requestData.businessName)
+        .get()
+        .then(data => data.docs[0].data().imageUrl)
+        .catch(err => {
+            console.error(err);
+            return null;
+        });
+    if (businessImage === null) {
+        return res.status(404).json({general: 'did not find the image before updating'})
+    }
+    const oldQueue: any = await db
+        .collection('queues')
+        .where('queueName', '==', requestData.businessName)
+        .get()
+        .then(data => data.docs[0].data())
+        .catch(err => {
+            console.error(err);
+            return  null;
+        });
+    if (oldQueue === null) {
+        return res.status(404).json({general: 'did not find the queue before updating'})
+    }
+    delete oldQueue.queueName;
+
+    //replacing the employees and booths businessName
+    for (const employee of employeesOfBusiness) {
+        await db.collection('users')
+            .doc(employee)
+            .update({businessName: businessInfo.name})
+            .catch(err => console.error(err));
+    }
+    await db
+        .collection('users')
+        .where('businessName', '==', requestData.businessName)
+        .where('userType', '==', 'booth')
+        .get()
+        .then(dataList => {
+            dataList.forEach(async (data) => {
+                await db
+                    .collection('users')
+                    .doc(data.data().businessName)
+                    .update({businessName: businessInfo.name})
+            })
+        })
+        .catch(err => console.error(err));
+
+    //deleting the business and its queue
+    await db
+        .collection('businesses')
+        .doc(requestData.businessName)
+        .delete()
+        .then(async() => {
+            await db
+                .collection('queues')
+                .doc(requestData.businessName)
+                .delete()
+        })
+        .catch(err => console.error(err));
+
+    //creating a new business with the new information
+    Object.assign(req.body, {businessName: businessInfo.name});
+    await registerBusiness(req, res);
+
+    //updating the new business and queue and manager with the new information
+    return await db
+        .collection('queues')
+        .doc(businessInfo.name)
+        .update(oldQueue)
+        .then(async () => {
+            await db
+                .collection('businesses')
+                .doc(businessInfo.name)
+                .update({
+                    employees: employeesOfBusiness,
+                    imageUrl: businessImage,
+                })
+                .then(async ()=> {
+                    await db
+                        .collection('users')
+                        .doc(requestData.userEmail)
+                        .update({businessName: businessInfo.name})
+                        .then(()=> res.json(200).json({
+                            general: "Business ${businessInfo.name} has been successfully updated"
+                        }))
+                })
         })
         .catch((err) => {
             console.error(err);

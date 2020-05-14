@@ -23,7 +23,7 @@ import {
 export const createQueue = async (req: Request, res: Response) => {
   const requestData = {
     userType: req.body.userType,
-    businessName: req.body.name,
+    businessName: req.body.businessName,
     averageWaitTime: req.body.averageWaitTime,
   };
   if (requestData.userType !== "manager") {

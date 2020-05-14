@@ -61,7 +61,7 @@ app.put("/changePassword", FBAuth, changePassword);
 app.post('/registerBusiness', FBAuth, registerBusiness);
 app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
 app.get("/getBusiness", FBAuth, getBusiness);
-app.post("/updateBusiness", FBAuth, updateBusiness);
+app.put("/updateBusiness", FBAuth, updateBusiness);
 app.delete('/deleteBusiness', FBAuth, deleteBusiness);
 
 

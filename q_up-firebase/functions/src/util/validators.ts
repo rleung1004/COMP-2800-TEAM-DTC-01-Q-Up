@@ -25,7 +25,6 @@ interface businessData {
     category: Array<string>;
     description: string;
     email: string;
-    employees: Array<string>;
     hours: {
         startTime: Array<string>;
         endTime: Array<string>;
@@ -39,7 +38,6 @@ interface businessData {
     };
     website: string;
     phoneNumber: string;
-    lastUpdated: string;
 }
 
 /**
