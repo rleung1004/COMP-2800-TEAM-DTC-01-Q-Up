@@ -251,9 +251,71 @@ export const getBusiness = async (req: Request, res: Response) => {
 };
 
 /**
+ * Deletes the employee for the specific business.
+ * first gets the employee user id, then deletes it from the database and authentication.
+ *
+ * @param employeeEmail     a string.
+ */
+const deleteEmployeeFromBusiness = async (employeeEmail: string) => {
+    const employeeUID: string = await db
+        .collection("users")
+        .where("userType", "==", "employee")
+        .where("email", "==", employeeEmail)
+        .get()
+        .then((data) => {
+            return data.docs[0].data().userId;
+        })
+        .catch((err) => {
+            console.error(err);
+            return null;
+        });
+     await db
+        .collection("users")
+        .doc(employeeEmail)
+        .delete()
+        .then(() => admin.auth().deleteUser(employeeUID))
+        .catch((err) => console.error(err));
+     await admin
+         .auth()
+         .deleteUser(employeeUID)
+         .catch(err => console.error(err));
+};
+
+/**
+ * Deletes the booth for the specific business.
+ * first gets the booth user id, then deletes it from the database and authentication.
+ *
+ * @param boothEmail    a string
+ */
+const deleteBoothFromBusiness = async (boothEmail: string) => {
+    const boothUID: string = await db
+        .collection("users")
+        .where("userType", "==", "booth")
+        .where("email", "==", boothEmail)
+        .get()
+        .then((data) => {
+            return data.docs[0].data().userId;
+        })
+        .catch((err) => {
+            console.error(err);
+            return null;
+        });
+    await db
+        .collection('users')
+        .doc(boothEmail)
+        .delete()
+        .then(async () => {
+            await admin
+                .auth()
+                .deleteUser(boothUID)
+        })
+        .catch(err => console.error(err))
+};
+
+/**
  * Deletes a business.
  * first, checks if the user uploading an image is a manager, then deletes the business and the queue, then deletes the
- * user from database and the authentication.
+ * user from database and the authentication. finally, deletes the employees and the booths of that business
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
@@ -285,6 +347,32 @@ export const deleteBusiness = async (req: Request, res: Response) => {
     if (!managerID) {
         return res.status(403).json({general: 'could not find the manger id!',})
     }
+    //delete all the employees for that business
+    await db
+        .collection('businesses')
+        .where('name','==',requestData.businessName)
+        .get()
+        .then(data => {
+            data.docs[0]
+                .data().employees
+                .forEach(async (employeeEmail: string) => await deleteEmployeeFromBusiness(employeeEmail));
+        })
+        .catch(err => console.error(err));
+    // delete all the booths for the business.
+    await db
+        .collection('users')
+        .where('userType', '==', 'booth')
+        .where('businessName', '==', requestData.businessName)
+        .get()
+        .then((dataList) => {
+            if (!dataList.empty) {
+                dataList.forEach((data => {
+                    deleteBoothFromBusiness(data.data().email);
+                }))
+            }
+        })
+        .catch(err => console.error(err));
+    // delete the business and the queue
     return await db
         .collection('businesses')
         .doc(requestData.businessName)
@@ -303,7 +391,9 @@ export const deleteBusiness = async (req: Request, res: Response) => {
                             return await admin
                                 .auth()
                                 .deleteUser(managerID)
-                                .then(() => res.status(200).json({general: 'deleted the business and its queue successfully'}))
+                                .then(() => res.status(200).json({
+                                    general: 'deleted the business and its queue successfully'
+                                }))
                         })
                 })
         })
