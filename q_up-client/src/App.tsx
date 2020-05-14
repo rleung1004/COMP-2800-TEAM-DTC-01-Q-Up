@@ -16,6 +16,8 @@ import BusinessDashboardPage from "./pages/businessDashboard";
 import ConsumerDashboard from "./pages/consumerDashboard";
 import ConsumerProfilePage from "./pages/consumerProfile";
 import ConsumerEditProfilePage from "./pages/consumerEditProfile";
+import BusinessProfilePage from "./pages/businessProfile";
+import BusinessEditProfilePage from "./pages/businessEditProfile";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
@@ -39,6 +41,8 @@ function App() {
             <Route path="/consumerDashboard" component={ConsumerDashboard} exact />
             <Route path="/consumerProfile" component={ConsumerProfilePage} exact/>
             <Route path="/editConsumerProfile" component={ConsumerEditProfilePage} exact/>
+            <Route path="/businessProfile" component={BusinessProfilePage} exact/>
+            <Route path="/editBusinessProfile" component={BusinessEditProfilePage} exact />
           </Switch>
         </ThemeProvider>
       </div>
