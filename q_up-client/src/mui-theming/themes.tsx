@@ -13,7 +13,7 @@ const theme = createMuiTheme({
     secondary: {
         main: "#EEF13E",
         dark: "#242323",
-        contrastText:"#FFFFFF"
+        contrastText:"#000"
     },
   },
   overrides: {
@@ -55,6 +55,11 @@ const theme = createMuiTheme({
         "&&>div>div:focus":{
           backgroundColor:"#242323"
         }
+      }
+    },
+    MuiDialogTitle: {
+      root: {
+        color:"#FFF"
       }
     }
   },

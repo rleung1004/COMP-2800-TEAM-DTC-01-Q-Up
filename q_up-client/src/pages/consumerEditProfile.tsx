@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 // import { Link } from 'react-router-dom';
 import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
@@ -26,27 +26,22 @@ const useStyles = makeStyles((theme) => ({
 export default function ConsumerEditProfilePage() {
   const classes = useStyles();
   interface errors {
-    email?: string,
     phoneNumber?: string;
     postalCode?: string;
   }
-
-  const axiosConfig = {
-    headers: {
-      Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
-    },
-  };
-
   const errorObject: errors = {};
-
+  const [getData, setGetData] = useState(true);
   const [formState, setFormState] = useState({
-    email: "",
     phoneNumber: "",
     postalCode: "",
     loading: false,
     errors: errorObject,
   });
-
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+    },
+  };
   const handleOnFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -57,28 +52,24 @@ export default function ConsumerEditProfilePage() {
       "Are you sure?"
     );
     if (skip) {
-      window.location.href = window.location.hostname + "/consumerProfile";
+      window.location.href = "/consumerProfile";
     }
   };
   const handleSubmit = (event: FormEvent) => {
+    if (!window.confirm("Are you sure? Can't be undone.")) {
+      return;
+    }
     event.preventDefault();
     setFormState((prevState) => ({ ...prevState, loading: true }));
     const userData = {
-      email: formState.email,
       phoneNumber: formState.phoneNumber,
       postalCode: formState.postalCode,
-    };
-
-    const axiosConfig = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
-      },
     };
 
     axios
       .post("/updateCustomer", userData, axiosConfig)
       .then(() => {
-        window.location.href = "/consumerDashboard";
+        window.location.href = "/consumerProfile";
       })
       .catch((err: any) => {
         setFormState((prevState) => ({
@@ -89,12 +80,17 @@ export default function ConsumerEditProfilePage() {
       });
   };
 
-  axios.get("/customerInfo", axiosConfig)
-    .then((data: any) => {
+  useEffect(() => {
+    if (!getData) {
+      return;
+    }
+    setGetData(false)
+    axios.get("/getCustomerInfo", axiosConfig)
+    .then((res: any) => {      
+      const data = res.data.customerData;       
       setFormState({
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        postalCode: data.postalCode,
+        phoneNumber: data.phoneNumber? data.phoneNumber : "",
+        postalCode: data.postalCode? data.postalCode : "",
         loading: false,
         errors: errorObject,
       });
@@ -103,7 +99,7 @@ export default function ConsumerEditProfilePage() {
       window.alert("Connection error");
       console.log(err);
     });
-
+  }, [axiosConfig, errorObject, getData]);
   return (
     <>
       <Header Nav={ConsumerNav} />
@@ -126,17 +122,6 @@ export default function ConsumerEditProfilePage() {
               </Typography>
               <TextField
                 color="secondary"
-                id="email"
-                label="Email"
-                name="email"
-                onChange={handleOnFieldChange}
-                value={formState.email}
-                className={classes.textField}
-                helperText={formState.errors.email}
-                error={formState.errors.email ? true : false}
-              />
-              <TextField
-                color="secondary"
                 id="phone"
                 label="Phone number"
                 name="phoneNumber"
@@ -157,13 +142,16 @@ export default function ConsumerEditProfilePage() {
                 helperText={formState.errors.postalCode}
                 error={formState.errors.postalCode ? true : false}
               />
+              <Typography variant="caption">
+                Email cannot be changed
+              </Typography>
               <Button
                 type="submit"
                 variant="contained"
                 color="primary"
                 className={classes.button}
               >
-                Submit
+                Update
               </Button>
             </Grid>
           </form>

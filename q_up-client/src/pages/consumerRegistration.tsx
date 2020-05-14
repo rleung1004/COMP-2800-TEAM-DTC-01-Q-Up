@@ -49,7 +49,7 @@ export default function ConsumerRegistrationPage() {
       "Are you sure? This information be used to provide you better functionality."
     );
     if (skip) {
-      window.location.href = window.location.hostname + "/consumerDashboard";
+      window.location.href = "/consumerDashboard";
     }
   };
   const handleSubmit = (event: FormEvent) => {

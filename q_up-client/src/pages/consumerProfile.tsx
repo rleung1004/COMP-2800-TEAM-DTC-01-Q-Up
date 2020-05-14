@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 // import { Link } from 'react-router-dom';
 import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
@@ -38,6 +38,7 @@ export default function ConsumerProfilePage() {
   const [phoneNumber, setPhoneNumber] = useState("(778)898-9898");
   const [postalCode, setPostalCode] = useState("");
   const [passDialogOpen, setPassDialogOpen] = useState(false);
+  const [getData, setGetData] = useState(true);
   const [passwordForm, setPasswordForm] = useState({
     // oldPassword: "",
     newPassword: "",
@@ -52,7 +53,7 @@ export default function ConsumerProfilePage() {
   };
 
   const handleEditProfile = () => {
-    window.location.href = "/consumerEditProfile";
+    window.location.href = "/editConsumerProfile";
   };
 
   const handlePasswordChange = () => {
@@ -91,11 +92,13 @@ export default function ConsumerProfilePage() {
     }
     const packet = {
       // oldPassword: passwordForm.oldPassword,
-      newPassword: passwordForm.newPassword,
-      newPasswordConfirm: passwordForm.newPasswordConfirm
+      password: passwordForm.newPassword,
+      confirmPassword: passwordForm.newPasswordConfirm
     }
-    axios.post('/changePassword', packet, axiosConfig)
-    .then(() => {
+    axios.put('/changePassword', packet, axiosConfig)
+    .then((res) => {
+      console.log(res.data);
+      
       window.alert("Password successfully changed")
       setPassDialogOpen(false);
     })
@@ -105,16 +108,25 @@ export default function ConsumerProfilePage() {
     });
   }
 
-  axios.get("/customerInfo", axiosConfig)
-    .then((data: any) => {
+  useEffect(()=>{
+    if (!getData) {
+      return;
+    }
+    setGetData(false);
+    axios.get("/getCustomerInfo", axiosConfig)
+    .then((res: any) => {
+      const data = res.data.customerData;
+      console.log(data);         
       setEmail(data.email);
-      setPhoneNumber(formatPhone(data.phoneNumber));
-      setPostalCode(data.postalCode);
+      setPhoneNumber(data.phoneNumber? formatPhone(data.phoneNumber) : "N/A");
+      setPostalCode(data.postalCode? data.postalCode : "N/A");
     })
     .catch((err: any) => {
       window.alert("Connection error");
       console.log(err);
     });
+  }, [axiosConfig, errorObj, getData]);
+  
   return (
     <>
       <Header Nav={ConsumerNav} />
@@ -176,9 +188,10 @@ export default function ConsumerProfilePage() {
           </Grid>
         </section>
       </main>
-      <Dialog open={passDialogOpen} onClose={handlePassChangeCancel}>
+      <Dialog open={passDialogOpen} onClose={handlePassChangeCancel} PaperProps={{style: {backgroundColor:"#242323"}}}>
         <DialogTitle>Change Password</DialogTitle>
         <DialogContent>
+          <Grid container direction='column'>
           {/* <TextField
           type="password"
             color="secondary"
@@ -207,7 +220,7 @@ export default function ConsumerProfilePage() {
           type="password"
             color="secondary"
             id="newPassConfirm"
-            label="Cornfirm new password"
+            label="Cornfirm password"
             name="newPasswordConfirm"
             onChange={handlePassFormChange}
             value={passwordForm.newPasswordConfirm}
@@ -215,6 +228,7 @@ export default function ConsumerProfilePage() {
             helperText={passwordForm.errors.newPasswordConfirm}
             error={passwordForm.errors.newPasswordConfirm ? true : false}
           />
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button
