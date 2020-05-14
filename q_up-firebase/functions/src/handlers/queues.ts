@@ -355,12 +355,16 @@ const removeCustomerCurrentQueue = async (customerEmail: string) => {
  */
 export const changeQueueStatus = async (req: Request, res: Response) => {
     const requestData = {
-        queueName: req.body.queueName,
+        businessName: req.body.businessName,
+        userType: req.body.userType,
     };
+    if (requestData.userType !== 'manager') {
+        return res.status(401).json({general: 'unauthorized!'});
+    }
     const isQueueActive: boolean =
         await db
             .collection('queues')
-            .where('queueName', '==', requestData.queueName)
+            .where('queueName', '==', requestData.businessName)
             .get()
             .then(data => data.docs[0].data().isActive)
             .catch(err => {
@@ -371,7 +375,7 @@ export const changeQueueStatus = async (req: Request, res: Response) => {
     if (isQueueActive) {
         return await db
             .collection('queues')
-            .where('queueName', '==', requestData.queueName)
+            .where('queueName', '==', requestData.businessName)
             .get()
             .then(data => {
                 data.docs[0]
@@ -380,7 +384,7 @@ export const changeQueueStatus = async (req: Request, res: Response) => {
                     .forEach((customer: string) => removeCustomerCurrentQueue(customer));
                 db
                     .collection('queues')
-                    .doc(requestData.queueName)
+                    .doc(requestData.businessName)
                     .update({queueSlots: new Array<string>()});
                 return res.status(200).json({general: 'successfully deactivated the queue!'});
             })
@@ -389,9 +393,33 @@ export const changeQueueStatus = async (req: Request, res: Response) => {
                 return res.status(404).json({error: "Queue does not exist"});
             });
     } else {
+        const hours: any = await db
+            .collection('businesses')
+            .where('name','==',requestData.businessName)
+            .get()
+            .then(data => {
+                const hours = data.docs[0].data().hours;
+                return {
+                    startTime: hours.startTime[getTheDayOfTheWeekForArray()],
+                    endTime: hours.endTime[getTheDayOfTheWeekForArray()],
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                return {};
+            });
+        if (!hours.endTime && !hours.startTime) {
+            return res.status(404).json({
+                general: 'could not obtain the hours of operation for this business',
+            })
+        }
+        const now = new Date("2000-01-01 10:30 PM").getHours();
+        if (now < hours.startTime || now > hours.endTime) {
+            return res.status(400).json({general: 'The store is closed now!'});
+        }
         return await db
             .collection('queues')
-            .doc(requestData.queueName)
+            .doc(requestData.businessName)
             .update({isActive: true})
             .then(() => res.status(200).json({general: 'successfully activated the queue!'}))
             .catch((err) => {
