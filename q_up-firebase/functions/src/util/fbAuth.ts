@@ -1,4 +1,4 @@
-import { admin, db } from "../util/admin";
+import { admin, db } from "./admin";
 import { Request, Response } from "express";
 
 /**

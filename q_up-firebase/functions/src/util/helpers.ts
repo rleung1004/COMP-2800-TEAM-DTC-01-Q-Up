@@ -115,6 +115,16 @@ export interface queueSlot {
 }
 
 /**
+ * Represents a Queue.
+ */
+export interface queue {
+    averageWaitTIme: number,
+    isActive: boolean,
+    queueName: string,
+    queueSlots: Array<queueSlot>,
+}
+
+/**
  * Creates a customer queueSlot.
  */
 export const createQueueSlotCredentials = (userEmail: string, lastTicketNumber: number) => {

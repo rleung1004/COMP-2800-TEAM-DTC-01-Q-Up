@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import {
-    getTellerQueueList,
+    getQueueListForEmployee,
     getQueueInfoForBusiness,
     getQueueSlotInfo,
     customerEnterQueue,
@@ -68,7 +68,7 @@ app.delete('/deleteBusiness', FBAuth, deleteBusiness);
 // ========================
 // Queue Routes
 // ========================
-app.post("/tellerQueueList", FBAuth, getTellerQueueList);
+app.post("/tellerQueueList", FBAuth, getQueueListForEmployee);
 app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
 app.get("/getCustomerQueueInfo", FBAuth, getQueueSlotInfo);
 app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
@@ -105,7 +105,7 @@ app.post('/getOnlineEmployees', FBAuth, getOnlineEmployees);
 
 
 // ========================
-// algolia exports
+// Algolia exports
 // ========================
 exports.addToIndex = functions.firestore
     .document("businesses/{businessId}")

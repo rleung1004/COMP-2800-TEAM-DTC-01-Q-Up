@@ -5,14 +5,48 @@ import {
     createQueueSlotCredentials,
     createVIPSlotCredentials,
     getTheDayOfTheWeekForArray,
-    queueSlot
+    queue,
+    queueSlot,
 } from "../util/helpers";
+
+/**
+ * Creates a queue for a business.
+ */
+export const createQueue = async (req:Request, res: Response) => {
+    const requestData = {
+        userType: req.body.userType,
+        businessName: req.body.name,
+        averageWaitTime: req.body.averageWaitTime,
+    };
+    if (requestData.userType !== 'manager') {
+        return res.status(401).json({general: 'unauthorized'});
+    }
+    const newQueue: queue = {
+        averageWaitTIme: requestData.averageWaitTime,
+        queueName: requestData.businessName,
+        queueSlots: [],
+        isActive: false,
+    };
+    return await db
+        .collection('queues')
+        .doc(requestData.businessName)
+        .set(newQueue)
+        .then(() => res.status(201).json({general: 'created the business and its queue successfully!'}))
+        .catch((err) => {
+            console.error(err);
+            return res.status(404).json({
+                general: "something went wrong!",
+                error: err,
+            })
+        })
+};
 
 /**
  * * get the queue isActive, listOfQueueSlots (with their ticket, pass) for the teller
  */
-export const getTellerQueueList = async (req: Request, res: Response) => {
+export const getQueueListForEmployee = async (req: Request, res: Response) => {
     const requestData = {
+        userType: req.body.userType,
         queueName: req.body.queueName,
     };
 
@@ -390,3 +424,4 @@ export const getFavouriteQueuesForCustomer = async (req: Request, res: Response)
         favouriteBusinesses: resData,
     });
 };
+

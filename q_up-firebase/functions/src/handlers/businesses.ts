@@ -6,6 +6,7 @@ import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
 import {firebaseConfig} from "../util/config";
+import {createQueue} from "./queues";
 
 /**
  * Registers a business.
@@ -17,11 +18,13 @@ export const registerBusiness = async (req: Request, res: Response) => {
         userType: req.body.userType,
     };
     const businessInfo = {
+        averageWaitTime: req.body.averageWaitTime,
         name: req.body.name,
         category: req.body.category,
         description: req.body.description,
         email: req.body.email,
         employees: [],
+        queue: req.body.name,
         hours: req.body.hours,
         address: req.body.address,
         website: req.body.website,
@@ -48,7 +51,7 @@ export const registerBusiness = async (req: Request, res: Response) => {
                 .collection("users")
                 .doc(req.body.userEmail)
                 .update({businessName: businessInfo.name});
-            return res.status(201).json({general: `Business ${businessInfo.name} created successfully`});
+            return createQueue(req, res);
         })
         .catch((err) => {
             console.error(err);
