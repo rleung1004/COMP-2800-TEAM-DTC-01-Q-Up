@@ -133,14 +133,6 @@ export default function StaticNav() {
               />
             </Link>
           </ListItem>
-          <ListItem button key={"Contact Us"}>
-            <Link className={classes.nodecor} to="/">
-              <ListItemText
-                className={classes.white}
-                primary={"Contact us"}
-              />
-            </Link>
-          </ListItem>
         </List>
       </Drawer>
     </nav>
