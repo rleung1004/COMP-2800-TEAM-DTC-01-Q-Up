@@ -18,8 +18,9 @@ import ConsumerProfilePage from "./pages/consumerProfile";
 import ConsumerEditProfilePage from "./pages/consumerEditProfile";
 import BusinessProfilePage from "./pages/businessProfile";
 import BusinessEditProfilePage from "./pages/businessEditProfile";
-import queueSearchPage from "./pages/queueSearch";
 import EmployeeManagementPage from "./pages/employeeManagement";
+import QueueSearchPage from "./pages/queueSearch";
+import TellerPage from "./pages/teller";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
@@ -35,7 +36,7 @@ function App() {
             <Route path="/login" component={LoginPage} exact />
             <Route path="/signup" component={SignupPage} exact />
             <Route path="/aboutUs" component={aboutUsPage} exact />
-            <Route path="/consumerRegistration" component={ConsumerRegistrationPage} exact />
+            <Route path= "/consumerRegistration" component={ConsumerRegistrationPage} exact />
             <Route path="/businessRegistration" component={BusinessRegistrationPage} exact />
             <Route path="/termsAndConditions" component={termsPage} exact />
             <Route path="/PrivacyPolicy" component={privacyPage} exact />
@@ -45,8 +46,9 @@ function App() {
             <Route path="/editConsumerProfile" component={ConsumerEditProfilePage} exact/>
             <Route path="/businessProfile" component={BusinessProfilePage} exact/>
             <Route path="/editBusinessProfile" component={BusinessEditProfilePage} exact />
-            <Route path="/searchQueues" component={queueSearchPage} exact />
+            <Route path="/searchQueues" component={QueueSearchPage} exact />
             <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
+            <Route path="/checkin" component={TellerPage} exact />
           </Switch>
         </ThemeProvider>
       </div>
