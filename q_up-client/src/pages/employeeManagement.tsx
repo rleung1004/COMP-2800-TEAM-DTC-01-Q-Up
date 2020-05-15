@@ -20,15 +20,14 @@ const useStyles = makeStyles(() => ({
 }));
 export default function EmployeeManagementPage() {
   interface passwordErrors {
-    // oldPassword?: string,
+    newEmail?: string,
     newPassword?: string;
     newPasswordConfirm?: string;
   }
 
   interface addErrors {
-    name?: string;
+    email?: string;
     password?: string;
-    passwordConfirm?: string; 
   }
 
   const addErrorObj: addErrors = {};
@@ -41,17 +40,20 @@ export default function EmployeeManagementPage() {
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [passDialogOpen, setPassDialogOpen] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
-    // oldPassword: "",
+    newEmail: "",
     newPassword: "",
     newPasswordConfirm: "",
     errors: passErrorObj,
   });
   const [addForm, setAddForm] = useState({
-    name: "",
+    email: "",
     password: "",
-    passwordConfirm: "",
     errors: addErrorObj
   });
+
+  const confirm = () => {
+    return window.confirm("Are you sure? it cannot be undone.");
+  };
 
   // const axiosConfig = {
   //   headers: {
@@ -65,7 +67,12 @@ export default function EmployeeManagementPage() {
     },
   };
 
-  const handlePasswordChange = () => {
+  const editClick = () => {
+    const index = selected.id;
+    if (index === -1) {
+      window.alert("Select an employee first.");
+      return;
+    }
     setPassDialogOpen(true);
   };
 
@@ -80,16 +87,29 @@ export default function EmployeeManagementPage() {
   };
 
   const handlePasswordSubmit = () => {
-    if (!window.confirm("Are you sure?")) {
+    const index = selected.id;
+    if (index === -1 || index > employeeList.length) {
+      window.alert("Form error. Please start again");
+      setPassDialogOpen(false);
+      setPasswordForm({
+        newEmail: "",
+        newPassword: "",
+        newPasswordConfirm: "",
+        errors: passErrorObj,
+      });
+      return;
+    }
+    if (!confirm()) {
       return;
     }
     const packet = {
-      // oldPassword: passwordForm.oldPassword,
+      employeeEmail: employeeList[index].email,
+      employeeNewEmail: "",
       password: passwordForm.newPassword,
       confirmPassword: passwordForm.newPasswordConfirm,
     };
     axios
-      .put("/changePassword", packet, axiosConfig)
+      .put("/updateEmployee", packet, axiosConfig)
       .then((res) => {
         console.log(res.data);
 
@@ -118,23 +138,46 @@ export default function EmployeeManagementPage() {
     }));
   }
 
-  const HandleAddSubmit = () => {
+  const handleAddSubmit = () => {
+    if (!window.confirm("Are you sure?")) {
+      return;
+    }
 
+    const packet = {
+      employeeEmail: addForm.email,
+      password: addForm.password
+    }
+
+    axios.post('/registerEmployee', packet, axiosConfig)
+    .then(() => {
+      window.alert("Employee registered.");
+      setGetData(true);
+    })
+    .catch((err:any) => {
+      console.log(err);
+      window.alert("Connection error. Could not register employee.");
+    });
   }
 
-  const confirm = () => {
-    return window.confirm("Are you sure? it cannot be undone.");
-  };
-
   const deleteClick = () => {
+    const index = selected.id;
+    if (index === -1) {
+      window.alert("Select an employee first.");
+      return;
+    }
     if (!confirm()) {
       return;
     }
-    axios.delete('/deleteEmployee')
+
+    const data = {
+      email: employeeList[index].email
+    }
+    
+    axios.post('/deleteEmployee', data, axiosConfig)
     .then(() => {
       setGetData(true);
     })
-    .catch(err => {
+    .catch((err:any) => {
       console.log(err);
       window.alert("Connection error");
     });
@@ -175,7 +218,7 @@ export default function EmployeeManagementPage() {
             color="primary"
             variant="contained"
             className={classes.button}
-            onClick={handlePasswordChange}
+            onClick={editClick}
             >
               Change password
             </Button>
@@ -214,29 +257,17 @@ export default function EmployeeManagementPage() {
         <DialogTitle>Change Password</DialogTitle>
         <DialogContent>
           <Grid container direction="column">
-            {/* <TextField
-          type="password"
-            color="secondary"
-            id="oldPassText"
-            label="Old password"
-            name="oldPassword"
-            onChange={handlePassFormChange}
-            value={passwordForm.oldPassword}
-            className={classes.textField}
-            helperText={passwordForm.errors.oldPassword}
-            error={passwordForm.errors.oldPassword ? true : false}
-          /> */}
+            ?
             <TextField
-              type="password"
               color="secondary"
-              id="newPassText"
-              label="New password"
-              name="newPassword"
+              id="newEmail"
+              label="New email"
+              name="newEmail"
               onChange={handlePassFormChange}
-              value={passwordForm.newPassword}
+              value={passwordForm.newEmail}
               className={classes.textField}
-              helperText={passwordForm.errors.newPassword}
-              error={passwordForm.errors.newPassword ? true : false}
+              helperText={passwordForm.errors.newEmail}
+              error={passwordForm.errors.newEmail ? true : false}
             />
             <TextField
               type="password"
@@ -283,37 +314,25 @@ export default function EmployeeManagementPage() {
             <TextField
             color="secondary"
             id="newEmployeeName"
-            label="Employee name"
-            name="name"
+            label="Employee email"
+            name="email"
             onChange={handlePassFormChange}
-            value={addForm.name}
+            value={addForm.email}
             className={classes.textField}
-            helperText={addForm.errors.name}
-            error={addForm.errors.name ? true : false}
+            helperText={addForm.errors.email}
+            error={addForm.errors.email ? true : false}
           />
             <TextField
               type="password"
               color="secondary"
               id="newPassText"
               label="New password"
-              name="newPassword"
+              name="password"
               onChange={handleAddFormChange}
               value={addForm.password}
               className={classes.textField}
               helperText={addForm.errors.password}
               error={addForm.errors.password ? true : false}
-            />
-            <TextField
-              type="password"
-              color="secondary"
-              id="passwordConfirm"
-              label="confirm password"
-              name="passwordConfirm"
-              onChange={handleAddFormChange}
-              value={addForm.passwordConfirm}
-              className={classes.textField}
-              helperText={addForm.errors.passwordConfirm}
-              error={addForm.errors.passwordConfirm ? true : false}
             />
           </Grid>
         </DialogContent>
@@ -330,7 +349,7 @@ export default function EmployeeManagementPage() {
             variant="contained"
             color="secondary"
             className={classes.button}
-            onClick={HandleAddSubmit}
+            onClick={handleAddSubmit}
           >
             Ok
           </Button>
