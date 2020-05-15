@@ -16,12 +16,12 @@ export default function EmpolyeeListRow(props:any) {
    return (
       <section>
          <Box className={colorClass} onClick={onClickHandler}>
-            <Grid container justify='flex-start' alignItems='flex-start'>
-               <Grid item xs={3}>
+            <Grid container justify="center">
+               <Grid item xs={6}>
                   <Typography variant="body1">{data.email}</Typography>
                </Grid>
-               <Grid item xs={3}>
-                  <Typography variant="body1">{data.isOnline}</Typography>
+               <Grid item xs={6}>
+                  <Typography variant="body1">{data.isOnline? "Online": "Away"}</Typography>
                </Grid>
             </Grid>
          </Box>

@@ -37,3 +37,35 @@ export function mockQueues(){
 export function mockFavs() {
     return ["mock business5", "mock business9", "mock business1", "mock business6"];
 }
+
+export function mockEmployees() {
+    return [
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+{email: "employee@biz.ca", isOnline: false},
+    ];
+}
