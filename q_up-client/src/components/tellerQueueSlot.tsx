@@ -4,21 +4,21 @@ import { Grid, Typography, Box } from "@material-ui/core";
 
 export default function QueueSlot(props: any) {
   const slot = props.data;
-  
+
   const colorClass = props.isSelected
     ? "queueSlotBox selected"
     : "queueSlotBox notSelected";
-  
-    const onClickHandler = () => {
-    props.selectHandler()
+
+  const onClickHandler = () => {
+    props.selectHandler();
   };
- 
+
   return (
     <Box className={colorClass} onClick={onClickHandler}>
       <Grid container alignItems="center" justify="space-around">
         <Grid item xs={6}>
           <Typography variant="body1" align="center" display="inline">
-            Number
+            Number:
           </Typography>
           <Typography variant="body2" align="center" display="inline">
             {" " + slot.ticketNumber}
@@ -26,7 +26,7 @@ export default function QueueSlot(props: any) {
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body1" align="center" display="inline">
-            Pass
+            Pass:
           </Typography>
           <Typography variant="body2" align="center" display="inline">
             {" " + slot.password}
