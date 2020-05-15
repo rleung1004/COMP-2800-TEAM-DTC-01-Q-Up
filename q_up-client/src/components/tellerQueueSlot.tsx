@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/tellerQueueSlot.scss";
+import "../styles/selectors.scss";
 import { Grid, Typography, Box } from "@material-ui/core";
 
 export default function QueueSlot(props: any) {
