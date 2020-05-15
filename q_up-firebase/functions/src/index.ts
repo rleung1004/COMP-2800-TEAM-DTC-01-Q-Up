@@ -1,6 +1,8 @@
 import * as functions from "firebase-functions";
-import { getQueue, getQueueSlotInfo, customerEnterQueue, vipEnterQueue, abandonQueueSlot, changeQueueStatus,
-    getFavouriteQueuesForCustomer, changeStatusOfFavouriteBusiness } from "./controllers/queues";
+import {
+    getQueue, getQueueSlotInfo, customerEnterQueue, vipEnterQueue, abandonQueue, changeQueueStatus,
+    getFavouriteQueuesForCustomer, changeStatusOfFavouriteBusiness, checkInQueue
+} from "./controllers/queues";
 import {boothEnterQueue, createNewBooth} from "./controllers/booths";
 import * as express from "express";
 import * as cors from "cors";
@@ -9,7 +11,7 @@ import { updateCustomerInfo, deleteCustomer, getCustomer, registerCustomer } fro
 import { updateBusiness, uploadBusinessImage, getBusiness, registerBusiness, deleteBusiness } from "./controllers/businesses";
 import {FirebaseAuthentication} from "./util/firebaseAuthentication";
 import algoliasearch from "algoliasearch";
-import { checkInQueue, registerEmployee, deleteEmployee, getListOfAllEmployees, getOnlineEmployees, updateEmployee} from "./controllers/employees";
+import { registerEmployee, deleteEmployee, getEmployees, getOnlineEmployees, updateEmployee} from "./controllers/employees";
 
 // ========================
 // App Configuration
@@ -60,8 +62,7 @@ app.delete("/deleteCustomer", FirebaseAuthentication, deleteCustomer);
 app.post('/registerEmployee', FirebaseAuthentication, registerEmployee);
 app.put('/updateEmployee', FirebaseAuthentication, updateEmployee);
 app.delete('/deleteEmployee', FirebaseAuthentication, deleteEmployee);
-app.post('/checkInQueue', FirebaseAuthentication, checkInQueue);
-app.get('/getListOfAllEmployees', FirebaseAuthentication, getListOfAllEmployees);
+app.get('/getEmployees', FirebaseAuthentication, getEmployees);
 app.get('/getOnlineEmployees', FirebaseAuthentication, getOnlineEmployees);
 
 
@@ -71,9 +72,10 @@ app.get('/getOnlineEmployees', FirebaseAuthentication, getOnlineEmployees);
 app.get("/getQueue", FirebaseAuthentication, getQueue);
 app.get("/getCustomerQueueInfo", FirebaseAuthentication, getQueueSlotInfo);
 app.post("/customerEnterQueue", FirebaseAuthentication, customerEnterQueue);
-app.post("/VIPEnterQueue", FirebaseAuthentication, vipEnterQueue);
-app.put("/abandonQueueSlot", FirebaseAuthentication, abandonQueueSlot);
+app.put("/VIPEnterQueue", FirebaseAuthentication, vipEnterQueue);
+app.put("/abandonQueue", FirebaseAuthentication, abandonQueue);
 app.put("/changeQueueStatus", FirebaseAuthentication, changeQueueStatus);
+app.post('/checkInQueue', FirebaseAuthentication, checkInQueue);
 app.get("/getFavouriteQueues", FirebaseAuthentication, getFavouriteQueuesForCustomer);
 app.put('/changeFavoriteQueueStatus',FirebaseAuthentication, changeStatusOfFavouriteBusiness);
 

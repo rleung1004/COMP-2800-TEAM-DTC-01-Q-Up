@@ -40,146 +40,6 @@ const getOnlineEmployees = async (businessName: string) => {
 };
 
 /**
- * gets the queue information.
- * first, checks if the user is a employee or manager, then checks if the or manager employee belongs to the business,
- * then gets the list of
- * queue slots information.
- *
- * @param req:      express Request Object
- * @param res:      express Response Object
- * @returns         Response the response data with the status code:
- *
- *                  - 401 if the user is not of type employee or manager
- *                  - 404 if employee is not part of the business
- *                  - 404 if can not find the number of online employees
- *                  - 500 if an error occurs in the midst of the query
- *                  - 200 if successful
- */
-export const getQueue = async (req: Request, res: Response) => {
-    const requestData = {
-        userEmail: req.body.userEmail,
-        userType: req.body.userType,
-        businessName: req.body.businessName,
-    };
-    if (requestData.userType !== "employee" && requestData.userType !== "manager") {
-        return res.status(401).json({general: "unauthorized. Login as an employee or manager of the business!"});
-    }
-    if (requestData.userType === 'employee') {
-        const isEmployeeOfBusiness: boolean = await db
-            .collection("users")
-            .where("email", "==", requestData.userEmail)
-            .get()
-            .then((data) => data.docs[0].data().businessName === requestData.businessName)
-            .catch((err) => {
-                console.error(err);
-                return false;
-            });
-        if (!isEmployeeOfBusiness) {
-            return res.status(404).json({general: "employee is not part of the business!"});
-        }
-    }
-    return await db
-        .collection("businesses")
-        .where("name", "==", requestData.businessName)
-        .get()
-        .then(async (data) => {
-            const queue: any = data.docs[0].data().queue;
-            const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
-            if (onlineEmployees === -1) {
-                return res.status(404).json({
-                    general: "did not obtain the number of online employees",
-                });
-            }
-            return res.status(200).json({
-                general: "obtained the queue information successfully!",
-                queue: {
-                    queueList: queue.queueSlots,
-                    isActive: queue.isActive,
-                    currentWaitTime: (queue.queueSlots.length * queue.averageWaitTime) / onlineEmployees,
-                    queueLength: queue.queueSlots.length,
-                },
-            });
-        })
-        .catch(async (err) => {
-            console.error(err);
-            return res.status(500).json({
-                general: "Internal Error. Something went wrong!",
-                error: await err.toString(),
-            });
-        });
-};
-
-/**
- * Gets the customers' Queue Slot information.
- * first, checks if the user is a customer, then gets queue status and finds the Queue Slot and returns it from the
- * database.
- *
- * @param req:      express Request Object
- * @param res:      express Response Object
- * @returns         Response the response data with the status code:
- *
- *                  - 401 if the user is not of type customer
- *                  - 404 if Queue is no longer active
- *                  - 404 if customer is not in a queue
- *                  - 404 if can not find the customer position.
- *                  - 500 if an error occurs in the midst of the query
- *                  - 200 if successful
- */
-export const getQueueSlotInfo = async (req: Request, res: Response) => {
-    const requestData = {
-        userType: req.body.userType,
-        userEmail: req.body.userEmail,
-        currentQueue: req.body.currentQueue,
-    };
-    if (requestData.userType !== "customer") {
-        return res.status(401).json({general: "unauthorized. Login as a customer!"});
-    }
-    if (requestData.currentQueue === null) {
-        return res.status(404).json({general: "You are not in a queue"});
-    }
-    return await db
-        .collection("businesses")
-        .where("name", "==", requestData.currentQueue)
-        .get()
-        .then(async (data) => {
-            const queue: any = data.docs[0].data().queue;
-            if (!queue.isActive) {
-                db
-                    .collection("users")
-                    .doc(requestData.userEmail)
-                    .update({currentQueue: null});
-                return res.status(404).json({
-                    general: "the queue is no longer active!",
-                });
-            }
-            const queueSlots = queue.queueSlots;
-            const queueSlotIndex: number = queueSlots.findIndex((queueSlot: any) => {
-                return queueSlot.customer === requestData.userEmail;
-            });
-            if (queueSlotIndex === -1) {
-                return res.status(404).json({general: "could not find the customer position."});
-            }
-            const onlineEmployees: number = await getOnlineEmployees(requestData.currentQueue);
-            return res.status(200).json({
-                general: "obtained the customer's current queue information successfully",
-                queueSlotInfo: {
-                    ticketNumber: queueSlots[queueSlotIndex].ticketNumber,
-                    password: queueSlots[queueSlotIndex].password,
-                    currentWaitTime: (queueSlotIndex * queue.averageWaitTime) / onlineEmployees,
-                    queuePosition: queueSlotIndex + 1,
-                },
-            });
-        })
-        .catch(async (err) => {
-            console.error(err);
-            return res.status(500).json({
-                general: "Internal Error. Something went wrong!",
-                error: await err.toString(),
-            });
-        });
-};
-
-/**
  * Adds a logged in customer to a queue.
  * first, checks the userType to be a customer then, updates the queues collection by adding the new queueSlot,
  * then updates the current queue of the customer.
@@ -261,7 +121,7 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
  *                  - 500 if an error occurs in the midst of the query
  *                  - 202 if successful
  */
-export const abandonQueueSlot = async (req: Request, res: Response) => {
+export const abandonQueue = async (req: Request, res: Response) => {
     const requestData = {
         currentQueue: req.body.currentQueue,
         userEmail: req.body.userEmail,
@@ -344,6 +204,228 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
                     password: VIPSlot.password,
                     ticketNumber: VIPSlot.ticketNumber,
                 }
+            });
+        })
+        .catch(async (err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
+            });
+        });
+};
+
+/**
+ * Remove the users from the queue by the employee.
+ * first, checks if the user is an employee, then checks if the employee belongs to the business, and then deletes the
+ * customer (queueSlot belonging to the customer) from the queue of the business. If the deleted queue slot is a
+ * singed-in customer, changes the currentQueue of them as well.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type employee
+ *                  - 404 if the employee is not enrolled in the business
+ *                  - 404 if the employee is not found
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 202 if successful
+ */
+export const checkInQueue = async (req: Request, res: Response) => {
+    const requestData = {
+        userEmail: req.body.userEmail,
+        userType: req.body.userType,
+        businessName: req.body.businessName,
+        ticketNumber: req.body.ticketNumber,
+    };
+    if (requestData.userType !== "employee") {
+        return res.status(401).json({general: "unauthorized. Login as an employee of the business!"});
+    }
+    const isAuthorized: boolean = await db
+        .collection("businesses")
+        .where("name", "==", requestData.businessName)
+        .get()
+        .then((data) => {
+            let employeeList: Array<string> = data.docs[0].data().employees;
+            return employeeList.includes(requestData.userEmail);
+        })
+        .catch(err => {
+            console.error(err);
+            return false;
+        });
+    if (!isAuthorized) {
+        return res.status(401).json({
+            general: "the employee is unauthorized to change the queue of another business"
+        });
+    }
+    const customerLookUp: any = await db
+        .collection("businesses")
+        .where("name", "==", requestData.businessName)
+        .get()
+        .then((data) => {
+            const queue = data.docs[0].data().queue;
+            let queueSlots: Array<any> = queue.queueSlots;
+            const result: any = queueSlots.find((queueSlot) => queueSlot.ticketNumber === requestData.ticketNumber);
+            queueSlots.splice(queueSlots.indexOf(result), 1);
+            queue.queueSlots = queueSlots;
+            db.collection("businesses").doc(requestData.businessName).update({queue: queue});
+            return result;
+        })
+        .catch(err => {
+            console.error(err);
+            return null;
+        });
+    if (customerLookUp === null) {
+        return res.status(404).json({general: "Did not find the customer to checkIn!"});
+    }
+    return await db
+        .collection("users")
+        .doc(customerLookUp.customer)
+        .get()
+        .then((docSnapshot) => {
+            if (docSnapshot.exists) {
+                db.collection("users").doc(customerLookUp.customer).update({currentQueue: null});
+            }
+            return res.status(202).json({general: "Removed the customer from the queue Successfully",});
+        })
+        .catch(async (err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
+            });
+        });
+};
+
+/**
+ * gets the queue information.
+ * first, checks if the user is a employee or manager, then checks if the or manager employee belongs to the business,
+ * then gets the list of
+ * queue slots information.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type employee or manager
+ *                  - 404 if employee is not part of the business
+ *                  - 404 if can not find the number of online employees
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
+ */
+export const getQueue = async (req: Request, res: Response) => {
+    const requestData = {
+        userEmail: req.body.userEmail,
+        userType: req.body.userType,
+        businessName: req.body.businessName,
+    };
+    if (requestData.userType !== "employee" && requestData.userType !== "manager") {
+        return res.status(401).json({general: "unauthorized. Login as an employee or manager of the business!"});
+    }
+    if (requestData.userType === 'employee') {
+        const isEmployeeOfBusiness: boolean = await db
+            .collection("users")
+            .where("email", "==", requestData.userEmail)
+            .get()
+            .then((data) => data.docs[0].data().businessName === requestData.businessName)
+            .catch((err) => {
+                console.error(err);
+                return false;
+            });
+        if (!isEmployeeOfBusiness) {
+            return res.status(404).json({general: "employee is not part of the business!"});
+        }
+    }
+    return await db
+        .collection("businesses")
+        .where("name", "==", requestData.businessName)
+        .get()
+        .then(async (data) => {
+            const queue: any = data.docs[0].data().queue;
+            const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
+            if (onlineEmployees === -1) {
+                return res.status(404).json({
+                    general: "did not obtain the number of online employees",
+                });
+            }
+            return res.status(200).json({
+                general: "obtained the queue information successfully!",
+                queue: {
+                    queueList: queue.queueSlots,
+                    isActive: queue.isActive,
+                    currentWaitTime: Math.round((queue.queueSlots.length * queue.averageWaitTime) / onlineEmployees),
+                    queueLength: queue.queueSlots.length,
+                },
+            });
+        })
+        .catch(async (err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
+            });
+        });
+};
+
+/**
+ * Gets the customers' Queue Slot information.
+ * first, checks if the user is a customer, then gets queue status and finds the Queue Slot and returns it from the
+ * database.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type customer
+ *                  - 404 if Queue is no longer active
+ *                  - 404 if customer is not in a queue
+ *                  - 404 if can not find the customer position.
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
+ */
+export const getQueueSlotInfo = async (req: Request, res: Response) => {
+    const requestData = {
+        userType: req.body.userType,
+        userEmail: req.body.userEmail,
+        currentQueue: req.body.currentQueue,
+    };
+    if (requestData.userType !== "customer") {
+        return res.status(401).json({general: "unauthorized. Login as a customer!"});
+    }
+    if (requestData.currentQueue === null) {
+        return res.status(404).json({general: "You are not in a queue"});
+    }
+    return await db
+        .collection("businesses")
+        .where("name", "==", requestData.currentQueue)
+        .get()
+        .then(async (data) => {
+            const queue: any = data.docs[0].data().queue;
+            if (!queue.isActive) {
+                db
+                    .collection("users")
+                    .doc(requestData.userEmail)
+                    .update({currentQueue: null});
+                return res.status(404).json({
+                    general: "the queue is no longer active!",
+                });
+            }
+            const queueSlots = queue.queueSlots;
+            const queueSlotIndex: number = queueSlots.findIndex((queueSlot: any) => {
+                return queueSlot.customer === requestData.userEmail;
+            });
+            if (queueSlotIndex === -1) {
+                return res.status(404).json({general: "could not find the customer position."});
+            }
+            const onlineEmployees: number = await getOnlineEmployees(requestData.currentQueue);
+            return res.status(200).json({
+                general: "obtained the customer's current queue information successfully",
+                queueSlotInfo: {
+                    ticketNumber: queueSlots[queueSlotIndex].ticketNumber,
+                    password: queueSlots[queueSlotIndex].password,
+                    currentWaitTime: (queueSlotIndex * queue.averageWaitTime) / onlineEmployees,
+                    queuePosition: queueSlotIndex + 1,
+                },
             });
         })
         .catch(async (err) => {

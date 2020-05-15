@@ -148,6 +148,12 @@ export const updateBusiness = async (req: Request, res: Response) => {
             .update({businessName: businessInfo.name})
             .catch(err => console.error(err));
     }
+    if (oldBusinessInfo.queue.queueSlots.length !==0) {
+        const customers: Array<string> = oldBusinessInfo.queue.queueSlots.map((queueSlot: any) => queueSlot.customer);
+        for (const customer of customers) {
+            await db.collection('users').doc(customer).update({currentQueue: businessInfo.name});
+        }
+    }
     await db
         .collection('users')
         .where('businessName', '==', requestData.businessName)

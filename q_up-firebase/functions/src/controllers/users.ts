@@ -164,7 +164,14 @@ export const login = async (req: Request, res: Response) => {
                                     Object.assign(resData, {userId, userType, userEmail});
                                     return res.status(201).json(resData);
                                 });
-                        });
+                        })
+                        .catch(async err => {
+                            console.error(err);
+                            return res.status(404).json({
+                                general:"Account does not exist!",
+                                error: await err.toString(),
+                            });
+                        })
                 });
         })
         .catch(async (err) => {
@@ -217,10 +224,7 @@ export const logout = async (req: Request, res: Response) => {
                     .doc(requestData.email)
                     .update({isOnline: false})
             }
-            return await admin
-                .auth()
-                .revokeRefreshTokens(userUserId)
-                .then(() => res.status(200).json({general: "logged out successfully"}))
+            return  res.status(200).json({general: "logged out successfully"});
         })
         .catch(async (err) => {
             console.error(err);

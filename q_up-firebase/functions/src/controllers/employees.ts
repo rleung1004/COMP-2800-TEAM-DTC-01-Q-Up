@@ -88,7 +88,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
     const requestData = {
         userType: req.body.userType,
         businessName: req.body.businessName,
-        employeePreviousEmail: req.body.employeeEmail,
+        employeeEmail: req.body.employeeEmail,
         employeeNewEmail: req.body.employeeNewEmail,
     };
     if (requestData.userType !== "manager") {
@@ -98,14 +98,14 @@ export const updateEmployee = async (req: Request, res: Response) => {
         .collection("businesses")
         .where("name", "==", requestData.businessName)
         .get()
-        .then((data) => {
+        .then(async (data) => {
             let employeeList: Array<string> = data.docs[0].data().employees;
-            const result: boolean = employeeList.includes(requestData.employeePreviousEmail);
+            const result: boolean = employeeList.includes(requestData.employeeEmail);
             if (result) {
-                db.collection("businesses").doc(requestData.businessName).update({
-                        employees: firebase.firestore.FieldValue.arrayRemove(requestData.employeePreviousEmail),
+                await db.collection("businesses").doc(requestData.businessName).update({
+                        employees: firebase.firestore.FieldValue.arrayRemove(requestData.employeeEmail),
                     });
-                db.collection("businesses").doc(requestData.businessName).update({
+                await db.collection("businesses").doc(requestData.businessName).update({
                         employees: firebase.firestore.FieldValue.arrayUnion(requestData.employeeNewEmail),
                     });
             }
@@ -121,7 +121,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
     const oldEmployeeInfo: any = await db
         .collection("users")
         .where("userType", "==", "employee")
-        .where("email", "==", requestData.employeePreviousEmail)
+        .where("email", "==", requestData.employeeEmail)
         .get()
         .then((data) => {
             return {
@@ -135,7 +135,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
     }
     return await db
         .collection("users")
-        .doc(requestData.employeePreviousEmail)
+        .doc(requestData.employeeEmail)
         .delete()
         .then(() => {
             db
@@ -242,88 +242,6 @@ export const deleteEmployee = async (req: Request, res: Response) => {
 };
 
 /**
- * Remove the users from the queue by the employee.
- * first, checks if the user is an employee, then checks if the employee belongs to the business, and then deletes the
- * customer (queueSlot belonging to the customer) from the queue of the business. If the deleted queue slot is a
- * singed-in customer, changes the currentQueue of them as well.
- *
- * @param req:      express Request Object
- * @param res:      express Response Object
- * @returns         Response the response data with the status code:
- *
- *                  - 401 if the user is not of type employee
- *                  - 404 if the employee is not enrolled in the business
- *                  - 404 if the employee is not found
- *                  - 500 if an error occurs in the midst of the query
- *                  - 202 if successful
- */
-export const checkInQueue = async (req: Request, res: Response) => {
-    const requestData = {
-        userEmail: req.body.userEmail,
-        userType: req.body.userType,
-        businessName: req.body.businessName,
-        ticketNumber: req.body.ticketNumber,
-    };
-    if (requestData.userType !== "employee") {
-        return res.status(401).json({general: "unauthorized. Login as an employee of the business!"});
-    }
-    const isAuthorized: boolean = await db
-        .collection("businesses")
-        .where("name", "==", requestData.businessName)
-        .get()
-        .then((data) => {
-            let employeeList: Array<string> = data.docs[0].data().employees;
-            return employeeList.includes(requestData.userEmail);
-        })
-        .catch(err => {
-            console.error(err);
-            return false;
-        });
-    if (!isAuthorized) {
-        return res.status(401).json({
-            general: "the employee is unauthorized to change the queue of another business"
-        });
-    }
-    const customerLookUp: any = await db
-        .collection("businesses")
-        .where("name", "==", requestData.businessName)
-        .get()
-        .then((data) => {
-            const queue = data.docs[0].data().queue;
-            let queueSlots: Array<any> = queue.queueSlots;
-            const result: any = queueSlots.find((queueSlot) => queueSlot.ticketNumber === requestData.ticketNumber);
-            queueSlots.splice(queueSlots.indexOf(result), 1);
-            queue.queueSlots = queueSlots;
-            db.collection("businesses").doc(requestData.businessName).update({queue: queue});
-            return result;
-        })
-        .catch(err => {
-            console.error(err);
-            return null;
-        });
-    if (customerLookUp === null) {
-        return res.status(404).json({general: "Did not find the customer to checkIn!"});
-    }
-    return await db
-        .collection("users")
-        .doc(customerLookUp.customer)
-        .get()
-        .then((docSnapshot) => {
-            if (docSnapshot.exists) {
-                db.collection("users").doc(customerLookUp.customer).update({currentQueue: null});
-            }
-            return res.status(202).json({general: "Removed the customer from the queue Successfully",});
-        })
-        .catch(async (err) => {
-            console.error(err);
-            return res.status(500).json({
-                general: "Internal Error. Something went wrong!",
-                error: await err.toString(),
-            });
-        });
-};
-
-/**
  * Gets the list of all employees for a business.
  * first, checks if the user is a manager, then queries all the employees of the business, and for each one of them,
  * gets their appropriate information.
@@ -337,7 +255,7 @@ export const checkInQueue = async (req: Request, res: Response) => {
  *                  - 500 if an error occurs in the midst of the query
  *                  - 200 if successful
  */
-export const getListOfAllEmployees = async (req: Request, res: Response) => {
+export const getEmployees = async (req: Request, res: Response) => {
     const requestData = {
         userType: req.body.userType,
         businessName: req.body.businessName,
@@ -357,7 +275,10 @@ export const getListOfAllEmployees = async (req: Request, res: Response) => {
                 return res.status(404).json({general: "did not find any employees!"});
             }
             dataList.docs.forEach((data) => {
-                employeeInfoList[data.data().email] = data.data();
+                employeeInfoList[data.data().email] = {
+                    email: data.data().email,
+                    isOnline: data.data().isOnline,
+                };
             });
             return res.status(200).json({
                 general: "obtained employees information successfully",
