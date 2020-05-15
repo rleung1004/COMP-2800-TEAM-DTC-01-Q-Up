@@ -93,7 +93,6 @@ export default function LoginPage() {
                   })
                );
             }
-            setFormState((prevState) => ({ ...prevState, loading: false }));
             switch (res.data.userType) {
                case 'customer':
                   history.push('/consumerDashboard');
