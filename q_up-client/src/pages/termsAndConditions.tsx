@@ -1,15 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/static/Header";
 import Footer from "../components/static/Footer";
 import "../styles/termsAndPrivacy.scss";
+import StaticNav from "src/components/staticNav";
+import EasterEgg from "src/components/easterEgg";
 
-export default function termsPage() {
+export default function TermsPage() {
+  const [eggCount, setEggcount] = useState({ value: 0 });
+  const [showEgg, setShowEgg] = useState({ value: false });
+
+  const exitEgg = () => {
+    setShowEgg({ value: false });
+  };
+  const startEgg = () => {
+    setShowEgg({ value: true });
+  };
+
+  const layEggs = () => {
+    if (3 < eggCount.value) {
+      startEgg();
+      setEggcount({ value: -1 });
+    } else {
+      setEggcount({ value: eggCount.value + 1 });
+    }
+  };
+
   return (
     <>
-      <Header />
+      <Header Nav={StaticNav} />
+      {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : <> </>}
       <main className="term-and-conditions">
         <div>
-          <h1>Terms and Conditions</h1>
+          <h1 onClick={layEggs}>Terms and Conditions</h1>
           <p>Last updated: May 05, 2020</p>
         </div>
 
@@ -293,6 +315,7 @@ export default function termsPage() {
             </li>
           </ul>
         </section>
+        {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : <> </>}
       </main>
       <Footer />
     </>

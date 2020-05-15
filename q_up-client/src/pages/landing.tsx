@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/static/Header";
 import Footer from "../components/static/Footer";
@@ -7,7 +7,6 @@ import { Grid } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import StaticNav from "../components/staticNav";
 import { makeStyles } from "@material-ui/core/styles";
-import EasterEgg from "../components/easterEgg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,17 +21,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LandingPage() {
-  const [showEgg, setShowEgg] = useState({ value: false });
-  const exitEgg = () => {
-    setShowEgg({ value: false });
-  };
-  const startEgg = () => {
-    setShowEgg({ value: true });
-  };
   const classes = useStyles();
   return (
     <>
-      {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : null}
       <Header Nav={StaticNav} />
       <main>
         <Grid
@@ -43,7 +34,7 @@ export default function LandingPage() {
         >
           <Grid item xs={12}>
             <header id="landing-header">
-              <h2 onClick={startEgg}>No more queues with Q-UP</h2>
+              <h2>No more queues with Q-UP</h2>
               <p>Queue from home on your favorite grocers, clinics and more!</p>
             </header>
           </Grid>

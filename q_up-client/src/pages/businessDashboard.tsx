@@ -70,7 +70,7 @@ export default function BusinessDashboardPage() {
 
    return (
       <>
-         <Header Nav={BusinessNav} />
+         <Header Nav={BusinessNav} logout/>
          <header className={classes.pageTitleContainer}>
             <Typography variant='h2' className={classes.pageTitle}>
                Business Name

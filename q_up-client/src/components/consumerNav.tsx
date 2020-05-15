@@ -124,36 +124,29 @@ export default function ConsumerNav() {
             <Divider />
 
             <List>
-               <ListItem button key={'Home'}>
-                  <Link className={classes.nodecor} to='/'>
-                     Home
-                  </Link>
-               </ListItem>
-               <ListItem button key={'View Profile'}>
+               <ListItem button key={'Dashboard'}>
+                  <Link className={classes.nodecor} to='/consumerDashboard'>
                   <ListItemText
                      className={classes.white}
-                     primary={'View Profile'}
+                     primary={'Dashboard'}
                   />
-               </ListItem>
-               <ListItem button key={'Search Queues'}>
-                  <ListItemText
-                     className={classes.white}
-                     primary={'Search Queues'}
-                  />
-               </ListItem>
-               <ListItem button key={'Help'}>
-                  <ListItemText className={classes.white} primary={'Help'} />
-               </ListItem>
-               <ListItem button key={'About Us'}>
-                  <Link className={classes.nodecor} to='/aboutUs'>
-                     About Us
                   </Link>
                </ListItem>
-            </List>
-            <Divider />
-            <List>
-               <ListItem button key={'Logout'}>
-                  <ListItemText className={classes.white} primary={'Logout'} />
+               <ListItem button key={'profile'}>
+                  <Link className={classes.nodecor} to='/consumerProfile'>
+                  <ListItemText
+                     className={classes.white}
+                     primary={'Profile'}
+                  />
+                  </Link>
+               </ListItem>
+               <ListItem button key={'SearchQueues'}>
+                  <Link className={classes.nodecor} to='/searchQueues'>
+                  <ListItemText
+                     className={classes.white}
+                     primary={'Search queues'}
+                  />
+                  </Link>
                </ListItem>
             </List>
          </Drawer>

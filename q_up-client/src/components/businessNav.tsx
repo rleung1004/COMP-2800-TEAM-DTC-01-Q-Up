@@ -125,48 +125,34 @@ export default function BusinessNav() {
             <Divider />
 
             <List>
-               <ListItem button key={'Home'}>
-                  <Link className={classes.nodecor} to='/'>
-                     Home
+               <ListItem button key={'Dashboard'}>
+                  <Link className={classes.nodecor} to='/businessDashboard'>
+                  <ListItemText
+                     className={classes.white}
+                     primary={'Dashboard'}
+                  />
                   </Link>
                </ListItem>
-               <ListItem button key={'View Profile'}>
+               <ListItem button key={'employeeManagement'}>
+                  <Link className={classes.nodecor} to='/employeeManagement'>
                   <ListItemText
                      className={classes.white}
-                     primary={'View Profile'}
+                     primary={'Employees'}
                   />
+                  </Link>
                </ListItem>
-               <ListItem button key={'View Analytics'}>
+               <ListItem button key={'bizProfile'}>
+                  <Link className={classes.nodecor} to='/businessProfile'>
                   <ListItemText
                      className={classes.white}
-                     primary={'View Analytics'}
+                     primary={'Business profile'}
                   />
-               </ListItem>
-               <ListItem button key={'Manage Booth'}>
-                  <ListItemText
-                     className={classes.white}
-                     primary={'Manage Booth'}
-                  />
-               </ListItem>
-               <ListItem button key={'Manage Employees'}>
-                  <ListItemText
-                     className={classes.white}
-                     primary={'Manage Employees'}
-                  />
-               </ListItem>
-               <ListItem button key={'Help'}>
-                  <ListItemText className={classes.white} primary={'Help'} />
+                  </Link>
                </ListItem>
                <ListItem button key={'About Us'}>
                   <Link className={classes.nodecor} to='/aboutUs'>
-                     About Us
+                  <ListItemText className={classes.white} primary={'About us'} />
                   </Link>
-               </ListItem>
-            </List>
-            <Divider />
-            <List>
-               <ListItem button key={'Logout'}>
-                  <ListItemText className={classes.white} primary={'Logout'} />
                </ListItem>
             </List>
          </Drawer>
