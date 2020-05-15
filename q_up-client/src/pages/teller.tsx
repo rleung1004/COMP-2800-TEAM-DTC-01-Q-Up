@@ -119,11 +119,6 @@ export default function TellerPage() {
         console.log(
           `Removed ticket number ${checkInData.ticketNumber} successfully`
         );
-        let newQueueState = queueList
-          .slice(0, index)
-          .concat(queueList.slice(index, -1));
-
-        setQueueList(newQueueState);
         setGetData(true);
       })
       .catch((err) => {
