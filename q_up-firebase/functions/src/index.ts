@@ -1,13 +1,13 @@
 import * as functions from "firebase-functions";
 import {
-    getQueueListForEmployee,
+    getQueue,
     getQueueInfoForBusiness,
     getQueueSlotInfo,
     customerEnterQueue,
     VIPEnterQueue,
     abandonQueueSlot,
     changeQueueStatus,
-    getFavouriteQueuesForCustomer,
+    getFavouriteQueuesForCustomer, changeStatusOfFavouriteBusiness,
 } from "./handlers/queues";
 import {boothEnterQueue, createNewBooth} from "./handlers/booths";
 import * as express from "express";
@@ -27,7 +27,7 @@ import {FBAuth} from "./util/fbAuth";
 import algoliasearch from "algoliasearch";
 import {
     checkInQueue,
-    createNewEmployee,
+    registerEmployee,
     deleteEmployee,
     getListOfAllEmployees, getOnlineEmployees,
     updateEmployee
@@ -74,11 +74,21 @@ app.put("/updateCustomer", FBAuth, updateCustomerInfo);
 app.delete("/deleteCustomer", FBAuth, deleteCustomer);
 
 
+// ========================
+// Employee Routes
+// ========================
+app.post('/registerEmployee', FBAuth, registerEmployee);
+app.put('/updateEmployee', FBAuth, updateEmployee);
+app.delete('/deleteEmployee', FBAuth, deleteEmployee);
+app.post('/checkInQueue', FBAuth, checkInQueue);
+app.get('/getListOfAllEmployees', FBAuth, getListOfAllEmployees);
+app.get('/getOnlineEmployees', FBAuth, getOnlineEmployees);
+
 
 // ========================
 // Queue Routes
 // ========================
-app.post("/tellerQueueList", FBAuth, getQueueListForEmployee);
+app.get("/getQueue", FBAuth, getQueue);
 app.get("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
 app.get("/getCustomerQueueInfo", FBAuth, getQueueSlotInfo);
 app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
@@ -86,24 +96,13 @@ app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
 app.put("/abandonQueueSlot", FBAuth, abandonQueueSlot);
 app.put("/changeQueueStatus", FBAuth, changeQueueStatus);
 app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
-
+app.put('/changeFavoriteQueueStatus',FBAuth, changeStatusOfFavouriteBusiness);
 
 // ========================
 // Booth Routes
 // ========================
 app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
 app.post("/createNewBooth", FBAuth, createNewBooth);
-
-
-// ========================
-// Employee Routes
-// ========================
-app.post('/createEmployee', FBAuth, createNewEmployee);
-app.put('/updateEmployee', FBAuth, updateEmployee);
-app.delete('/deleteEmployee', FBAuth, deleteEmployee);
-app.post('/checkInQueue', FBAuth, checkInQueue);
-app.get('/getListOfAllEmployees', FBAuth, getListOfAllEmployees);
-app.get('/getOnlineEmployees', FBAuth, getOnlineEmployees);
 
 
 // ========================

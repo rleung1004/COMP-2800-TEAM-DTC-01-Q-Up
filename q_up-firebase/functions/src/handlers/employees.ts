@@ -14,7 +14,7 @@ import * as firebase from "firebase-admin";
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if successful
  */
-export const createNewEmployee = async (req: Request, res: Response) => {
+export const registerEmployee = async (req: Request, res: Response) => {
     const requestData = {
         userType: req.body.userType,
         password: req.body.password,
@@ -66,9 +66,9 @@ export const createNewEmployee = async (req: Request, res: Response) => {
 export const updateEmployee = async (req: Request, res: Response) => {
     const requestData = {
         userType: req.body.userType,
-        employeePreviousCredentials: req.body.employeePreviousCredentials,
-        employeeNewCredentials: req.body.employeeNewCredentials,
         businessName: req.body.businessName,
+        employeePreviousEmail: req.body.employeeEmail,
+        employeeNewCredentials: req.body.employeeNewCredentials,
     };
     if (requestData.userType !== "manager") {
         return res.status(401).json({
@@ -82,14 +82,14 @@ export const updateEmployee = async (req: Request, res: Response) => {
         .then((data) => {
             let employeeList: Array<string> = data.docs[0].data().employees;
             const result: boolean = employeeList.includes(
-                requestData.employeePreviousCredentials.email
+                requestData.employeePreviousEmail
             );
             if (result) {
                 db.collection("businesses")
                     .doc(requestData.businessName)
                     .update({
                         employees: firebase.firestore.FieldValue.arrayRemove(
-                            requestData.employeePreviousCredentials.email
+                            requestData.employeePreviousEmail
                         ),
                     });
                 db.collection("businesses")
@@ -111,24 +111,28 @@ export const updateEmployee = async (req: Request, res: Response) => {
             general: "the employee is not enrolled in your the business",
         });
     }
-    const employeeUID: string = await db
+    const oldEmployeeInfo: any = await db
         .collection("users")
         .where("userType", "==", "employee")
-        .where("email", "==", requestData.employeePreviousCredentials.email)
+        .where("email", "==", requestData.employeePreviousEmail)
         .get()
         .then((data) => {
-            return data.docs[0].data().userId;
+            return {
+                userId: data.docs[0].data().userId,
+                isOnline: data.docs[0].data().isOnline,
+            }
         })
         .catch(() => null);
-    if (employeeUID === null) {
+    if (oldEmployeeInfo === null) {
         return res.status(404).json({
             general: "did not find the employee to update",
         });
     }
-    console.log(employeeUID);
+
+    console.log(oldEmployeeInfo.userId);
     return await db
         .collection("users")
-        .doc(requestData.employeePreviousCredentials.email)
+        .doc(requestData.employeePreviousEmail)
         .delete()
         .then(() => {
             db.collection("users")
@@ -137,14 +141,14 @@ export const updateEmployee = async (req: Request, res: Response) => {
                     userType: "employee",
                     businessName: requestData.businessName,
                     email: requestData.employeeNewCredentials.email,
-                    isOnline: false,
+                    isOnline: oldEmployeeInfo.isOnline,
                     queueName: requestData.businessName,
-                    userId: employeeUID,
+                    userId: oldEmployeeInfo.userId,
                 })
                 .then(() => {
                     return admin
                         .auth()
-                        .updateUser(employeeUID, requestData.employeeNewCredentials)
+                        .updateUser(oldEmployeeInfo.userId, requestData.employeeNewCredentials)
                         .then(() =>
                             res
                                 .status(200)

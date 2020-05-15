@@ -49,7 +49,7 @@ export const registerCustomer = async (req: Request, res: Response) => {
 /**
  * Updates the customer info.
  * first, checks if the user is a customer, then checks if the provided info is valid, then it updates the customer
- * information.
+ * information in the authentication, and creates a new customer to replace the old one in the database.
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
@@ -196,7 +196,8 @@ export const getCustomer = async (req: Request, res: Response) => {
 
 /**
  * Deletes the customer.
- * first, checks if the user is a customer, then deletes the customer from the database.
+ * first, checks if the user is a customer, then deletes the customer from the database and authentication. Ensures
+ * that the customer's queueSlot is also deleted if they were in a queue.
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
