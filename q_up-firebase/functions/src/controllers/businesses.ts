@@ -471,8 +471,9 @@ export const deleteBusiness = async (req: Request, res: Response) => {
  *                  - 401 if the user is not of type manager
  *                  - the return status of signUp function
  */
-export const createNewBooth = async (req: Request, res: Response) => {
+export const registerNewBooth = async (req: Request, res: Response) => {
     const requestData = {
+        boothEmail: req.body.boothEmail,
         userType: req.body.userType,
         password: req.body.password,
     };

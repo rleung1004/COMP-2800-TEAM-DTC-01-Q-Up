@@ -13,7 +13,7 @@ import {
     getBusiness,
     registerBusiness,
     deleteBusiness,
-    createNewBooth
+    registerNewBooth
 } from "./controllers/businesses";
 import {FirebaseAuthentication} from "./util/firebaseAuthentication";
 import algoliasearch from "algoliasearch";
@@ -51,6 +51,7 @@ app.post("/uploadBusinessImage", FirebaseAuthentication, uploadBusinessImage);
 app.get("/getBusiness", FirebaseAuthentication, getBusiness);
 app.put("/updateBusiness", FirebaseAuthentication, updateBusiness);
 app.delete('/deleteBusiness', FirebaseAuthentication, deleteBusiness);
+app.post("/registerBooth", FirebaseAuthentication, registerNewBooth);
 
 
 // ========================
@@ -78,18 +79,13 @@ app.get('/getOnlineEmployees', FirebaseAuthentication, getOnlineEmployees);
 app.get("/getQueue", FirebaseAuthentication, getQueue);
 app.get("/getCustomerQueueInfo", FirebaseAuthentication, getQueueSlotInfo);
 app.post("/customerEnterQueue", FirebaseAuthentication, customerEnterQueue);
+app.put("/boothEnterQueue", FirebaseAuthentication, boothEnterQueue);
 app.put("/VIPEnterQueue", FirebaseAuthentication, vipEnterQueue);
 app.put("/abandonQueue", FirebaseAuthentication, abandonQueue);
 app.put("/changeQueueStatus", FirebaseAuthentication, changeQueueStatus);
 app.put('/checkInQueue', FirebaseAuthentication, checkInQueue);
 app.get("/getFavouriteQueues", FirebaseAuthentication, getFavouriteQueuesForCustomer);
 app.put('/changeFavoriteQueueStatus',FirebaseAuthentication, changeStatusOfFavouriteBusiness);
-
-// ========================
-// Booth Routes
-// ========================
-app.post("/boothEnterQueue", FirebaseAuthentication, boothEnterQueue);
-app.post("/createNewBooth", FirebaseAuthentication, createNewBooth);
 
 
 // ========================

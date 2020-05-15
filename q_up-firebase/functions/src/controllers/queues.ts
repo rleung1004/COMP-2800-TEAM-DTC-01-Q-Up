@@ -131,7 +131,7 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
                 return res.status(404).json({general: "the queue is no longer active!",});
             }
             const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType === 'VIP');
-            const VIPSlot = createVIPSlot(100 + nonVIPQueueSlots.length);
+            const VIPSlot = createVIPSlot(nonVIPQueueSlots.length);
             queue.queueSlots.unshift(VIPSlot);
             db.collection("businesses").doc(requestData.businessName).update({queue: queue});
             return res.status(201).json({
