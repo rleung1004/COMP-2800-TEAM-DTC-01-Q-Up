@@ -173,7 +173,7 @@ export default function EmployeeManagementPage() {
       email: employeeList[index].email
     }
     
-    axios.post('/deleteEmployee', data, axiosConfig)
+    axios.put('/deleteEmployee', data, axiosConfig)
     .then(() => {
       setGetData(true);
     })
@@ -254,10 +254,12 @@ export default function EmployeeManagementPage() {
         onClose={handlePassChangeCancel}
         PaperProps={{ style: { backgroundColor: "#242323" } }}
       >
-        <DialogTitle>Change Password</DialogTitle>
+        <DialogTitle>Edit employee</DialogTitle>
         <DialogContent>
           <Grid container direction="column">
-            ?
+            <Typography variant="caption">
+              To not modify the email, leave new email empty
+            </Typography>
             <TextField
               color="secondary"
               id="newEmail"
