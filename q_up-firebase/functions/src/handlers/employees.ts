@@ -11,14 +11,15 @@ import * as firebase from "firebase-admin";
  * @param req:      express Request Object
  * @param res:      express Response Object
  * @returns         - 401 if the user is not of type manager
+ *                  - 403 if the employee already exists
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if successful
  */
 export const registerEmployee = async (req: Request, res: Response) => {
     const requestData = {
         userType: req.body.userType,
-        password: req.body.password,
         businessName: req.body.businessName,
+        password: req.body.password,
         email: req.body.email,
     };
     if (requestData.userType !== "manager") {
@@ -28,7 +29,24 @@ export const registerEmployee = async (req: Request, res: Response) => {
     }
     Object.assign(req.body, {userType: "employee"});
     Object.assign(req.body, {confirmPassword: requestData.password});
-    await signUp(req, res);
+    const signedUpSuccessfully: boolean = await db
+        .collection("users")
+        .doc(requestData.email)
+        .get()
+        .then(async data => {
+            if (!data.exists) {
+                await signUp(req, res);
+                return true
+            }
+            return false
+        })
+        .catch(err => {
+            console.log(err);
+            return false;
+        });
+    if (!signedUpSuccessfully) {
+        return res.status(403).json({general: "The employee already exists!"});
+    }
     return await db
         .collection("businesses")
         .where("name", "==", requestData.businessName)
