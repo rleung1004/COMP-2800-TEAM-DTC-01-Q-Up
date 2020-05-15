@@ -635,6 +635,5 @@ export const changeStatusOfFavouriteBusiness = async (req: Request, res: Respons
                 general: "Internal Error. Something went wrong!",
                 error: await err.toString(),
             });
-        });
+        })
 };
-
