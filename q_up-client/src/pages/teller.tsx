@@ -123,6 +123,16 @@ export default function TellerPage() {
 
   const handleVIP = (event: MouseEvent) => {
     event.preventDefault();
+    axios
+      .post("/VIPEnterQueue", {}, axiosConfig)
+      .then((res) => {
+        let VIPInfo = res.data.VIPSlotInfo;
+        console.log(`Added ${VIPInfo.customer} into the queue`);
+      })
+      .catch((err) => {
+        console.error(err);
+        window.alert("Connection error");
+      });
   };
 
   return (
