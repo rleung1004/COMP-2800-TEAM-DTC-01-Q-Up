@@ -20,22 +20,28 @@ import {imageObject, validateBusinessData} from "../util/helpers";
  *                  - 409 if the business already exists
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if created the business successfully
+ *                  - null if its getting called from updateBusiness
  */
 export const registerBusiness = async (req: Request, res: Response) => {
     const noImg = "no-img.png";
+
     const requestData = {
         userEmail: req.body.userEmail,
         userType: req.body.userType,
         businessName: req.body.businessName,
+        isUpdating: req.body?.isUpdating,
     };
     const businessInfo = {
-        averageWaitTime: req.body.averageWaitTime,
         name: requestData.businessName,
         category: req.body.category,
         description: req.body.description,
         email: req.body.email,
         employees: [],
-        queue: requestData.businessName,
+        queue: {
+            averageWaitTime: req.body.averageWaitTime,
+            queueSlots: [],
+            isActive: false,
+        },
         hours: req.body.hours,
         address: req.body.address,
         website: req.body.website,
@@ -64,13 +70,9 @@ export const registerBusiness = async (req: Request, res: Response) => {
         .set(businessInfo)
         .then(() => {
             db.collection("users").doc(req.body.userEmail).update({businessName: businessInfo.name});
-            const queue: any = {
-                averageWaitTIme: businessInfo.averageWaitTime,
-                    queueSlots: [],
-                    isActive: false,
-            };
-            if (!queue) {
-                return res.status(401).json({general: "queue and "})
+            if (requestData.isUpdating) {
+                console.log("we are in the updating function!");
+                return null;
             }
             return res.status(201).json({general: "registered the business successfully"})
         })
@@ -97,7 +99,7 @@ export const registerBusiness = async (req: Request, res: Response) => {
  *                  - 403 if provided information are not valid
  *                  - 404 if the business can not be found
  *                  - 500 if an error occurs in the midst of the query
- *                  - 204 if created the business successfully
+ *                  - 202 if updated the business successfully
  */
 export const updateBusiness = async (req: Request, res: Response) => {
     const requestData = {
@@ -165,9 +167,12 @@ export const updateBusiness = async (req: Request, res: Response) => {
         .doc(requestData.businessName)
         .delete()
         .catch(err => console.error(err));
-    Object.assign(req.body, {businessName: businessInfo.name});
-    const message = await registerBusiness(req, res);
-    console.log(message);
+    Object.assign(req.body, {
+        businessName: businessInfo.name,
+        averageWaitTime: oldBusinessInfo.queue.averageWaitTime,
+        isUpdating: true,
+    });
+   await registerBusiness(req, res);
     return await db
         .collection('businesses')
         .doc(businessInfo.name)
@@ -177,11 +182,11 @@ export const updateBusiness = async (req: Request, res: Response) => {
             queue: oldBusinessInfo.queue,
         })
         .then(async () => {
-            await db
+            return await db
                 .collection('users')
                 .doc(requestData.userEmail)
                 .update({businessName: businessInfo.name})
-                .then(() => res.json(204).json({
+                .then(() => res.status(202).json({
                     general: `Business ${businessInfo.name} has been successfully updated`,
                 }))
         })

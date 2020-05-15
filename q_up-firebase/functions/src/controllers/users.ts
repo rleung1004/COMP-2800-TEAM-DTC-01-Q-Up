@@ -203,6 +203,7 @@ export const logout = async (req: Request, res: Response) => {
             console.error(err);
             return null;
         });
+    console.log(userUserId);
     if (userUserId === null) {
         return res.status(404).json({general: 'can not find the user userId',});
     }
@@ -241,7 +242,7 @@ export const logout = async (req: Request, res: Response) => {
  *                  - 403 if the provided passwords is not matching
  *                  - 404 if does not find the userId
  *                  - 500 if an error occurs in the midst of the query
- *                  - 204 if successful
+ *                  - 202 if successful
  */
 export const changePassword = async (req: Request, res: Response) => {
     const requestData = {
@@ -268,7 +269,7 @@ export const changePassword = async (req: Request, res: Response) => {
         .auth()
         .updateUser(userUID, {password: requestData.password})
         .then(() => {
-            return res.status(204).json({general: "Password updated successfully"});
+            return res.status(202).json({general: "Password updated successfully"});
         })
         .catch(async (err) => {
             console.error(err);

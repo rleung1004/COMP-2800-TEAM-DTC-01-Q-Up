@@ -27,8 +27,11 @@ export const registerEmployee = async (req: Request, res: Response) => {
     if (requestData.userType !== "manager") {
         return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
-    Object.assign(req.body, {userType: "employee"});
-    Object.assign(req.body, {confirmPassword: requestData.password});
+    Object.assign(req.body, {
+        userType: "employee",
+        confirmPassword: requestData.password,
+        email: requestData.employeeEmail,
+    });
     const signedUpSuccessfully: boolean = await db
         .collection("users")
         .doc(requestData.employeeEmail)
@@ -41,7 +44,7 @@ export const registerEmployee = async (req: Request, res: Response) => {
             return false
         })
         .catch(err => {
-            console.log(err);
+            console.error(err);
             return false;
         });
     if (!signedUpSuccessfully) {

@@ -61,7 +61,7 @@ export const registerCustomer = async (req: Request, res: Response) => {
  *                  - 403 if the customer information is invalid
  *                  - 404 if the customer information is not found
  *                  - 500 if an error occurs in the midst of the query
- *                  - 204 if successful
+ *                  - 202 if successful
  */
 export const updateCustomerInfo = async (req: Request, res: Response) => {
     const requestData = {
@@ -142,7 +142,7 @@ export const updateCustomerInfo = async (req: Request, res: Response) => {
                             phoneNumber: req.body.phoneNumber,
                             postalCode: req.body.postalCode,
                         })
-                        .then(() => res.status(204).json({
+                        .then(() => res.status(202).json({
                             general: "user information have been updated successfully!"
                         }))
                 })

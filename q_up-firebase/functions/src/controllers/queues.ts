@@ -412,7 +412,7 @@ const deactivateQueue = async (req: Request, res: Response) => {
  *                  - 404 if the store is closed
  *                  - 404 if can not obtain the hours of operation for the business
  *                  - 500 if an error occurs in the midst of the query
- *                  - 204 if successful
+ *                  - 202 if successful
  */
 const activateQueue = async (req: Request, res: Response) => {
     const requestData = {
@@ -446,7 +446,7 @@ const activateQueue = async (req: Request, res: Response) => {
         .collection("businesses")
         .doc(requestData.businessName)
         .update({"queues.isActive": true})
-        .then(() => res.status(204).json({general: "successfully activated the queue!"}))
+        .then(() => res.status(202).json({general: "successfully activated the queue!"}))
         .catch(async (err) => {
             console.error(err);
             return res.status(500).json({
@@ -470,7 +470,7 @@ const activateQueue = async (req: Request, res: Response) => {
  *                  - 404 if can not obtain the hours of operation for the business
  *                  - 500 if an error occurs in the midst of the query
  *                  - 202 if deactivates successfully
- *                  - 204 if activates successfully
+ *                  - 202 if activates successfully
  */
 export const changeQueueStatus = async (req: Request, res: Response) => {
     const requestData = {
