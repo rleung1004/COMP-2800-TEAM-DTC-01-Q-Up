@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, ChangeEvent } from "react";
+import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
 import { makeStyles } from "@material-ui/core/styles";
@@ -65,7 +65,7 @@ export default function EditBusinessProfilePage() {
     };
     phoneNumber?: string;
     website?: string;
-    averageWaitTIme?: Number;
+    averageWaitTime?: Number;
   }
 
   const errorObject: errors = {};
@@ -96,7 +96,7 @@ export default function EditBusinessProfilePage() {
     name: "",
     phoneNumber: "",
     website: "",
-    averageWaitTIme: "",
+    averageWaitTime: "",
     loading: false,
     errors: errorObject,
   });
@@ -166,7 +166,7 @@ export default function EditBusinessProfilePage() {
     if (newValue === "") {
       setFormState((prevState) => ({
         ...prevState,
-        averageWaitTIme: newValue,
+        averageWaitTime: newValue,
       }));
       return;
     }
@@ -174,22 +174,53 @@ export default function EditBusinessProfilePage() {
     if (!("0" <= newChar && newChar <= "9")) {
       setFormState((prevState) => ({
         ...prevState,
-        averageWaitTIme: newValue.slice(0, -1),
+        averageWaitTime: newValue.slice(0, -1),
       }));
       return;
     }
     const valueAsInt = parseInt(newValue);
     if (valueAsInt < 1) {
-      setFormState((prevState) => ({ ...prevState, averageWaitTIme: "1" }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: "1" }));
     } else if (valueAsInt > 59) {
-      setFormState((prevState) => ({ ...prevState, averageWaitTIme: "59" }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: "59" }));
     } else {
       setFormState((prevState) => ({
         ...prevState,
-        averageWaitTIme: newValue,
+        averageWaitTime: newValue,
       }));
     }
   };
+
+  const [getData, setGetData] = useState(true);
+
+  useEffect(() => {
+    if (!getData) {
+      return;
+    }
+    setGetData(false);
+    axios
+      .get("/getBusiness", axiosConfig)
+      .then((res: any) => {
+        const data = res.data.businessData;
+        setFormState({
+          name: data.name,
+          category: data.category,
+          description: data.description,
+          email: data.email,
+          hours: data.hours,
+          address: data.address,
+          phoneNumber: data.phoneNumber,
+          website: data.website,
+          averageWaitTime: data.averageWaitTime,
+          errors: {},
+          loading: false,
+        });
+      })
+      .catch((err: any) => {
+        window.alert("Connection error");
+        console.log(err);
+      });
+  }, [axiosConfig, errorObject, getData]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -203,7 +234,7 @@ export default function EditBusinessProfilePage() {
       hours: formState.hours,
       description: formState.description,
       email: formState.email,
-      averageWaitTime: formState.averageWaitTIme,
+      averageWaitTime: formState.averageWaitTime,
     };
 
     axios
@@ -493,7 +524,7 @@ export default function EditBusinessProfilePage() {
                     color="secondary"
                     size="small"
                     onChange={handleaverageWaitTImeChange}
-                    value={formState.averageWaitTIme}
+                    value={formState.averageWaitTime}
                   ></TextField>
                   <Typography variant="body1">minutes</Typography>
                 </Grid>

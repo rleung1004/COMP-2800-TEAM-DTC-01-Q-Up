@@ -63,7 +63,7 @@ export default function BusinessRegistrationPage() {
       };
       phoneNumber?: string;
       website?: string;
-      averageWaitTIme?: Number;
+      averageWaitTime?: Number;
    }
 
    const errorObject: errors = {};
@@ -101,7 +101,7 @@ export default function BusinessRegistrationPage() {
       },
       phoneNumber: '',
       website: '',
-      averageWaitTIme: '',
+      averageWaitTime: '',
       loading: false,
       errors: errorObject,
    });
@@ -167,21 +167,21 @@ export default function BusinessRegistrationPage() {
   const handleaverageWaitTImeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     if (newValue === "") {
-      setFormState((prevState) => ({ ...prevState, averageWaitTIme: newValue }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue }));
       return;
     }
     const newChar = newValue[newValue.length - 1];
     if (!('0' <= newChar && newChar <= '9')) {
-      setFormState((prevState) => ({ ...prevState, averageWaitTIme: newValue.slice(0,-1)}));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue.slice(0,-1)}));
       return;
     }
     const valueAsInt = parseInt(newValue);
     if (valueAsInt < 1) {
-      setFormState((prevState) => ({ ...prevState, averageWaitTIme: "1" }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: "1" }));
     } else if (valueAsInt > 59) {
-      setFormState((prevState) => ({ ...prevState, averageWaitTIme: "59" }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: "59" }));
     } else {
-      setFormState((prevState) => ({ ...prevState, averageWaitTIme: newValue }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue }));
     }
   };
   
@@ -196,7 +196,7 @@ export default function BusinessRegistrationPage() {
       hours: formState.hours,
       description: formState.description,
       email: formState.email,
-      averageWaitTime: formState.averageWaitTIme
+      averageWaitTime: formState.averageWaitTime
     };
 
     axios
@@ -492,7 +492,7 @@ export default function BusinessRegistrationPage() {
                               color='secondary'
                               size='small'
                               onChange={handleaverageWaitTImeChange}
-                              value={formState.averageWaitTIme}
+                              value={formState.averageWaitTime}
                            ></TextField>
                            <Typography variant='body1'>minutes</Typography>
                         </Grid>
