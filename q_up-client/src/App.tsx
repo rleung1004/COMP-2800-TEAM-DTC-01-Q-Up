@@ -20,6 +20,7 @@ import BusinessProfilePage from "./pages/businessProfile";
 import BusinessEditProfilePage from "./pages/businessEditProfile";
 import queueSearchPage from "./pages/queueSearch";
 import EmployeeManagementPage from "./pages/employeeManagement";
+import TellerPage from "./pages/teller";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
@@ -47,6 +48,7 @@ function App() {
             <Route path="/editBusinessProfile" component={BusinessEditProfilePage} exact />
             <Route path="/searchQueues" component={queueSearchPage} exact />
             <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
+            <Route path="/teller" component={TellerPage} exact />
           </Switch>
         </ThemeProvider>
       </div>
