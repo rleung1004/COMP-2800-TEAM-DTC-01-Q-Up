@@ -112,6 +112,8 @@ export default function LoginPage() {
             }
          })
          .catch((err) => {
+            console.log(err);
+            
             setFormState((prevState) => ({
                ...prevState,
                errors: err.response.data,

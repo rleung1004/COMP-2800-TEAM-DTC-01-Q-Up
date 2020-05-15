@@ -281,7 +281,7 @@ export default function BusinessProfilePage() {
               <Grid item xs={12} sm={6}>
                 <Typography variant="body2">{formatPhone(formState.phoneNumber)}</Typography>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="body1">Website</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -294,10 +294,10 @@ export default function BusinessProfilePage() {
         <section>
           <Grid container direction="column" alignItems="center">
             <Grid container item xs={10} lg={4} spacing={sectionSpacing}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="body1">Address</Typography>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} sm={6}>
                 <Typography variant="body2">{compileAddress()}</Typography>
               </Grid>
             </Grid>
