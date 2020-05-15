@@ -480,7 +480,10 @@ export const registerNewBooth = async (req: Request, res: Response) => {
     if (requestData.userType !== "manager") {
         res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
-    Object.assign(req.body, {userType: "booth"});
-    Object.assign(req.body, {confirmPassword: requestData.password});
+    Object.assign(req.body, {
+        userType: "booth",
+        confirmPassword: requestData.password,
+        email: requestData.boothEmail,
+    });
     return await signUp(req, res);
 };

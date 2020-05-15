@@ -74,8 +74,8 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
                 return res.status(404).json({general: "Queue is currently not active"});
             }
             const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType !== 'VIP');
-            const customer = createQueueSlot(requestData.userEmail, 100 + nonVIPQueueSlots.length);
-            queueSlots.push(customer);
+            const customerSlot = createQueueSlot(requestData.userEmail, 100 + nonVIPQueueSlots.length);
+            queueSlots.push(customerSlot);
             queue.queueSlots = queueSlots;
             await db
                 .collection("businesses")
@@ -86,7 +86,12 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
                 .doc(requestData.userEmail)
                 .update({currentQueue: requestData.queueName});
             return res.status(201).json({
-                general: `${requestData.userEmail} has been added into queue ${requestData.queueName} successfully`
+                general: `${requestData.userEmail} has been added into queue ${requestData.queueName} successfully`,
+                customerSlotInfo: {
+                    customer: customerSlot.customer,
+                    password: customerSlot.password,
+                    ticketNumber: customerSlot.ticketNumber,
+                }
             });
         })
         .catch(async (err) => {
@@ -186,13 +191,18 @@ export const boothEnterQueue = async (req: Request, res: Response) => {
                 return res.status(403).json({general: "Queue is currently not active"});
             }
             const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType !== 'VIP');
-            const booth = createQueueSlot(requestData.userName, 100 + nonVIPQueueSlots.length);
-            queueSlots.push(booth);
+            const boothSlot = createQueueSlot(requestData.userName, 100 + nonVIPQueueSlots.length);
+            queueSlots.push(boothSlot);
             db.collection("businesses").doc(requestData.businessName).update({
-                "queue.queueSlot": queueSlots
+                "queue.queueSlots": queueSlots
             });
             return res.status(201).json({
-                general: `${booth.customer} has been added to ${requestData.businessName}'s queue successfully`,
+                general: `${boothSlot.customer} has been added to ${requestData.businessName}'s queue successfully`,
+                BoothSlotInfo: {
+                    customer: boothSlot.customer,
+                    password: boothSlot.password,
+                    ticketNumber: boothSlot.ticketNumber,
+                }
             });
         })
         .catch(async (err) => {
@@ -517,10 +527,12 @@ const deactivateQueue = async (req: Request, res: Response) => {
                     .catch(err => console.error(err));
             }
             queue.queueSlots = new Array<any>();
-            return await db.collection("businesses")
+            return await db
+                .collection("businesses")
                 .doc(requestData.businessName)
                 .update({queue: queue, isActive: false})
-                .then(() => res.status(202).json({general: "successfully deactivated the queue!"}));
+                .then(() => res.status(202).json({general: "successfully deactivated the queue!"}))
+                .catch();
         })
         .catch(async (err) => {
             console.error(err);
@@ -576,7 +588,7 @@ const activateQueue = async (req: Request, res: Response) => {
     return await db
         .collection("businesses")
         .doc(requestData.businessName)
-        .update({"queues.isActive": true})
+        .update({"queue.isActive": true})
         .then(() => res.status(202).json({general: "successfully activated the queue!"}))
         .catch(async (err) => {
             console.error(err);
@@ -612,10 +624,10 @@ export const changeQueueStatus = async (req: Request, res: Response) => {
         return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
     const isQueueActive: boolean = await db
-        .collection("queues")
-        .where("queueName", "==", requestData.businessName)
+        .collection("businesses")
+        .where("name", "==", requestData.businessName)
         .get()
-        .then((data) => data.docs[0].data().isActive)
+        .then(data => data.docs[0].data().queue.isActive)
         .catch((err) => {
             console.error(err);
             return false;

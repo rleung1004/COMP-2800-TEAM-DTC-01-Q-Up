@@ -68,7 +68,7 @@ app.delete("/deleteCustomer", FirebaseAuthentication, deleteCustomer);
 // ========================
 app.post('/registerEmployee', FirebaseAuthentication, registerEmployee);
 app.put('/updateEmployee', FirebaseAuthentication, updateEmployee);
-app.delete('/deleteEmployee', FirebaseAuthentication, deleteEmployee);
+app.put('/deleteEmployee', FirebaseAuthentication, deleteEmployee);
 app.get('/getEmployees', FirebaseAuthentication, getEmployees);
 app.get('/getOnlineEmployees', FirebaseAuthentication, getOnlineEmployees);
 
