@@ -90,15 +90,15 @@ export const validateSignUpData = (data: signupData) => {
     } else if (!isEmail(data.email)) {
         Object.assign(errors, {email: "Must be a valid email address"});
     }
-
     if (isEmpty(data.password)) {
         Object.assign(errors, {password: "Must not be empty"});
     }
-
     if (data.password !== data.confirmPassword) {
         Object.assign(errors, {confirmPassword: "Passwords must match"});
     }
-
+    if (data.userType === 'manager' && isEmpty(data.businessName)) {
+        Object.assign(errors, {businessName: "Must not be empty"});
+    }
     if (
         data.userType !== "customer" &&
         data.userType !== "manager" &&
@@ -107,6 +107,7 @@ export const validateSignUpData = (data: signupData) => {
     ) {
         Object.assign(errors, {userType: "Invalid user type"});
     }
+
 
     return {
         errors,

@@ -216,23 +216,37 @@ export const deleteCustomer = async (req: Request, res: Response) => {
         await db
             .collection("users")
             .where("email", "==", userEmail)
-            .limit(1)
             .get()
-            .then((data) => {
-                let userUID = data.docs[0].data().userId;
-                admin.auth().deleteUser(userUID);
+            .then(async (data) => {
+                const userUID = data.docs[0].data().userId;
+                const currentQueue = data.docs[0].data().currentQueue;
+                if (currentQueue !== null) {
+                    await db
+                        .collection('queues')
+                        .where('queueName', '==', currentQueue)
+                        .get()
+                        .then(data => {
+                            let queueSlots: Array<any> = data.docs[0].data().queueSlots;
+                            queueSlots = queueSlots.filter(queueSlot => queueSlot.customer !== userEmail);
+                            db.collection('queues').doc(currentQueue).update({queueSlots: queueSlots});
+                        })
+                }
+                await admin
+                    .auth()
+                    .deleteUser(userUID);
+                await db
+                    .collection("users")
+                    .doc(userEmail)
+                    .delete();
 
-                db.collection("users").doc(userEmail).delete();
-
-                return res
-                    .status(200)
-                    .json({general: "account deleted successfully"});
+                return res.status(200).json({general: "account deleted successfully"});
             })
             .catch((err) => {
                 console.error(err);
-                return res
-                    .status(500)
-                    .json({general: "Something went wrong, please try again"});
+                return res.status(500).json({
+                    general: "Something went wrong, please try again",
+                    error: err,
+                });
             });
     }
     return res.status(200);

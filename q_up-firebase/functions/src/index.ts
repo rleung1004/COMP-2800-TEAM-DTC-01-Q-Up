@@ -70,8 +70,9 @@ app.delete('/deleteBusiness', FBAuth, deleteBusiness);
 // ========================
 app.get("/getCustomer", FBAuth, getCustomer);
 app.post('/registerCustomer', FBAuth, registerCustomer);
-app.delete("/deleteCustomer", FBAuth, deleteCustomer);
 app.put("/updateCustomer", FBAuth, updateCustomerInfo);
+app.delete("/deleteCustomer", FBAuth, deleteCustomer);
+
 
 
 // ========================
