@@ -1,10 +1,11 @@
-import {db, admin, firebaseConfig} from "../util/firebaseConfig";
+import {admin, db, firebaseConfig} from "../util/firebaseConfig";
 import {Request, Response} from "express";
 import * as BusBoy from "busboy";
 import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
 import {imageObject, validateBusinessData} from "../util/helpers";
+import {signUp} from "./users";
 
 /**
  * Registers a business.
@@ -457,4 +458,28 @@ export const deleteBusiness = async (req: Request, res: Response) => {
                 error: await err.toString(),
             });
         });
+};
+
+/**
+ * Creates a new account for the booth.
+ * first Checks if the accessing user has the authority, then signs up a booth
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
+ *                  - the return status of signUp function
+ */
+export const createNewBooth = async (req: Request, res: Response) => {
+    const requestData = {
+        userType: req.body.userType,
+        password: req.body.password,
+    };
+    if (requestData.userType !== "manager") {
+        res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
+    }
+    Object.assign(req.body, {userType: "booth"});
+    Object.assign(req.body, {confirmPassword: requestData.password});
+    return await signUp(req, res);
 };

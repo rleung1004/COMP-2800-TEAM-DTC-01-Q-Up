@@ -353,10 +353,11 @@ export const validateBusinessData = (data: businessData) => {
  * @return          Object with three fields of customer of type string, ticketNumber of type number, and password
  *                  of type string.
  */
-export const createVIPSlotCredentials = () => {
+export const createVIPSlot = (lastTicketNumber : number) => {
     return {
         customer: `VIP-${Math.floor(Math.random() * 1000)}`,
-        ticketNumber: Math.floor(Math.random() * 10000),
+        customerType: "VIP",
+        ticketNumber: lastTicketNumber + 1,
         password: cities[Math.floor(Math.random() * cities.length)],
     };
 };
@@ -372,6 +373,7 @@ export const createVIPSlotCredentials = () => {
 export const createQueueSlot = (customerIdentifier: string, lastTicketNumber: number) => {
     return {
         customer: customerIdentifier,
+        customerType: "nonVIP",
         ticketNumber: lastTicketNumber + 1,
         password: cities[Math.floor(Math.random() * cities.length)],
     }

@@ -2,11 +2,7 @@ import {db,} from "../util/firebaseConfig";
 import {Request, Response,} from "express";
 import * as firebase from "firebase-admin";
 import * as moment from "moment-timezone";
-import {
-    createQueueSlot,
-    createVIPSlotCredentials,
-    getTheDayOfTheWeekForArray,
-} from "../util/helpers";
+import {createQueueSlot, createVIPSlot, getTheDayOfTheWeekForArray,} from "../util/helpers";
 
 /**
  * Gets the number of online Employees for the business.
@@ -74,28 +70,130 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
         .then(async (data) => {
             const queue: any = data.docs[0].data().queue;
             let queueSlots: Array<any> = queue.queueSlots;
-            if (queue.isActive) {
-                const customer = createQueueSlot(requestData.userEmail, 0);
-                if (queueSlots.length > 0) {
-                    customer.ticketNumber =
-                        queueSlots[queueSlots.length - 1].ticketNumber + 1;
-                }
-                queueSlots.push(customer);
-                queue.queueSlots = queueSlots;
-                await db
-                    .collection("businesses")
-                    .doc(requestData.queueName)
-                    .update({queue: queue});
-                await db
-                    .collection("users")
-                    .doc(requestData.userEmail)
-                    .update({currentQueue: requestData.queueName});
-                return res.status(201).json({
-                    general: `${requestData.userEmail} has been added into queue ${requestData.queueName} successfully`
-                });
-            } else {
+            if (!queue.isActive) {
                 return res.status(404).json({general: "Queue is currently not active"});
             }
+            const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType !== 'VIP');
+            const customer = createQueueSlot(requestData.userEmail, 100 + nonVIPQueueSlots.length);
+            queueSlots.push(customer);
+            queue.queueSlots = queueSlots;
+            await db
+                .collection("businesses")
+                .doc(requestData.queueName)
+                .update({queue: queue});
+            await db
+                .collection("users")
+                .doc(requestData.userEmail)
+                .update({currentQueue: requestData.queueName});
+            return res.status(201).json({
+                general: `${requestData.userEmail} has been added into queue ${requestData.queueName} successfully`
+            });
+        })
+        .catch(async (err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
+            });
+        });
+};
+
+/**
+ * Inserts a VIP in the front of the Queue.
+ * first, checks if the user is a employee, then updates the queue by inserting the VIP queue slot in  front of the
+ * queue.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type employee
+ *                  - 404 if the queue is no longer active
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 201 if successful
+ */
+export const vipEnterQueue = async (req: Request, res: Response) => {
+    const requestData = {
+        userType: req.body.userType,
+        businessName: req.body.businessName,
+    };
+    if (requestData.userType !== "employee") {
+        return res.status(401).json({general: "unauthorized. Login as an employee of the business!"});
+    }
+    return await db
+        .collection("businesses")
+        .where("name", "==", requestData.businessName)
+        .get()
+        .then((data) => {
+            const queue: any = data.docs[0].data().queue;
+            let queueSlots: Array<any> = queue.queueSlots;
+            if (!queue.isActive) {
+                return res.status(404).json({general: "the queue is no longer active!",});
+            }
+            const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType === 'VIP');
+            const VIPSlot = createVIPSlot(100 + nonVIPQueueSlots.length);
+            queue.queueSlots.unshift(VIPSlot);
+            db.collection("businesses").doc(requestData.businessName).update({queue: queue});
+            return res.status(201).json({
+                general: `${VIPSlot.customer} has been successfully added into the queue`,
+                VIPSlotInfo: {
+                    customer: VIPSlot.customer,
+                    password: VIPSlot.password,
+                    ticketNumber: VIPSlot.ticketNumber,
+                }
+            });
+        })
+        .catch(async (err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
+            });
+        });
+};
+
+/**
+ * Adds a walk-in customer to a queue.
+ * first Checks if the accessing user has the authority, then adds the customer to the queue of the business.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type booth
+ *                  - 403 if queue is not active
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 201 if successful
+ */
+export const boothEnterQueue = async (req: Request, res: Response) => {
+    const requestData = {
+        userName: req.body.userName,
+        userType: req.body.userType,
+        businessName: req.body.businessName,
+    };
+    if (requestData.userType !== "booth") {
+        res.status(401).json({general: "unauthorized. Requires the booth of this business!"});
+    }
+    return await db
+        .collection("businesses")
+        .where("name", "==", requestData.businessName)
+        .get()
+        .then(data => {
+            const queue: any = data.docs[0].data().queue;
+            const queueSlots: Array<any> = queue.queueSlots;
+            const isActive: boolean = queue.isActive;
+            if (!isActive) {
+                return res.status(403).json({general: "Queue is currently not active"});
+            }
+            const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType !== 'VIP');
+            const booth = createQueueSlot(requestData.userName, 100 + nonVIPQueueSlots.length);
+            queueSlots.push(booth);
+            db.collection("businesses").doc(requestData.businessName).update({
+                "queue.queueSlot": queueSlots
+            });
+            return res.status(201).json({
+                general: `${booth.customer} has been added to ${requestData.businessName}'s queue successfully`,
+            });
         })
         .catch(async (err) => {
             console.error(err);
@@ -164,58 +262,6 @@ export const abandonQueue = async (req: Request, res: Response) => {
 };
 
 /**
- * Inserts a VIP in the front of the Queue.
- * first, checks if the user is a employee, then updates the queue by inserting the VIP queue slot in  front of the
- * queue.
- *
- * @param req:      express Request Object
- * @param res:      express Response Object
- * @returns         Response the response data with the status code:
- *
- *                  - 401 if the user is not of type employee
- *                  - 404 if the queue is no longer active
- *                  - 500 if an error occurs in the midst of the query
- *                  - 201 if successful
- */
-export const vipEnterQueue = async (req: Request, res: Response) => {
-    const requestData = {
-        userType: req.body.userType,
-        businessName: req.body.businessName,
-    };
-    if (requestData.userType !== "employee") {
-        return res.status(401).json({general: "unauthorized. Login as an employee of the business!"});
-    }
-    return await db
-        .collection("businesses")
-        .where("name", "==", requestData.businessName)
-        .get()
-        .then((data) => {
-            const queue: any = data.docs[0].data().queue;
-            if (!queue.isActive) {
-                return res.status(404).json({general: "the queue is no longer active!",});
-            }
-            const VIPSlot = createVIPSlotCredentials();
-            queue.queueSlots.unshift(VIPSlot);
-            db.collection("businesses").doc(requestData.businessName).update({queue: queue});
-            return res.status(201).json({
-                general: `${VIPSlot.customer} has been successfully added into the queue`,
-                VIPSlotInfo: {
-                    customer: VIPSlot.customer,
-                    password: VIPSlot.password,
-                    ticketNumber: VIPSlot.ticketNumber,
-                }
-            });
-        })
-        .catch(async (err) => {
-            console.error(err);
-            return res.status(500).json({
-                general: "Internal Error. Something went wrong!",
-                error: await err.toString(),
-            });
-        });
-};
-
-/**
  * Remove the users from the queue by the employee.
  * first, checks if the user is an employee, then checks if the employee belongs to the business, and then deletes the
  * customer (queueSlot belonging to the customer) from the queue of the business. If the deleted queue slot is a
@@ -266,9 +312,12 @@ export const checkInQueue = async (req: Request, res: Response) => {
             const queue = data.docs[0].data().queue;
             let queueSlots: Array<any> = queue.queueSlots;
             const result: any = queueSlots.find((queueSlot) => queueSlot.ticketNumber === requestData.ticketNumber);
-            queueSlots.splice(queueSlots.indexOf(result), 1);
-            queue.queueSlots = queueSlots;
-            db.collection("businesses").doc(requestData.businessName).update({queue: queue});
+            db
+                .collection('businesses')
+                .doc(requestData.businessName)
+                .update({
+                    "queue.queueSlot": firebase.firestore.FieldValue.arrayRemove(result),
+                });
             return result;
         })
         .catch(err => {
