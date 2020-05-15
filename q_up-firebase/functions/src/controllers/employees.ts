@@ -1,4 +1,4 @@
-import {admin, db} from "../util/admin";
+import {admin, db} from "../util/firebaseConfig";
 import {Request, Response} from "express";
 import {signUp} from "./users";
 import * as firebase from "firebase-admin";
@@ -10,8 +10,10 @@ import * as firebase from "firebase-admin";
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 401 if the user is not of type manager
- *                  - 403 if the employee already exists
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
+ *                  - 409 if the employee already exists
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if successful
  */
@@ -19,19 +21,17 @@ export const registerEmployee = async (req: Request, res: Response) => {
     const requestData = {
         userType: req.body.userType,
         businessName: req.body.businessName,
+        employeeEmail: req.body.employeeEmail,
         password: req.body.password,
-        email: req.body.email,
     };
     if (requestData.userType !== "manager") {
-        return res.status(401).json({
-            general: "unauthorized!",
-        });
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
     Object.assign(req.body, {userType: "employee"});
     Object.assign(req.body, {confirmPassword: requestData.password});
     const signedUpSuccessfully: boolean = await db
         .collection("users")
-        .doc(requestData.email)
+        .doc(requestData.employeeEmail)
         .get()
         .then(async data => {
             if (!data.exists) {
@@ -45,7 +45,7 @@ export const registerEmployee = async (req: Request, res: Response) => {
             return false;
         });
     if (!signedUpSuccessfully) {
-        return res.status(403).json({general: "The employee already exists!"});
+        return res.status(409).json({general: "The employee already exists!"});
     }
     return await db
         .collection("businesses")
@@ -53,17 +53,15 @@ export const registerEmployee = async (req: Request, res: Response) => {
         .get()
         .then((data) => {
             const employeeList: Array<string> = data.docs[0].data().employees;
-            employeeList.push(requestData.email);
-            db.collection("businesses")
-                .doc(requestData.businessName)
-                .update({employees: employeeList});
-            return res.status(200).json({general: 'created the employee successfully!'})
+            employeeList.push(requestData.employeeEmail);
+            db.collection("businesses").doc(requestData.businessName).update({employees: employeeList});
+            return res.status(201).json({general: 'created the employee successfully!'})
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
             return res.status(500).json({
-                general: "Something went wrong",
-                error: err,
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
@@ -75,10 +73,12 @@ export const registerEmployee = async (req: Request, res: Response) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 401 if the user is not of type manager
- *                  - 403 if the employee is not enrolled in the business
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
+ *                  - 404 if the employee is not enrolled in the business
  *                  - 404 if the employee is not found
- *                  - 400 if an error occurs in the midst of the query
+ *                  - 500 if an error occurs in the midst of the query
  *                  - 200 if successful
  */
 export const updateEmployee = async (req: Request, res: Response) => {
@@ -86,12 +86,10 @@ export const updateEmployee = async (req: Request, res: Response) => {
         userType: req.body.userType,
         businessName: req.body.businessName,
         employeePreviousEmail: req.body.employeeEmail,
-        employeeNewCredentials: req.body.employeeNewCredentials,
+        employeeNewEmail: req.body.employeeNewEmail,
     };
     if (requestData.userType !== "manager") {
-        return res.status(401).json({
-            general: "unauthorized!",
-        });
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
     const isEmployeeOfBusiness: boolean = await db
         .collection("businesses")
@@ -99,23 +97,13 @@ export const updateEmployee = async (req: Request, res: Response) => {
         .get()
         .then((data) => {
             let employeeList: Array<string> = data.docs[0].data().employees;
-            const result: boolean = employeeList.includes(
-                requestData.employeePreviousEmail
-            );
+            const result: boolean = employeeList.includes(requestData.employeePreviousEmail);
             if (result) {
-                db.collection("businesses")
-                    .doc(requestData.businessName)
-                    .update({
-                        employees: firebase.firestore.FieldValue.arrayRemove(
-                            requestData.employeePreviousEmail
-                        ),
+                db.collection("businesses").doc(requestData.businessName).update({
+                        employees: firebase.firestore.FieldValue.arrayRemove(requestData.employeePreviousEmail),
                     });
-                db.collection("businesses")
-                    .doc(requestData.businessName)
-                    .update({
-                        employees: firebase.firestore.FieldValue.arrayUnion(
-                            requestData.employeeNewCredentials.email
-                        ),
+                db.collection("businesses").doc(requestData.businessName).update({
+                        employees: firebase.firestore.FieldValue.arrayUnion(requestData.employeeNewEmail),
                     });
             }
             return result;
@@ -125,9 +113,7 @@ export const updateEmployee = async (req: Request, res: Response) => {
             return false;
         });
     if (!isEmployeeOfBusiness) {
-        return res.status(403).json({
-            general: "the employee is not enrolled in your the business",
-        });
+        return res.status(404).json({general: "the employee is not enrolled in your the business"});
     }
     const oldEmployeeInfo: any = await db
         .collection("users")
@@ -142,43 +128,36 @@ export const updateEmployee = async (req: Request, res: Response) => {
         })
         .catch(() => null);
     if (oldEmployeeInfo === null) {
-        return res.status(404).json({
-            general: "did not find the employee to update",
-        });
+        return res.status(404).json({general: "did not find the employee to update"});
     }
-
-    console.log(oldEmployeeInfo.userId);
     return await db
         .collection("users")
         .doc(requestData.employeePreviousEmail)
         .delete()
         .then(() => {
-            db.collection("users")
-                .doc(requestData.employeeNewCredentials.email)
+            db
+                .collection("users")
+                .doc(requestData.employeeNewEmail)
                 .set({
                     userType: "employee",
                     businessName: requestData.businessName,
-                    email: requestData.employeeNewCredentials.email,
+                    email: requestData.employeeNewEmail,
                     isOnline: oldEmployeeInfo.isOnline,
                     queueName: requestData.businessName,
                     userId: oldEmployeeInfo.userId,
                 })
-                .then(() => {
-                    return admin
+                .then(async () => {
+                    return await admin
                         .auth()
-                        .updateUser(oldEmployeeInfo.userId, requestData.employeeNewCredentials)
-                        .then(() =>
-                            res
-                                .status(200)
-                                .json({general: "updated the employee successfully"})
-                        );
+                        .updateUser(oldEmployeeInfo.userId, {email: requestData.employeeNewEmail})
+                        .then(() => res.status(200).json({general: "updated the employee successfully"}));
                 });
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
-            return res.status(400).json({
-                general: "Something went wrong",
-                error: err,
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
@@ -190,11 +169,13 @@ export const updateEmployee = async (req: Request, res: Response) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 401 if the user is not of type manager
- *                  - 403 if the employee is not enrolled in the business
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
+ *                  - 404 if the employee is not enrolled in the business
  *                  - 404 if the employee is not found
- *                  - 400 if an error occurs in the midst of the query
- *                  - 200 if successful
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 202 if successful
  */
 export const deleteEmployee = async (req: Request, res: Response) => {
     const requestData = {
@@ -203,9 +184,7 @@ export const deleteEmployee = async (req: Request, res: Response) => {
         businessName: req.body.businessName,
     };
     if (requestData.userType !== "manager") {
-        return res.status(401).json({
-            general: "unauthorized!",
-        });
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
     const isEmployeeOfBusiness: boolean = await db
         .collection("businesses")
@@ -214,13 +193,8 @@ export const deleteEmployee = async (req: Request, res: Response) => {
         .then((data) => {
             let employeeList: Array<string> = data.docs[0].data().employees;
             const result = employeeList.includes(requestData.employeeEmail);
-            employeeList = employeeList.filter(
-                (employee) => employee !== requestData.employeeEmail
-            );
-            db.collection("businesses")
-                .doc(requestData.businessName)
-                .update({employees: employeeList});
-            console.log(result);
+            employeeList = employeeList.filter((employee) => employee !== requestData.employeeEmail);
+            db.collection("businesses").doc(requestData.businessName).update({employees: employeeList});
             return result;
         })
         .catch((err) => {
@@ -228,23 +202,20 @@ export const deleteEmployee = async (req: Request, res: Response) => {
             return false;
         });
     if (!isEmployeeOfBusiness) {
-        return res.status(403).json({
-            general: "the employee is not enrolled in your the business",
-        });
+        return res.status(404).json({general: "the employee is not enrolled in your the business"});
     }
     const employeeUID: string = await db
         .collection("users")
         .where("userType", "==", "employee")
         .where("email", "==", requestData.employeeEmail)
         .get()
-        .then((data) => {
-            return data.docs[0].data().userId;
-        })
-        .catch(() => null);
-    if (employeeUID === null) {
-        return res.status(404).json({
-            general: "did not find the employee to delete",
+        .then((data) => data.docs[0].data().userId)
+        .catch(err => {
+            console.error(err);
+            return null;
         });
+    if (employeeUID === null) {
+        return res.status(404).json({general: "did not find the employee to delete",});
     }
     return await db
         .collection("users")
@@ -255,14 +226,14 @@ export const deleteEmployee = async (req: Request, res: Response) => {
                 .auth()
                 .deleteUser(employeeUID)
                 .then(() =>
-                    res.status(200).json({general: "deleted the employee successfully"})
+                    res.status(202).json({general: "deleted the employee successfully"})
                 );
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
-            return res.status(400).json({
-                general: "Something went wrong",
-                error: err,
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
@@ -275,59 +246,60 @@ export const deleteEmployee = async (req: Request, res: Response) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 401 if the user is not of type employee
- *                  - 403 if the employee is not enrolled in the business
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type employee
+ *                  - 404 if the employee is not enrolled in the business
  *                  - 404 if the employee is not found
- *                  - 400 if an error occurs in the midst of the query
- *                  - 200 if successful
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 202 if successful
  */
 export const checkInQueue = async (req: Request, res: Response) => {
     const requestData = {
         userEmail: req.body.userEmail,
         userType: req.body.userType,
-        queueName: req.body.queueName,
+        businessName: req.body.businessName,
         ticketNumber: req.body.ticketNumber,
     };
     if (requestData.userType !== "employee") {
-        return res.status(401).json({
-            general: "unauthorized!",
-        });
+        return res.status(401).json({general: "unauthorized. Login as an employee of the business!"});
     }
     const isAuthorized: boolean = await db
         .collection("businesses")
-        .where("name", "==", requestData.queueName)
+        .where("name", "==", requestData.businessName)
         .get()
         .then((data) => {
             let employeeList: Array<string> = data.docs[0].data().employees;
             return employeeList.includes(requestData.userEmail);
         })
-        .catch(() => false);
+        .catch(err => {
+            console.error(err);
+            return false;
+        });
     if (!isAuthorized) {
-        return res.status(403).json({
-            general:
-                "the employee is unauthorized to change the queue of another business",
+        return res.status(401).json({
+            general: "the employee is unauthorized to change the queue of another business"
         });
     }
     const customerLookUp: any = await db
-        .collection("queues")
-        .where("queueName", "==", requestData.queueName)
+        .collection("businesses")
+        .where("name", "==", requestData.businessName)
         .get()
         .then((data) => {
-            let queueSlots: Array<any> = data.docs[0].data().queueSlots;
-            const result: boolean = queueSlots.find(
-                (queueSlot) => queueSlot.ticketNumber === requestData.ticketNumber
-            );
+            const queue = data.docs[0].data().queue;
+            let queueSlots: Array<any> = queue.queueSlots;
+            const result: any = queueSlots.find((queueSlot) => queueSlot.ticketNumber === requestData.ticketNumber);
             queueSlots.splice(queueSlots.indexOf(result), 1);
-            db.collection("queues")
-                .doc(requestData.queueName)
-                .update({queueSlots: queueSlots});
+            queue.queueSlots = queueSlots;
+            db.collection("businesses").doc(requestData.businessName).update({queue: queue});
             return result;
         })
-        .catch(() => null);
+        .catch(err => {
+            console.error(err);
+            return null;
+        });
     if (customerLookUp === null) {
-        return res
-            .status(404)
-            .json({general: "Did not find the customer to checkIn!"});
+        return res.status(404).json({general: "Did not find the customer to checkIn!"});
     }
     return await db
         .collection("users")
@@ -335,19 +307,15 @@ export const checkInQueue = async (req: Request, res: Response) => {
         .get()
         .then((docSnapshot) => {
             if (docSnapshot.exists) {
-                db.collection("users")
-                    .doc(customerLookUp.customer)
-                    .update({currentQueue: null});
+                db.collection("users").doc(customerLookUp.customer).update({currentQueue: null});
             }
-            return res.status(200).json({
-                general: "Removed the customer from the queue Successfully",
-            });
+            return res.status(202).json({general: "Removed the customer from the queue Successfully",});
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
-            return res.status(400).json({
-                general: "Something went wrong",
-                error: err,
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
@@ -359,9 +327,11 @@ export const checkInQueue = async (req: Request, res: Response) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 401 if the user is not of type manager
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
  *                  - 404 if the employee is not found
- *                  - 400 if an error occurs in the midst of the query
+ *                  - 500 if an error occurs in the midst of the query
  *                  - 200 if successful
  */
 export const getListOfAllEmployees = async (req: Request, res: Response) => {
@@ -370,9 +340,7 @@ export const getListOfAllEmployees = async (req: Request, res: Response) => {
         businessName: req.body.businessName,
     };
     if (requestData.userType !== "manager") {
-        return res.status(401).json({
-            general: "unauthorized!",
-        });
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
     let employeeInfoList: any = {};
     return await db
@@ -389,15 +357,15 @@ export const getListOfAllEmployees = async (req: Request, res: Response) => {
                 employeeInfoList[data.data().email] = data.data();
             });
             return res.status(200).json({
-                general: "successful",
-                resData: employeeInfoList,
+                general: "obtained employees information successfully",
+                employees: employeeInfoList
             });
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
-            return res.status(400).json({
-                general: "Something went wrong",
-                error: err,
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
@@ -409,9 +377,11 @@ export const getListOfAllEmployees = async (req: Request, res: Response) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 401 if the user is not of type manager
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
  *                  - 404 if the employee is not found
- *                  - 400 if an error occurs in the midst of the query
+ *                  - 500 if an error occurs in the midst of the query
  *                  - 200 if successful
  */
 export const getOnlineEmployees = async (req: Request, res: Response) => {
@@ -420,9 +390,7 @@ export const getOnlineEmployees = async (req: Request, res: Response) => {
         businessName: req.body.businessName,
     };
     if (requestData.userType !== "manager") {
-        return res.status(401).json({
-            general: "unauthorized!",
-        });
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
     return await db
         .collection("users")
@@ -440,15 +408,15 @@ export const getOnlineEmployees = async (req: Request, res: Response) => {
                 }
             });
             return res.status(200).json({
-                general: "successful",
+                general: "obtained online employees successfully",
                 onlineEmployees: onlineEmployeeCount,
             });
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
-            return res.status(400).json({
-                general: "Something went wrong",
-                error: err,
+            return res.status(500).json({
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };

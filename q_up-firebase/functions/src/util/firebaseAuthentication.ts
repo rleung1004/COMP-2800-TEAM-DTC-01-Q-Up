@@ -1,4 +1,4 @@
-import { admin, db } from "./admin";
+import { admin, db } from "./firebaseConfig";
 import { Request, Response } from "express";
 
 /**
@@ -7,11 +7,13 @@ import { Request, Response } from "express";
  * @param req:      express Request Object
  * @param res:      express Response Object
  * @param next:     a function to be invoked at the end of this function
- * @return          - 403 if unauthorized
+ * @return          the response data with the status code:
+ *
+ *                  - 403 if unauthorized
  *                  - 500 if an error occurs in the midst of query
  *                  - the return response of the next function
  */
-export const FBAuth = async (req: Request, res: Response, next: Function) => {
+export const FirebaseAuthentication = async (req: Request, res: Response, next: Function) => {
   let idToken: string;
   if (
     req.headers.authorization &&

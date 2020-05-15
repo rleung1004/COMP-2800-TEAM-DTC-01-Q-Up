@@ -1,5 +1,7 @@
+import * as firebaseAdmin from "firebase-admin";
+
 /**
- * The firebase Configuration for this application.
+ * References the firebase Configuration for this web-app.
  */
 export const firebaseConfig = {
     apiKey: "AIzaSyCd2O4kN23xnVMtzVKm_fzt4iBQ7VH7T_8",
@@ -11,3 +13,14 @@ export const firebaseConfig = {
     appId: "1:840558505517:web:37045d8504c3c1f257d2a4",
     measurementId: "G-016HG4TWHN",
 };
+
+/**
+ * References the admin of this web-app's firebase.
+ */
+export const admin = firebaseAdmin.initializeApp();
+
+/**
+ * References the firestore database of this web-app.
+ */
+export const db = firebaseAdmin.firestore();
+

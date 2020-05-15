@@ -1,12 +1,10 @@
-import {db, admin} from "../util/admin";
+import {db, admin, firebaseConfig} from "../util/firebaseConfig";
 import {Request, Response} from "express";
-import {validateBusinessData} from "../util/validators";
 import * as BusBoy from "busboy";
 import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
-import {firebaseConfig} from "../util/config";
-import {createQueue} from "./queues";
+import {imageObject, validateBusinessData} from "../util/helpers";
 
 /**
  * Registers a business.
@@ -15,10 +13,13 @@ import {createQueue} from "./queues";
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 403 if the user is not of type manager
- *                  - 400 if provided information are not valid
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
+ *                  - 403 if provided information are not valid
+ *                  - 409 if the business already exists
  *                  - 500 if an error occurs in the midst of the query
- *                  - return status of createQueue function
+ *                  - 201 if created the business successfully
  */
 export const registerBusiness = async (req: Request, res: Response) => {
     const noImg = "no-img.png";
@@ -42,32 +43,42 @@ export const registerBusiness = async (req: Request, res: Response) => {
         lastUpdated: new Date().toISOString(),
         imageUrl: `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${noImg}?alt=media`,
     };
-
     if (requestData.userType !== "manager") {
-        return res.status(403).json({general: "Access forbidden. Please login as a manager to gain access."});
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
-
     const {valid, errors} = validateBusinessData(businessInfo);
     if (!valid) {
-        return res.status(400).json(errors);
+        return res.status(403).json(errors);
     }
-
+    const doesExist = await db
+        .collection('businesses')
+        .doc(requestData.businessName)
+        .get()
+        .then(data => data.exists);
+    if (doesExist) {
+        return res.status(409).json({general: "The business already exists!"});
+    }
     return await db
         .collection('businesses')
         .doc(businessInfo.name)
         .set(businessInfo)
         .then(() => {
-            db
-                .collection("users")
-                .doc(req.body.userEmail)
-                .update({businessName: businessInfo.name});
-            return createQueue(req, res);
+            db.collection("users").doc(req.body.userEmail).update({businessName: businessInfo.name});
+            const queue: any = {
+                averageWaitTIme: businessInfo.averageWaitTime,
+                    queueSlots: [],
+                    isActive: false,
+            };
+            if (!queue) {
+                return res.status(401).json({general: "queue and "})
+            }
+            return res.status(201).json({general: "registered the business successfully"})
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
             return res.status(500).json({
-                general: "Something went wrong. Please try again",
-                error: err,
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
@@ -80,11 +91,13 @@ export const registerBusiness = async (req: Request, res: Response) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 403 if the user is not of type manager
- *                  - 400 if provided information are not valid
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
+ *                  - 403 if provided information are not valid
+ *                  - 404 if the business can not be found
  *                  - 500 if an error occurs in the midst of the query
- *                  - 404 if can not find the necessary information from the old business
- *                  - 200 if successful
+ *                  - 204 if created the business successfully
  */
 export const updateBusiness = async (req: Request, res: Response) => {
     const requestData = {
@@ -102,57 +115,32 @@ export const updateBusiness = async (req: Request, res: Response) => {
         website: req.body.website,
         phoneNumber: req.body.phoneNumber,
     };
-
     if (requestData.userType !== "manager") {
-        return res.status(403).json({general: "Access forbidden. Please login as a manager to gain access."});
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
-
     const {valid, errors} = validateBusinessData(businessInfo);
     if (!valid) {
-        return res.status(400).json(errors);
+        return res.status(403).json(errors);
     }
-
-    //get the necessary info from the old queue and business.
-    const employeesOfBusiness: Array<string> = await db
+    const oldBusinessInfo: any = await db
         .collection('businesses')
         .where('name', '==', requestData.businessName)
         .get()
-        .then(data => data.docs[0].data().employees)
+        .then(data => {
+            return {
+                employees: data.docs[0].data().employees,
+                imageUrl: data.docs[0].data().imageUrl,
+                queue: data.docs[0].data().queue,
+            }
+        })
         .catch(err => {
             console.error(err);
             return null;
         });
-    if (employeesOfBusiness === null) {
-        return res.status(404).json({general: 'did not find the employees before updating'})
+    if (oldBusinessInfo === null) {
+        return res.status(404).json({general: 'did not find the old business information before updating!'});
     }
-    const businessImage: string = await db
-        .collection('businesses')
-        .where('name', '==', requestData.businessName)
-        .get()
-        .then(data => data.docs[0].data().imageUrl)
-        .catch(err => {
-            console.error(err);
-            return null;
-        });
-    if (businessImage === null) {
-        return res.status(404).json({general: 'did not find the image before updating'})
-    }
-    const oldQueue: any = await db
-        .collection('queues')
-        .where('queueName', '==', requestData.businessName)
-        .get()
-        .then(data => data.docs[0].data())
-        .catch(err => {
-            console.error(err);
-            return null;
-        });
-    if (oldQueue === null) {
-        return res.status(404).json({general: 'did not find the queue before updating'})
-    }
-    delete oldQueue.queueName;
-
-    //replacing the employees and booths businessName
-    for (const employee of employeesOfBusiness) {
+    for (const employee of oldBusinessInfo.employees) {
         await db.collection('users')
             .doc(employee)
             .update({businessName: businessInfo.name})
@@ -172,52 +160,36 @@ export const updateBusiness = async (req: Request, res: Response) => {
             })
         })
         .catch(err => console.error(err));
-
-    //deleting the business and its queue
     await db
         .collection('businesses')
         .doc(requestData.businessName)
         .delete()
-        .then(async () => {
-            await db
-                .collection('queues')
-                .doc(requestData.businessName)
-                .delete()
-        })
         .catch(err => console.error(err));
-
-    //creating a new business with the new information
     Object.assign(req.body, {businessName: businessInfo.name});
     const message = await registerBusiness(req, res);
     console.log(message);
-    //updating the new business and queue and manager with the new information
     return await db
-        .collection('queues')
+        .collection('businesses')
         .doc(businessInfo.name)
-        .update(oldQueue)
+        .update({
+            employees: oldBusinessInfo.employees,
+            imageUrl: oldBusinessInfo.imageUrl,
+            queue: oldBusinessInfo.queue,
+        })
         .then(async () => {
             await db
-                .collection('businesses')
-                .doc(businessInfo.name)
-                .update({
-                    employees: employeesOfBusiness,
-                    imageUrl: businessImage,
-                })
-                .then(async () => {
-                    await db
-                        .collection('users')
-                        .doc(requestData.userEmail)
-                        .update({businessName: businessInfo.name})
-                        .then(() => res.json(200).json({
-                            general: `Business ${businessInfo.name} has been successfully updated`,
-                        }))
-                })
+                .collection('users')
+                .doc(requestData.userEmail)
+                .update({businessName: businessInfo.name})
+                .then(() => res.json(204).json({
+                    general: `Business ${businessInfo.name} has been successfully updated`,
+                }))
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
             return res.status(500).json({
-                general: "Something went wrong. Please try again",
-                error: err,
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
@@ -229,69 +201,55 @@ export const updateBusiness = async (req: Request, res: Response) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 403 if the user is not of type manager
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
  *                  - 500 if an error occurs in the midst of the query
- *                  - 200 if successful
+ *                  - 201 if successful
  */
 export const uploadBusinessImage = (req: Request, res: Response) => {
     const busboy = new BusBoy({headers: req.headers});
-
-    interface imageObject {
-        filepath: string;
-        mimeType: string;
-    }
-
     const businessName = req.body.businessName;
     const userType = req.body.userType;
-    if (userType === "manager") {
-        let imageFileName: string;
-        let imageToBeUploaded: imageObject;
-        busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-            // my.image.png => ['my', 'image', 'png']
-            console.log(fieldname, file, filename, encoding, mimetype);
-            const imageExtension = filename.split(".")[
-            filename.split(".").length - 1
-                ];
-            imageFileName = `${Math.round(
-                Math.random() * 1000000000000
-            ).toString()}.${imageExtension}`;
-
-            const filepath = path.join(os.tmpdir(), imageFileName);
-            imageToBeUploaded = {filepath, mimeType: mimetype};
-
-            file.pipe(fs.createWriteStream(filepath));
-        });
-        busboy.on("finish", () => {
-            admin
-                .storage()
-                .bucket()
-                .upload(imageToBeUploaded.filepath, {
-                    resumable: false,
-                    metadata: {
-                        contentType: imageToBeUploaded.mimeType,
-                    },
-                })
-                .then(() => {
-                    const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${imageFileName}?alt=media`;
-                    return db.doc(`/businesses/${businessName}`).update({imageUrl});
-                })
-                .then(() => {
-                    return res.status(200).json({message: "Image uploaded successfully"});
-                })
-                .catch((err) => {
-                    console.error(err);
-                    return res
-                        .status(500)
-                        .json({general: "Something went wrong, please try again"});
-                });
-        });
-        busboy.end(req.body);
-        return res.status(200).json({general: 'successful'});
-    } else {
-        return res.status(403).json({
-            general: "Access forbidden. Please login as a business to gain access.",
-        });
+    if (userType !== "manager") {
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
+    let imageFileName: string;
+    let imageToBeUploaded: imageObject;
+    busboy.on("file", (fieldName, file, filename, encoding, mimeType) => {
+        console.log(fieldName, file, filename, encoding, mimeType);
+        const imageExtension = filename.split(".")[filename.split(".").length - 1];
+        imageFileName = `${Math.round(Math.random() * 1000000000000).toString()}.${imageExtension}`;
+        const filepath = path.join(os.tmpdir(), imageFileName);
+        imageToBeUploaded = {filepath, mimeType: mimeType};
+        file.pipe(fs.createWriteStream(filepath));
+    });
+    const message: any = busboy.on("finish", () => {
+        return admin
+            .storage()
+            .bucket()
+            .upload(imageToBeUploaded.filepath, {
+                resumable: false,
+                metadata: {contentType: imageToBeUploaded.mimeType,}
+            })
+            .then(async () => {
+                const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${imageFileName}?alt=media`;
+                return await db
+                    .collection('businesses')
+                    .doc(businessName)
+                    .update({imageUrl: imageUrl})
+                    .then(() => res.status(201).json({message: "Image uploaded successfully!"}))
+            })
+            .catch(async (err) => {
+                console.error(err);
+                return res.status(500).json({
+                    general: "Internal Error. Something went wrong!",
+                    error: await err.toString(),
+                });
+            });
+    });
+    busboy.end(req.body);
+    return message;
 };
 
 /**
@@ -301,7 +259,9 @@ export const uploadBusinessImage = (req: Request, res: Response) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 401 if the user is not of type manager
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
  *                  - 404 if the business is not registered
  *                  - 500 if an error occurs in the midst of the query
  *                  - 200 if successful
@@ -312,13 +272,11 @@ export const getBusiness = async (req: Request, res: Response) => {
         businessName: req.body.businessName,
     };
     if (requestData.userType !== "manager") {
-        return res.status(401).json({
-            general: "unauthorized",
-        })
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
     return await db
         .collection("businesses")
-        .where('name','==',requestData.businessName)
+        .where('name', '==', requestData.businessName)
         .get()
         .then((data) => {
             if (!data.docs[0].data()) {
@@ -328,7 +286,7 @@ export const getBusiness = async (req: Request, res: Response) => {
             }
             const businessData = data.docs[0].data();
             return res.status(200).json({
-                general: 'successful',
+                general: 'obtained business information successfully',
                 businessData: {
                     averageWaitTime: businessData.averageWaitTime,
                     category: businessData.category,
@@ -342,11 +300,11 @@ export const getBusiness = async (req: Request, res: Response) => {
                 }
             })
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
             return res.status(500).json({
-                general: "Something went wrong. Please try again",
-                error: err,
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
@@ -363,9 +321,7 @@ const deleteEmployeeFromBusiness = async (employeeEmail: string) => {
         .where("userType", "==", "employee")
         .where("email", "==", employeeEmail)
         .get()
-        .then((data) => {
-            return data.docs[0].data().userId;
-        })
+        .then((data) => data.docs[0].data().userId)
         .catch((err) => {
             console.error(err);
             return null;
@@ -394,9 +350,7 @@ const deleteBoothFromBusiness = async (boothEmail: string) => {
         .where("userType", "==", "booth")
         .where("email", "==", boothEmail)
         .get()
-        .then((data) => {
-            return data.docs[0].data().userId;
-        })
+        .then((data) => data.docs[0].data().userId)
         .catch((err) => {
             console.error(err);
             return null;
@@ -405,11 +359,7 @@ const deleteBoothFromBusiness = async (boothEmail: string) => {
         .collection('users')
         .doc(boothEmail)
         .delete()
-        .then(async () => {
-            await admin
-                .auth()
-                .deleteUser(boothUID)
-        })
+        .then(async () => await admin.auth().deleteUser(boothUID))
         .catch(err => console.error(err))
 };
 
@@ -420,10 +370,12 @@ const deleteBoothFromBusiness = async (boothEmail: string) => {
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
- * @returns         - 401 if the user is not of type manager
- *                  - 403 if the manger id is not found
+ * @returns         Response the response data with the status code:
+ *
+ *                  - 401 if the user is not of type manager
+ *                  - 404 if the manger id is not found
  *                  - 500 if an error occurs in the midst of the query
- *                  - 200 if successful
+ *                  - 202 if successful
  */
 export const deleteBusiness = async (req: Request, res: Response) => {
     const requestData = {
@@ -432,9 +384,7 @@ export const deleteBusiness = async (req: Request, res: Response) => {
         businessName: req.body.businessName,
     };
     if (requestData.userType !== "manager") {
-        return res.status(401).json({
-            general: "unauthorized",
-        })
+        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
     }
     const managerID: string = await db
         .collection('users')
@@ -446,9 +396,8 @@ export const deleteBusiness = async (req: Request, res: Response) => {
             return null;
         });
     if (!managerID) {
-        return res.status(403).json({general: 'could not find the manger id!',})
+        return res.status(404).json({general: 'did not find the manger id!'})
     }
-    //delete all the employees for that business
     await db
         .collection('businesses')
         .where('name', '==', requestData.businessName)
@@ -459,7 +408,6 @@ export const deleteBusiness = async (req: Request, res: Response) => {
                 .forEach(async (employeeEmail: string) => await deleteEmployeeFromBusiness(employeeEmail));
         })
         .catch(err => console.error(err));
-    // delete all the booths for the business.
     await db
         .collection('users')
         .where('userType', '==', 'booth')
@@ -473,36 +421,29 @@ export const deleteBusiness = async (req: Request, res: Response) => {
             }
         })
         .catch(err => console.error(err));
-    // delete the business and the queue
     return await db
         .collection('businesses')
         .doc(requestData.businessName)
         .delete()
         .then(async () => {
             return await db
-                .collection('queues')
-                .doc(requestData.businessName)
+                .collection('users')
+                .doc(requestData.userEmail)
                 .delete()
                 .then(async () => {
-                    return await db
-                        .collection('users')
-                        .doc(requestData.userEmail)
-                        .delete()
-                        .then(async () => {
-                            return await admin
-                                .auth()
-                                .deleteUser(managerID)
-                                .then(() => res.status(200).json({
-                                    general: 'deleted the business and its queue successfully'
-                                }))
-                        })
+                    return await admin
+                        .auth()
+                        .deleteUser(managerID)
+                        .then(() => res.status(202).json({
+                            general: 'deleted the business and its queue successfully'
+                        }))
                 })
         })
-        .catch((err) => {
+        .catch(async (err) => {
             console.error(err);
             return res.status(500).json({
-                general: "Something went wrong. Please try again",
-                error: err,
+                general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
             });
         });
 };
