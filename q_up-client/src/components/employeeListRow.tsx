@@ -1,49 +1,30 @@
 import React from 'react';
 import {
-   ExpansionPanel,
    Grid,
    Typography,
-   IconButton,
-   makeStyles,
-   createStyles,
+   Box,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
-const useStyles = makeStyles(() =>
-   createStyles({
-      margin: {
-         marginTop: '10px',
-      },
-   })
-);
-
-export default function EmplyeeListRow() {
-   const classes = useStyles();
-
+export default function EmpolyeeListRow(props:any) {
+   const data = props.data;
+   const colorClass = props.isSelected
+    ? "queueSlotBox selected"
+    : "queueSlotBox notSelected";
+    const onClickHandler = () => {
+    props.selectHandler()
+   };
    return (
       <section>
-         <ExpansionPanel>
+         <Box className={colorClass} onClick={onClickHandler}>
             <Grid container justify='flex-start' alignItems='flex-start'>
                <Grid item xs={3}>
-                  <Typography className={classes.margin}>Employee1</Typography>
+                  <Typography variant="body1">{data.email}</Typography>
                </Grid>
                <Grid item xs={3}>
-                  <Typography className={classes.margin}>Password</Typography>
-               </Grid>
-               <Grid item xs={3}>
-                  <Typography className={classes.margin}>Online</Typography>
-               </Grid>
-               <Grid item xs={3}>
-                  <IconButton aria-label='edit'>
-                     <EditIcon fontSize='small' />
-                  </IconButton>
-                  <IconButton aria-label='delete'>
-                     <DeleteForeverIcon fontSize='small' />
-                  </IconButton>
+                  <Typography variant="body1">{data.isOnline}</Typography>
                </Grid>
             </Grid>
-         </ExpansionPanel>
+         </Box>
       </section>
    );
 }
