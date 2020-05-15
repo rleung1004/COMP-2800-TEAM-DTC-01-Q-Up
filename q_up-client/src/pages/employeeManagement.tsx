@@ -193,7 +193,7 @@ export default function EmployeeManagementPage() {
     }
     setGetData(false);
     setEmployeeList(mockEmployees());
-  }, [axiosConfig]);
+  }, [axiosConfig, getData]);
 
   return (
     <>
