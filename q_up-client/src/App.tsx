@@ -19,6 +19,7 @@ import ConsumerEditProfilePage from "./pages/consumerEditProfile";
 import BusinessProfilePage from "./pages/businessProfile";
 import BusinessEditProfilePage from "./pages/businessEditProfile";
 import QueueSearchPage from "./pages/queueSearch";
+import TellerPage from "./pages/teller";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
@@ -97,6 +98,7 @@ function App() {
               exact
             />
             <Route path="/search" component={QueueSearchPage} exact />
+            <Route path="/checkin" component={TellerPage} exact />
           </Switch>
         </ThemeProvider>
       </div>
