@@ -17,37 +17,9 @@ import Header from "../components/static/Header";
 import ConsumerNav from "../components/consumerNav";
 // import { Typography } from "@material-ui/core";
 // import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
 import QueueListRow from "src/components/queueListRow";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& .MuiTextField-root": {
-      margin: theme.spacing(1),
-      width: "25ch",
-    },
-  },
-  pageTitle: {
-    margin: "20px auto 20px auto",
-  },
-  textField: {
-    margin: "20px auto 20px auto",
-  },
-  button: {
-    margin: "20px auto 20px auto",
-  },
-  customError: {
-    color: "red",
-    fontSize: "0.8em",
-  },
-  content: {
-    margin: "10px",
-  },
-  businessImage: {
-    width: "200px",
-    height: "150px",
-  },
-}));
+
 
 export default function QueueSearchPage() {
   const searchClient = algoliasearch(
@@ -55,7 +27,6 @@ export default function QueueSearchPage() {
     "86a00161b4b0e5a68907e099e5962273"
   );
   // const history = useHistory();
-  const classes = useStyles();
 
   return (
     <>
@@ -67,9 +38,7 @@ export default function QueueSearchPage() {
               placeholder: "Search for a queue",
             }}
           />
-          <div className={classes.content}>
-            <InfiniteHits hitComponent={QueueListRow} />
-          </div>
+          <InfiniteHits hitComponent={QueueListRow} />
         </InstantSearch>
       </div>
       <Footer />
