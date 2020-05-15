@@ -16,7 +16,7 @@ import {signUp, login, changePassword, logout} from "./handlers/users";
 import {
     updateCustomerInfo,
     deleteCustomer,
-    getCustomerInfo,
+    getCustomer, registerCustomer,
 } from "./handlers/customers";
 import {
     updateBusiness,
@@ -66,6 +66,15 @@ app.delete('/deleteBusiness', FBAuth, deleteBusiness);
 
 
 // ========================
+// Customer Routes
+// ========================
+app.get("/getCustomer", FBAuth, getCustomer);
+app.post('/registerCustomer', FBAuth, registerCustomer);
+app.delete("/deleteCustomer", FBAuth, deleteCustomer);
+app.put("/updateCustomer", FBAuth, updateCustomerInfo);
+
+
+// ========================
 // Queue Routes
 // ========================
 app.post("/tellerQueueList", FBAuth, getQueueListForEmployee);
@@ -76,14 +85,6 @@ app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
 app.put("/abandonQueueSlot", FBAuth, abandonQueueSlot);
 app.put("/changeQueueStatus", FBAuth, changeQueueStatus);
 app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
-
-
-// ========================
-// Customer Routes
-// ========================
-app.get("/getCustomerInfo", FBAuth, getCustomerInfo);
-app.delete("/deleteCustomer", FBAuth, deleteCustomer);
-app.post("/updateCustomer", FBAuth, updateCustomerInfo);
 
 
 // ========================

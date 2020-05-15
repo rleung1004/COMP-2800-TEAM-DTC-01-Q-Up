@@ -603,7 +603,7 @@ export const getFavouriteQueuesForCustomer = async (
     .collection("users")
     .where("email", "==", requestData.userEmail)
     .get()
-    .then((data) => data.docs[0].data().favouriteBusinesses)
+    .then((data) => data.docs[0].data().favoriteBusinesses)
     .catch(() => null);
   if (favouriteBusinesses === null) {
     return res
@@ -621,7 +621,7 @@ export const getFavouriteQueuesForCustomer = async (
     Object.assign(resData, getFavouriteQueueInfo(businessName))
   );
   return res.status(200).json({
-    general: "successful",
-    favouriteBusinesses: resData,
+      general: "successful",
+      favoriteBusinesses: resData,
   });
 };

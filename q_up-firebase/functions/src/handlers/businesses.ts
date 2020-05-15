@@ -144,7 +144,7 @@ export const updateBusiness = async (req: Request, res: Response) => {
         .then(data => data.docs[0].data())
         .catch(err => {
             console.error(err);
-            return  null;
+            return null;
         });
     if (oldQueue === null) {
         return res.status(404).json({general: 'did not find the queue before updating'})
@@ -178,7 +178,7 @@ export const updateBusiness = async (req: Request, res: Response) => {
         .collection('businesses')
         .doc(requestData.businessName)
         .delete()
-        .then(async() => {
+        .then(async () => {
             await db
                 .collection('queues')
                 .doc(requestData.businessName)
@@ -188,8 +188,8 @@ export const updateBusiness = async (req: Request, res: Response) => {
 
     //creating a new business with the new information
     Object.assign(req.body, {businessName: businessInfo.name});
-    await registerBusiness(req, res);
-
+    const message = await registerBusiness(req, res);
+    console.log(message);
     //updating the new business and queue and manager with the new information
     return await db
         .collection('queues')
@@ -203,13 +203,13 @@ export const updateBusiness = async (req: Request, res: Response) => {
                     employees: employeesOfBusiness,
                     imageUrl: businessImage,
                 })
-                .then(async ()=> {
+                .then(async () => {
                     await db
                         .collection('users')
                         .doc(requestData.userEmail)
                         .update({businessName: businessInfo.name})
-                        .then(()=> res.json(200).json({
-                            general: "Business ${businessInfo.name} has been successfully updated"
+                        .then(() => res.json(200).json({
+                            general: `Business ${businessInfo.name} has been successfully updated`,
                         }))
                 })
         })
@@ -318,20 +318,29 @@ export const getBusiness = async (req: Request, res: Response) => {
     }
     return await db
         .collection("businesses")
-        .doc(requestData.businessName)
+        .where('name','==',requestData.businessName)
         .get()
-        .then((docSnapshot) => {
-            if (docSnapshot.exists) {
-                const businessData = docSnapshot.data();
-                return res.status(200).json({
-                    general: 'successful',
-                    businessData: businessData,
-                })
+        .then((data) => {
+            if (!data.docs[0].data()) {
+                return res.status(404).json({
+                    general: "Your business is not registered. Please register your business.",
+                });
             }
-            return res.status(404).json({
-                general: "Your business is not registered. Please register your business.",
-            });
-
+            const businessData = data.docs[0].data();
+            return res.status(200).json({
+                general: 'successful',
+                businessData: {
+                    averageWaitTime: businessData.averageWaitTime,
+                    category: businessData.category,
+                    description: businessData.description,
+                    email: businessData.email,
+                    hours: businessData.hours,
+                    address: businessData.address,
+                    name: businessData.name,
+                    website: businessData.website,
+                    phoneNumber: businessData.phoneNumber,
+                }
+            })
         })
         .catch((err) => {
             console.error(err);
@@ -361,16 +370,16 @@ const deleteEmployeeFromBusiness = async (employeeEmail: string) => {
             console.error(err);
             return null;
         });
-     await db
+    await db
         .collection("users")
         .doc(employeeEmail)
         .delete()
         .then(() => admin.auth().deleteUser(employeeUID))
         .catch((err) => console.error(err));
-     await admin
-         .auth()
-         .deleteUser(employeeUID)
-         .catch(err => console.error(err));
+    await admin
+        .auth()
+        .deleteUser(employeeUID)
+        .catch(err => console.error(err));
 };
 
 /**
@@ -442,7 +451,7 @@ export const deleteBusiness = async (req: Request, res: Response) => {
     //delete all the employees for that business
     await db
         .collection('businesses')
-        .where('name','==',requestData.businessName)
+        .where('name', '==', requestData.businessName)
         .get()
         .then(data => {
             data.docs[0]

@@ -3,6 +3,50 @@ import {Request, Response} from "express";
 import {validateCustomerData} from "../util/validators";
 
 /**
+ * Registers the customer.
+ * first, checks if the user is a customer, then checks if the provided info is valid, then it updates the customer
+ * information by adding thei phone number of postal code.
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         - 401 if the user is not of type customer
+ *                  - 400 if the customer info is invalid
+ *                  - 500 if an error occurs in the midst of the query
+ *                  - 200 if successful
+ */
+export const registerCustomer = async (req: Request, res: Response) => {
+    const requestData = {
+        userEmail : req.body.userEmail,
+        userType: req.body.userType,
+        phoneNumber: req.body.phoneNumber,
+        postalCode: req.body.postalCode,
+    };
+    const userInfo = {
+        phoneNumber: requestData.phoneNumber,
+        postalCode: requestData.postalCode,
+    };
+    if (requestData.userType !== 'customer') {
+        return res.status(401).json({general: "unauthorized!"});
+    }
+    const {errors, valid} = validateCustomerData(userInfo);
+    if (!valid) {
+        return res.status(400).json(errors);
+    }
+    return await db
+        .collection('users')
+        .doc(requestData.userEmail)
+        .update(userInfo)
+        .then(()=> res.status(200).json({general: "registered the customer successfully!"}))
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({
+                general: "something went wrong during update!",
+                error: err,
+            })
+        })
+};
+
+/**
  * Updates the customer info.
  * first, checks if the user is a customer, then checks if the provided info is valid, then it updates the customer
  * information.
@@ -14,47 +58,94 @@ import {validateCustomerData} from "../util/validators";
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if successful
  */
-export const updateCustomerInfo = (req: Request, res: Response) => {
-    const userType = req.body.userType;
-    const userEmail = req.body.userEmail;
-    const userRef = db.collection("users").doc(userEmail);
-    const userInfo = {
+export const updateCustomerInfo = async (req: Request, res: Response) => {
+    const requestData = {
+        userEmail : req.body.userEmail,
+        userType: req.body.userType,
+        email: req.body.email,
         phoneNumber: req.body.phoneNumber,
         postalCode: req.body.postalCode,
     };
-
+    const userInfo = {
+        phoneNumber: requestData.phoneNumber,
+        postalCode: requestData.postalCode,
+    };
+    if (requestData.userType !== 'customer') {
+        return res.status(401).json({general: "unauthorized!"});
+    }
     const {errors, valid} = validateCustomerData(userInfo);
-
     if (!valid) {
         return res.status(400).json(errors);
-    } else {
-        if (userType === "customer") {
-            userRef
-                .get()
-                .then((docSnapshot) => {
-                    if (docSnapshot.exists) {
-                        userRef.update(userInfo);
-                    } else {
-                        res.status(403).json({
-                            general:
-                                "Access forbidden. Please login as a customer to gain access.",
-                        });
-                    }
-                })
-                .catch(() => {
-                    return res
-                        .status(500)
-                        .json({general: "Something went wrong. Please try again"});
-                });
-            return res.status(201).json({
-                general: `${userEmail} phone number and postal code have been updated`,
-            });
-        } else {
-            return res.status(403).json({
-                general: "Access forbidden. Please login as a customer to gain access.",
-            });
-        }
     }
+    const oldQueueInfo = await db
+        .collection('users')
+        .where('email', '==', requestData.userEmail)
+        .get()
+        .then(data => {
+            return {
+                favoriteBusinesses: data.docs[0].data().favoriteBusinesses,
+                currentQueue: data.docs[0].data().currentQueue,
+                userId: data.docs[0].data().userId,
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            return null;
+        });
+    if (oldQueueInfo === null) {
+        return res.status(404).json({general: "did not find the customer in the database!"});
+    }
+    if (oldQueueInfo.currentQueue !== null) {
+        await db
+            .collection('queues')
+            .where('queueName', '==', oldQueueInfo.currentQueue)
+            .get()
+            .then(data => {
+                const queueSlots: Array<any> = data.docs[0].data().queueSlots;
+                queueSlots.forEach(queueSlot => {
+                    if (queueSlot.customer === requestData.userEmail) {
+                        queueSlot["customer"] = requestData.email;
+                        return;
+                    }
+                });
+                db.collection('queues').doc(oldQueueInfo.currentQueue).update({queueSlots: queueSlots});
+            })
+            .catch(err => console.error(err));
+    }
+    return await db
+        .collection('users')
+        .doc(requestData.userEmail)
+        .delete()
+        .then(async() => {
+            await admin
+                .auth()
+                .updateUser(oldQueueInfo.userId, {
+                    email: requestData.email,
+                })
+                .then(async() => {
+                    await db
+                        .collection('users')
+                        .doc(requestData.email)
+                        .set({
+                            currentQueue: oldQueueInfo.currentQueue,
+                            email: requestData.email,
+                            favoriteBusinesses: oldQueueInfo.favoriteBusinesses,
+                            userId: oldQueueInfo.userId,
+                            userType: requestData.userType,
+                            phoneNumber: req.body.phoneNumber,
+                            postalCode: req.body.postalCode,
+                        })
+                        .then(()=> res.status(201).json({
+                            general: "user information have been updated successfully!"}))
+                })
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({
+                general: 'something went wrong!',
+                error: err
+            })
+        })
 };
 
 /**
@@ -67,7 +158,7 @@ export const updateCustomerInfo = (req: Request, res: Response) => {
  *                  - 500 if an error occurs in the midst of the query
  *                  - 200 if successful
  */
-export const getCustomerInfo = async (req: Request, res: Response) => {
+export const getCustomer = async (req: Request, res: Response) => {
     const userType = req.body.userType;
     const userEmail = req.body.userEmail;
 
@@ -88,7 +179,10 @@ export const getCustomerInfo = async (req: Request, res: Response) => {
                     postalCode: data.docs[0].data().postalCode,
                 };
 
-                return res.status(200).json({general: "SUCCESS", customerData});
+                return res.status(200).json({
+                    general: "successful",
+                    customerData: customerData,
+                });
             })
             .catch((err) => {
                 console.error(err);
