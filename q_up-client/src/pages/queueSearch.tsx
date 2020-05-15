@@ -7,7 +7,6 @@ import {
   InstantSearch,
   InfiniteHits,
   SearchBox,
-  Highlight,
   // Pagination,
   // ClearRefinements,
   // RefinementList,
@@ -19,6 +18,7 @@ import ConsumerNav from "../components/consumerNav";
 // import { Typography } from "@material-ui/core";
 // import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
+import QueueListRow from "src/components/queueListRow";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,28 +57,6 @@ export default function QueueSearchPage() {
   // const history = useHistory();
   const classes = useStyles();
 
-  const Hit = (props: any) => {
-    return (
-      <div>
-        <img
-          src={props.hit.imageUrl}
-          alt={props.hit.name}
-          className={classes.businessImage}
-        />
-        <div className="hit-name">
-          <label>Business Name:</label>
-          <Highlight attribute="name" hit={props.hit} />
-        </div>
-        <div className="hit-description">
-          <label>Description:</label>
-          <Highlight attribute="description" hit={props.hit} />
-        </div>
-        <label>Phone Number:</label>
-        <div className="hit-phoneNumber">{props.hit.phoneNumber}</div>
-      </div>
-    );
-  };
-
   return (
     <>
       <Header Nav={ConsumerNav} />
@@ -90,7 +68,7 @@ export default function QueueSearchPage() {
             }}
           />
           <div className={classes.content}>
-            <InfiniteHits hitComponent={Hit} />
+            <InfiniteHits hitComponent={QueueListRow} />
           </div>
         </InstantSearch>
       </div>
