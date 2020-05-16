@@ -171,22 +171,22 @@ export default function ConsumerProfilePage() {
         </section>
         <section>
           <Grid container>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="body1">Email</Typography>
             </Grid>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="body2">{email}</Typography>
             </Grid>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="body1">Phone number</Typography>
             </Grid>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="body2">{phoneNumber}</Typography>
             </Grid>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="body1">Postal code</Typography>
             </Grid>
-            <Grid item sm={12} md={6}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="body2">{postalCode}</Typography>
             </Grid>
           </Grid>
