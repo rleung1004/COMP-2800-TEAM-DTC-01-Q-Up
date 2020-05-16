@@ -2,11 +2,11 @@ import * as functions from "firebase-functions";
 import {
     getQueue, getQueueSlotInfo, customerEnterQueue, vipEnterQueue, abandonQueue, changeQueueStatus,
     getFavouriteQueuesForCustomer, changeStatusOfFavouriteBusiness, checkInQueue, boothEnterQueue
-} from "./controllers/queues";
+} from './controllers/queues';
 import * as express from "express";
 import * as cors from "cors";
 import {signUp, login, changePassword, logout} from "./controllers/users";
-import { updateCustomerInfo, deleteCustomer, getCustomer, registerCustomer } from "./controllers/customers";
+import {updateCustomerInfo, deleteCustomer, getCustomer, registerCustomer} from "./controllers/customers";
 import {
     updateBusiness,
     uploadBusinessImage,
@@ -17,7 +17,15 @@ import {
 } from "./controllers/businesses";
 import {FirebaseAuthentication} from "./util/firebaseAuthentication";
 import algoliasearch from "algoliasearch";
-import { registerEmployee, deleteEmployee, getEmployees, getOnlineEmployees, updateEmployee} from "./controllers/employees";
+import {
+    registerEmployee,
+    deleteEmployee,
+    getEmployees,
+    getOnlineEmployees,
+    updateEmployee
+} from "./controllers/employees";
+import {algoliaAddToIndex, algoliaDeleteFromIndex, algoliaUpdateIndex} from "./controllers/algoliaTriggers";
+import {onQueueUpdate} from "./controllers/appTriggers";
 
 // ========================
 // App Configuration
@@ -27,7 +35,7 @@ app.use(cors());
 const APP_ID = functions.config().algolia.app;
 const ADMIN_KEY = functions.config().algolia.key;
 const client = algoliasearch(APP_ID, ADMIN_KEY);
-const index = client.initIndex("businesses");
+export const index = client.initIndex("businesses");
 
 // ===========================================================================
 // all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
@@ -85,25 +93,19 @@ app.put("/abandonQueue", FirebaseAuthentication, abandonQueue);
 app.put("/changeQueueStatus", FirebaseAuthentication, changeQueueStatus);
 app.put('/checkInQueue', FirebaseAuthentication, checkInQueue);
 app.get("/getFavouriteQueues", FirebaseAuthentication, getFavouriteQueuesForCustomer);
-app.put('/changeFavoriteQueueStatus',FirebaseAuthentication, changeStatusOfFavouriteBusiness);
+app.put('/changeFavoriteQueueStatus', FirebaseAuthentication, changeStatusOfFavouriteBusiness);
 
 
 // ========================
-// Algolia exports
+// Algolia Triggers
 // ========================
-exports.addToIndex = functions.firestore.document("businesses/{businessId}").onCreate((snapshot) => {
-        const data = snapshot.data();
-        const objectID = snapshot.id;
-        return index.saveObject({...data, objectID});
-    });
-exports.updateIndex = functions.firestore.document("businesses/{businessId}").onUpdate((change) => {
-        const newData = change.after.data();
-        const objectID = change.after.id;
-        return index.saveObject({...newData, objectID});
-    });
-exports.deleteFromIndex = functions.firestore.document("businesses/{businessId}").onDelete((snapshot) => {
-        index.deleteObject(snapshot.id);
-    });
+exports.algoliaAddToIndex = algoliaAddToIndex;
+exports.algoliaUpdateIndex = algoliaUpdateIndex;
+exports.algoliaDeleteFromIndex = algoliaDeleteFromIndex;
 
 
+// ========================
+// API Triggers
+// ========================
+exports.onQueueUpdate = onQueueUpdate;
 exports.api = functions.https.onRequest(app);

@@ -1,4 +1,5 @@
 import * as firebaseAdmin from "firebase-admin";
+import * as functions from "firebase-functions";
 
 /**
  * References the firebase Configuration for this web-app.
@@ -24,3 +25,7 @@ export const admin = firebaseAdmin.initializeApp();
  */
 export const db = firebaseAdmin.firestore();
 
+/**
+ * References a firestore cloud function trigger in this web-app.
+ */
+export const trigger = functions.firestore;

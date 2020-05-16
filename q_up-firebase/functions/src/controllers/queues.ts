@@ -2,7 +2,7 @@ import {db,} from "../util/firebaseConfig";
 import {Request, Response,} from "express";
 import * as firebase from "firebase-admin";
 import * as moment from "moment-timezone";
-import {createQueueSlot, createVIPSlot, getTheDayOfTheWeekForArray,} from "../util/helpers";
+import {createQueueSlot, createVIPSlot, getHighestTicketNumbers, getTheDayOfTheWeekForArray,} from "../util/helpers";
 
 /**
  * Gets the number of online Employees for the business.
@@ -11,7 +11,7 @@ import {createQueueSlot, createVIPSlot, getTheDayOfTheWeekForArray,} from "../ut
  * @param businessName:      a string
  * @returns                 number -1 if no results found otherwise the number of online employees in the business
  */
-const getOnlineEmployees = async (businessName: string) => {
+export const getOnlineEmployees = async (businessName: string) => {
     return await db
         .collection("users")
         .where("userType", "==", "employee")
@@ -73,8 +73,8 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
             if (!queue.isActive) {
                 return res.status(404).json({general: "Queue is currently not active"});
             }
-            const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType !== 'VIP');
-            const customerSlot = createQueueSlot(requestData.userEmail, 100 + nonVIPQueueSlots.length);
+            const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
+            const customerSlot = createQueueSlot(requestData.userEmail, lastHighestTicketNumber);
             queueSlots.push(customerSlot);
             queue.queueSlots = queueSlots;
             await db
@@ -135,8 +135,8 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
             if (!queue.isActive) {
                 return res.status(404).json({general: "the queue is no longer active!",});
             }
-            const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType === 'VIP');
-            const VIPSlot = createVIPSlot(nonVIPQueueSlots.length);
+            const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestVIPTicketNumber;
+            const VIPSlot = createVIPSlot(lastHighestTicketNumber);
             queue.queueSlots.unshift(VIPSlot);
             db.collection("businesses").doc(requestData.businessName).update({queue: queue});
             return res.status(201).json({
@@ -190,8 +190,8 @@ export const boothEnterQueue = async (req: Request, res: Response) => {
             if (!isActive) {
                 return res.status(403).json({general: "Queue is currently not active"});
             }
-            const nonVIPQueueSlots: Array<any> = queueSlots.filter(queueSlot => queueSlot.customerType !== 'VIP');
-            const boothSlot = createQueueSlot(requestData.userName, 100 + nonVIPQueueSlots.length);
+            const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
+            const boothSlot = createQueueSlot(requestData.userName, lastHighestTicketNumber);
             queueSlots.push(boothSlot);
             db.collection("businesses").doc(requestData.businessName).update({
                 "queue.queueSlots": queueSlots
@@ -337,6 +337,7 @@ export const checkInQueue = async (req: Request, res: Response) => {
     if (customerLookUp === null) {
         return res.status(404).json({general: "Did not find the customer to checkIn!"});
     }
+    // TODO: Insert the log here for checking in
     return await db
         .collection("users")
         .doc(customerLookUp.customer)
