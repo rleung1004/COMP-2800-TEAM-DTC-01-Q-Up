@@ -18,8 +18,8 @@ import ConsumerProfilePage from "./pages/consumerProfile";
 import ConsumerEditProfilePage from "./pages/consumerEditProfile";
 import BusinessProfilePage from "./pages/businessProfile";
 import BusinessEditProfilePage from "./pages/businessEditProfile";
-import queueSearchPage from "./pages/queueSearch";
 import EmployeeManagementPage from "./pages/employeeManagement";
+import QueueSearchPage from "./pages/queueSearch";
 import TellerPage from "./pages/teller";
 
 axios.defaults.baseURL =
@@ -42,11 +42,11 @@ function App() {
             <Route path="/PrivacyPolicy" component={privacyPage} exact />
             <Route path="/businessDashboard" component={BusinessDashboardPage} exact />
             <Route path="/consumerDashboard" component={ConsumerDashboard} exact />
-            <Route path="/consumerProfile" component={ConsumerProfilePage} exact/>
-            <Route path="/editConsumerProfile" component={ConsumerEditProfilePage} exact/>
-            <Route path="/businessProfile" component={BusinessProfilePage} exact/>
+            <Route path="/consumerProfile" component={ConsumerProfilePage} exact />
+            <Route path="/editConsumerProfile" component={ConsumerEditProfilePage} exact />
+            <Route path="/businessProfile" component={BusinessProfilePage} exact />
             <Route path="/editBusinessProfile" component={BusinessEditProfilePage} exact />
-            <Route path="/searchQueues" component={queueSearchPage} exact />
+            <Route path="/searchQueues" component={QueueSearchPage} exact />
             <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
             <Route path="/teller" component={TellerPage} exact />
           </Switch>
