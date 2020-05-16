@@ -14,6 +14,13 @@ import ConsumerRegistrationPage from "./pages/consumerRegistration";
 import BusinessRegistrationPage from "./pages/businessRegistration";
 import BusinessDashboardPage from "./pages/businessDashboard";
 import ConsumerDashboard from "./pages/consumerDashboard";
+import ConsumerProfilePage from "./pages/consumerProfile";
+import ConsumerEditProfilePage from "./pages/consumerEditProfile";
+import BusinessProfilePage from "./pages/businessProfile";
+import BusinessEditProfilePage from "./pages/businessEditProfile";
+import EmployeeManagementPage from "./pages/employeeManagement";
+import QueueSearchPage from "./pages/queueSearch";
+import TellerPage from "./pages/teller";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
@@ -29,28 +36,19 @@ function App() {
             <Route path="/login" component={LoginPage} exact />
             <Route path="/signup" component={SignupPage} exact />
             <Route path="/aboutUs" component={aboutUsPage} exact />
-            <Route
-              path="/consumerRegistration"
-              component={ConsumerRegistrationPage}
-              exact
-            />
-            <Route
-              path="/businessRegistration"
-              component={BusinessRegistrationPage}
-              exact
-            />
+            <Route path="/consumerRegistration" component={ConsumerRegistrationPage} exact />
+            <Route path="/businessRegistration" component={BusinessRegistrationPage} exact />
             <Route path="/termsAndConditions" component={termsPage} exact />
             <Route path="/PrivacyPolicy" component={privacyPage} exact />
-            <Route
-              path="/businessDashboard"
-              component={BusinessDashboardPage}
-              exact
-            />
-            <Route
-              path="/consumerDashboard"
-              component={ConsumerDashboard}
-              exact
-            />
+            <Route path="/businessDashboard" component={BusinessDashboardPage} exact />
+            <Route path="/consumerDashboard" component={ConsumerDashboard} exact />
+            <Route path="/consumerProfile" component={ConsumerProfilePage} exact />
+            <Route path="/editConsumerProfile" component={ConsumerEditProfilePage} exact />
+            <Route path="/businessProfile" component={BusinessProfilePage} exact />
+            <Route path="/editBusinessProfile" component={BusinessEditProfilePage} exact />
+            <Route path="/searchQueues" component={QueueSearchPage} exact />
+            <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
+            <Route path="/teller" component={TellerPage} exact />
           </Switch>
         </ThemeProvider>
       </div>

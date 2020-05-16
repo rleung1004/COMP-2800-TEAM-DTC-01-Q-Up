@@ -1,54 +1,109 @@
 import * as functions from "firebase-functions";
 import {
-  getTellerQueueList,
-  getQueueInfoForBusiness,
-  getQueueSlotInfo,
-  customerEnterQueue,
-  boothEnterQueue,
-  VIPEnterQueue,
-  // removeQueueSlot,
-  changeQueueStatus,
-  //   getFavouriteQueuesForCustomer,
-} from "./handlers/queues";
+    getQueue, getQueueSlotInfo, customerEnterQueue, vipEnterQueue, abandonQueue, changeQueueStatus,
+    getFavouriteQueuesForCustomer, changeStatusOfFavouriteBusiness, checkInQueue, boothEnterQueue
+} from "./controllers/queues";
 import * as express from "express";
 import * as cors from "cors";
-import { signup, login, updateCustomerInfo } from "./handlers/users";
+import {signUp, login, changePassword, logout} from "./controllers/users";
+import { updateCustomerInfo, deleteCustomer, getCustomer, registerCustomer } from "./controllers/customers";
 import {
-  updateBusiness,
-  uploadBusinessImage,
-  getBusiness,
-} from "./handlers/businesses";
-import { FBAuth } from "./util/fbAuth";
-// TODO: bring in express-rate-limit (https://www.npmjs.com/package/express-rate-limit)
+    updateBusiness,
+    uploadBusinessImage,
+    getBusiness,
+    registerBusiness,
+    deleteBusiness,
+    registerNewBooth
+} from "./controllers/businesses";
+import {FirebaseAuthentication} from "./util/firebaseAuthentication";
+import algoliasearch from "algoliasearch";
+import { registerEmployee, deleteEmployee, getEmployees, getOnlineEmployees, updateEmployee} from "./controllers/employees";
 
+// ========================
+// App Configuration
+// ========================
 const app = express();
 app.use(cors());
+const APP_ID = functions.config().algolia.app;
+const ADMIN_KEY = functions.config().algolia.key;
+const client = algoliasearch(APP_ID, ADMIN_KEY);
+const index = client.initIndex("businesses");
 
+// ===========================================================================
 // all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
+// ===========================================================================
 
-// Get route
-app.get("/getBusiness", FBAuth, getBusiness);
 
-// Signup route
-app.post("/signup", signup);
-
-// login route
+// ========================
+// Authentication Routes
+// ========================
+app.post("/signup", signUp);
 app.post("/login", login);
+app.get('/logout', FirebaseAuthentication, logout);
+app.put("/changePassword", FirebaseAuthentication, changePassword);
 
-// add or update customer and business information
-app.post("/updateCustomer", FBAuth, updateCustomerInfo);
-app.post("/updateBusiness", FBAuth, updateBusiness);
-app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
 
-//Queue routes
-app.post("/tellerQueueList", FBAuth, getTellerQueueList);
-app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
-app.post("/customerQueueInfo", FBAuth, getQueueSlotInfo);
-app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
-app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
-app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
-// app.post('/removeFromQueue', FBAuth, removeQueueSlot);
-app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
-// app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
+// ========================
+// Business Routes
+// ========================
+app.post('/registerBusiness', FirebaseAuthentication, registerBusiness);
+app.post("/uploadBusinessImage", FirebaseAuthentication, uploadBusinessImage);
+app.get("/getBusiness", FirebaseAuthentication, getBusiness);
+app.put("/updateBusiness", FirebaseAuthentication, updateBusiness);
+app.delete('/deleteBusiness', FirebaseAuthentication, deleteBusiness);
+app.post("/registerBooth", FirebaseAuthentication, registerNewBooth);
+
+
+// ========================
+// Customer Routes
+// ========================
+app.get("/getCustomer", FirebaseAuthentication, getCustomer);
+app.post('/registerCustomer', FirebaseAuthentication, registerCustomer);
+app.put("/updateCustomer", FirebaseAuthentication, updateCustomerInfo);
+app.delete("/deleteCustomer", FirebaseAuthentication, deleteCustomer);
+
+
+// ========================
+// Employee Routes
+// ========================
+app.post('/registerEmployee', FirebaseAuthentication, registerEmployee);
+app.put('/updateEmployee', FirebaseAuthentication, updateEmployee);
+app.put('/deleteEmployee', FirebaseAuthentication, deleteEmployee);
+app.get('/getEmployees', FirebaseAuthentication, getEmployees);
+app.get('/getOnlineEmployees', FirebaseAuthentication, getOnlineEmployees);
+
+
+// ========================
+// Queue Routes
+// ========================
+app.get("/getQueue", FirebaseAuthentication, getQueue);
+app.get("/getCustomerQueueInfo", FirebaseAuthentication, getQueueSlotInfo);
+app.post("/customerEnterQueue", FirebaseAuthentication, customerEnterQueue);
+app.put("/boothEnterQueue", FirebaseAuthentication, boothEnterQueue);
+app.put("/VIPEnterQueue", FirebaseAuthentication, vipEnterQueue);
+app.put("/abandonQueue", FirebaseAuthentication, abandonQueue);
+app.put("/changeQueueStatus", FirebaseAuthentication, changeQueueStatus);
+app.put('/checkInQueue', FirebaseAuthentication, checkInQueue);
+app.get("/getFavouriteQueues", FirebaseAuthentication, getFavouriteQueuesForCustomer);
+app.put('/changeFavoriteQueueStatus',FirebaseAuthentication, changeStatusOfFavouriteBusiness);
+
+
+// ========================
+// Algolia exports
+// ========================
+exports.addToIndex = functions.firestore.document("businesses/{businessId}").onCreate((snapshot) => {
+        const data = snapshot.data();
+        const objectID = snapshot.id;
+        return index.saveObject({...data, objectID});
+    });
+exports.updateIndex = functions.firestore.document("businesses/{businessId}").onUpdate((change) => {
+        const newData = change.after.data();
+        const objectID = change.after.id;
+        return index.saveObject({...newData, objectID});
+    });
+exports.deleteFromIndex = functions.firestore.document("businesses/{businessId}").onDelete((snapshot) => {
+        index.deleteObject(snapshot.id);
+    });
+
 
 exports.api = functions.https.onRequest(app);

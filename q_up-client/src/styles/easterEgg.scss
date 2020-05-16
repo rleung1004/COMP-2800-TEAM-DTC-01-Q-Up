@@ -1,0 +1,26 @@
+#container {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    z-index: 10;
+    
+    img {
+        z-index: 15;
+        height: 20vh;
+        width: 20vw;
+    }
+
+    h1 {
+    background-color: #F00;
+    border-radius: 15px;
+}
+}
+
+.applyCursor {
+    cursor: url(../img/easter-egg/staticHammer.png), auto;
+}
+
+.removeCursor {
+    cursor: none;
+}

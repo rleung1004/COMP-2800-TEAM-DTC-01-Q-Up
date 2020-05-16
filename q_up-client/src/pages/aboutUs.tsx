@@ -8,11 +8,12 @@ import productImage from '../img/product image.png';
 import ourMission from '../img/our-mission.jpeg';
 import ourCulture from '../img/our-culture.jpeg';
 import logo from '../img/logo.png';
+import StaticNav from 'src/components/staticNav';
 
 export default function aboutUsPage() {
    return (
       <>
-         <Header />
+         <Header Nav={StaticNav}/>
          <main>
             <Grid
                container

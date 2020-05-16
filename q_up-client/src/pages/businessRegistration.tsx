@@ -52,7 +52,6 @@ export default function BusinessRegistrationPage() {
          startTime?: string;
          endTime?: string;
       };
-      name?: string;
       category?: string;
       email?: string;
       address?: {
@@ -64,13 +63,12 @@ export default function BusinessRegistrationPage() {
       };
       phoneNumber?: string;
       website?: string;
-      sft?: Number;
+      averageWaitTime?: Number;
    }
 
    const errorObject: errors = {};
 
    const [formState, setFormState] = useState({
-      name: '',
       category: '',
       description: '',
       email: '',
@@ -103,7 +101,7 @@ export default function BusinessRegistrationPage() {
       },
       phoneNumber: '',
       website: '',
-      sft: '',
+      averageWaitTime: '',
       loading: false,
       errors: errorObject,
    });
@@ -166,24 +164,24 @@ export default function BusinessRegistrationPage() {
       }
    };
 
-  const handleSftChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleaverageWaitTImeChange = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     if (newValue === "") {
-      setFormState((prevState) => ({ ...prevState, sft: newValue }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue }));
       return;
     }
     const newChar = newValue[newValue.length - 1];
     if (!('0' <= newChar && newChar <= '9')) {
-      setFormState((prevState) => ({ ...prevState, sft: newValue.slice(0,-1)}));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue.slice(0,-1)}));
       return;
     }
     const valueAsInt = parseInt(newValue);
     if (valueAsInt < 1) {
-      setFormState((prevState) => ({ ...prevState, sft: "1" }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: "1" }));
     } else if (valueAsInt > 59) {
-      setFormState((prevState) => ({ ...prevState, sft: "59" }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: "59" }));
     } else {
-      setFormState((prevState) => ({ ...prevState, sft: newValue }));
+      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue }));
     }
   };
   
@@ -193,16 +191,16 @@ export default function BusinessRegistrationPage() {
     const userData = {
       phoneNumber: formState.phoneNumber,
       address: formState.address,
-      name: formState.name,
       category: formState.category,
       website: formState.website,
       hours: formState.hours,
       description: formState.description,
       email: formState.email,
+      averageWaitTime: formState.averageWaitTime
     };
 
     axios
-      .post("/updateBusiness", userData, axiosConfig)
+      .post("/registerBusiness", userData, axiosConfig)
       .then(() => {
         console.log("success registering business");
 
@@ -210,6 +208,7 @@ export default function BusinessRegistrationPage() {
       })
       .catch((err: any) => {
         console.log("firebase lets you down, ", err);
+        window.alert("Connection error");
         setFormState((prevState) => ({
           ...prevState,
           errors: err.response.data,
@@ -240,18 +239,6 @@ export default function BusinessRegistrationPage() {
                   <TextField
                      required
                      color='secondary'
-                     id='name'
-                     label='Company name'
-                     name='name'
-                     onChange={handleOnFieldChange}
-                     value={formState.name}
-                     className={classes.textField}
-                     helperText={formState.errors.name}
-                     error={formState.errors.name ? true : false}
-                  />
-                  <TextField
-                     required
-                     color='secondary'
                      id='phone'
                      label='Phone number'
                      name='phoneNumber'
@@ -265,7 +252,7 @@ export default function BusinessRegistrationPage() {
                      required
                      color='secondary'
                      id='email'
-                     label='Email'
+                     label='Public email'
                      name='email'
                      onChange={handleOnFieldChange}
                      value={formState.email}
@@ -292,10 +279,10 @@ export default function BusinessRegistrationPage() {
                         </InputLabel>
                         <Select
                            color='secondary'
-                           labelId='province-label'
-                           id='province-select'
-                           name='address-province'
-                           value={formState.address.province}
+                           labelId='category-label'
+                           id='category-select'
+                           name='category'
+                           value={formState.category}
                            onChange={handleOnFieldChange}
                         >
                            {mockCategories().map((cat, key) => {
@@ -504,8 +491,8 @@ export default function BusinessRegistrationPage() {
                               name='servingFrequency'
                               color='secondary'
                               size='small'
-                              onChange={handleSftChange}
-                              value={formState.sft}
+                              onChange={handleaverageWaitTImeChange}
+                              value={formState.averageWaitTime}
                            ></TextField>
                            <Typography variant='body1'>minutes</Typography>
                         </Grid>

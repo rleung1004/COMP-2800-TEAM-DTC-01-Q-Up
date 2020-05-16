@@ -41,7 +41,7 @@ export default function SignupPage() {
     password?: string;
     confirmPassword?: string;
     userType?: string;
-    business?: string;
+    businessName?: string;
   }
   let errorObject: errors = {};
   const [formState, setFormState] = useState({
@@ -49,7 +49,7 @@ export default function SignupPage() {
     email: "",
     confirmPassword: "",
     userType: "customer",
-    business: "",
+    businessName: "",
     loading: false,
     errors: errorObject,
   });
@@ -68,7 +68,7 @@ export default function SignupPage() {
       password: formState.password,
       confirmPassword: formState.confirmPassword,
       userType: formState.userType,
-      business: formState.business,
+      businessName: formState.businessName,
     };
 
     axios
@@ -158,14 +158,14 @@ export default function SignupPage() {
                 <TextField
                   color="secondary"
                   required
-                  id="business"
+                  id="businessName"
                   label="Business Name"
-                  name="business"
+                  name="businessName"
                   type="text"
                   onChange={handleOnFieldChange}
-                  value={formState.business}
-                  helperText={formState.errors.business}
-                  error={formState.errors.business ? true : false}
+                  value={formState.businessName}
+                  helperText={formState.errors.businessName}
+                  error={formState.errors.businessName ? true : false}
                 />
               )}
               <FormControl component="fieldset">

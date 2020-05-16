@@ -35,7 +35,7 @@ export default function ClientDashboardPage() {
 
    return (
       <>
-         <Header Nav={ConsumerNav} />
+         <Header Nav={ConsumerNav} logout/>
          <main>
             <section>{true ? <CurrentQueueInfo /> : noQueue}</section>
             <section>

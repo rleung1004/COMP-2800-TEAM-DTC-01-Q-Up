@@ -33,7 +33,7 @@ export default function QueueList(props: any) {
          {dataList.map((q: any, key: any) => (
             <QueueListRow
                key={key}
-               data={q}
+               hit={q}
                handleChange={handleChange('panel' + key)}
                isExpanded={expandedPanel === 'panel' + key}
                remove={removeRow(key)}

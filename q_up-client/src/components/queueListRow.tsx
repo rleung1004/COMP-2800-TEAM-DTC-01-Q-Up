@@ -11,7 +11,7 @@ import {
 import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
-import MapIcon from '@material-ui/icons/Map';
+import MapIcon from "@material-ui/icons/Map";
 
 function formatTime(time24h: string) {
   const [hours, mins] = time24h.split(":");
@@ -19,8 +19,38 @@ function formatTime(time24h: string) {
   return (intHours % 12 || 12) + ":" + mins + (intHours >= 12 ? "PM" : "AM");
 }
 
+function isWeekend() {
+  const date = new Date();
+  const dayOfWeek = date.getDay();
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    return true;
+  }
+  return false;
+}
+
+function evaluateOpenTime(hours: any) {
+  if (isWeekend()) {
+    return hours.startTime[0];
+  }
+  return hours.startTime[1];
+}
+
+function evaluateCloseTime(hours: any) {
+  if (isWeekend()) {
+    return hours.endTime[0];
+  }
+  return hours.endTime[1];
+}
+
 export default function QueueListRow(props: any) {
-  const data = props.data;
+  console.log(props.hit.hours);
+  const data = {
+    ...props.hit,
+    active: props.hit.queue.isActive,
+    size: props.hit.queue.queueSlots.length,
+    startTime: evaluateOpenTime(props.hit.hours),
+    closeTime: evaluateCloseTime(props.hit.hours)
+  };
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
@@ -79,7 +109,7 @@ export default function QueueListRow(props: any) {
     <>
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Wait time</Typography>
-        <Typography variant="body2">{data.wait}</Typography>
+        <Typography variant="body2">{data.currentWaitTime? data.CurrentWaitTIme : "35m"}</Typography>
       </Grid>
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Queue Size</Typography>
@@ -92,7 +122,7 @@ export default function QueueListRow(props: any) {
     console.log("");
   };
   return (
-    <ExpansionPanel expanded={expanded} onChange={handleChange}>
+    <ExpansionPanel expanded={expanded} onChange={handleChange} square>
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         aria-controls="panel1bh-content"
@@ -115,7 +145,7 @@ export default function QueueListRow(props: any) {
           <Grid container item xs={6} justify="flex-start">
             {" "}
             {/* address*/}
-            <Grid item xs={12} >
+            <Grid item xs={12}>
               <Typography variant="body2" align="left">
                 {address.unit +
                   " " +
@@ -126,9 +156,9 @@ export default function QueueListRow(props: any) {
                 {address.province + ", " + address.postalCode}
               </Typography>
             </Grid>
-            <Grid container item xs={12}  justify="flex-start">
+            <Grid container item xs={12} justify="flex-start">
               <IconButton size="small">
-                <MapIcon color="primary"/>
+                <MapIcon color="primary" />
               </IconButton>
             </Grid>
             <Grid item xs={12}>

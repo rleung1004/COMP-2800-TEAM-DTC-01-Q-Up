@@ -2,11 +2,12 @@ import React from 'react';
 import Header from '../components/static/Header';
 import Footer from '../components/static/Footer';
 import '../styles/termsAndPrivacy.scss';
+import StaticNav from 'src/components/staticNav';
 
 export default function privacyPage() {
    return (
       <>
-         <Header />
+         <Header Nav={StaticNav}/>
          <main className='privacy-policy'>
             <div>
                <h1>Privacy Policy</h1>
