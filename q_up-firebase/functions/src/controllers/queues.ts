@@ -326,7 +326,7 @@ export const checkInQueue = async (req: Request, res: Response) => {
                 .collection('businesses')
                 .doc(requestData.businessName)
                 .update({
-                    "queue.queueSlot": firebase.firestore.FieldValue.arrayRemove(result),
+                    "queue.queueSlots": firebase.firestore.FieldValue.arrayRemove(result),
                 });
             return result;
         })
@@ -518,6 +518,7 @@ const deactivateQueue = async (req: Request, res: Response) => {
         .where("name", "==", requestData.businessName)
         .get()
         .then(async (data) => {
+            console.log(`The data in the query of deactivation is: ${JSON.stringify(data.docs[0].data())}`);
             const queue: any = data.docs[0].data().queue;
             for (const customer of queue.queueSlots.map((queueSlot: any) => queueSlot.customer)) {
                 await db
@@ -527,10 +528,11 @@ const deactivateQueue = async (req: Request, res: Response) => {
                     .catch(err => console.error(err));
             }
             queue.queueSlots = new Array<any>();
+            queue.isActive = false;
             return await db
                 .collection("businesses")
                 .doc(requestData.businessName)
-                .update({queue: queue, isActive: false})
+                .update({queue: queue})
                 .then(() => res.status(202).json({general: "successfully deactivated the queue!"}))
                 .catch();
         })
@@ -632,7 +634,7 @@ export const changeQueueStatus = async (req: Request, res: Response) => {
             console.error(err);
             return false;
         });
-
+    console.log(`The current status of the queue is : ${isQueueActive};`);
     if (isQueueActive) {
         return deactivateQueue(req, res);
     } else {
@@ -656,7 +658,7 @@ const getFavouriteQueueInfo = async (queueName: string) => {
             const queue: any = usableData.queue;
             return {
                 isActive: queue.isActive,
-                currentWaitTime: queue.queueSlots.length * parseInt(usableData.averageWaitTime),
+                currentWaitTime: queue.queueSlots.length * queue.averageWaitTime,
                 queueLength: queue.queueSlots.length,
                 address: usableData.address,
                 startTime: usableData.hours.startTime[getTheDayOfTheWeekForArray()],
@@ -708,7 +710,7 @@ export const getFavouriteQueuesForCustomer = async (req: Request, res: Response)
         });
     }
     let favoriteBusinesses: any = {};
-    for (const businessName of favoriteBusinesses) {
+    for (const businessName of favoriteBusinessNames) {
         const favBusiness: any = await getFavouriteQueueInfo(businessName);
         if (favBusiness) {
             favoriteBusinesses[businessName] = favBusiness;
