@@ -3,7 +3,6 @@ import Grid from "@material-ui/core/Grid";
 import "../../styles/staticHeader.scss";
 import { IconButton, makeStyles } from "@material-ui/core";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import axios from "axios";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -14,15 +13,8 @@ const useStyles = makeStyles(() => ({
 export default function Header(props: any) {
   const classes = useStyles();
   const onLogoutHandler = () => {
-    axios
-      .get("/logout")
-      .then(() => {
-        window.location.href = "/";
-      })
-      .catch((err: any) => {
-        console.log(err);
-        window.alert("Could not logout, failed connection");
-      });
+    sessionStorage.removeItem("user");
+    window.location.href = "/";
   };
   const Navbar = props.Nav ? props.Nav : () => <></>;
   const Logout = props.logout ? (

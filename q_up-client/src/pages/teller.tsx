@@ -1,6 +1,6 @@
 import React, { MouseEvent } from "react";
 import QueueSlot from "../components/tellerQueueSlot";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
@@ -33,59 +33,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const axiosConfig = {
-//   headers: {
-//     Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
-//   },
-// };
-
-const axiosConfig = {};
-
-// const [getData, setGetData] = useState(true);
-
-let queueList: Array<queueSlot> = [
-  {
-    customer: "Ryan",
-    ticketNumber: 141,
-    password: "hello",
-  },
-  {
-    customer: "Amir",
-    ticketNumber: 142,
-    password: "world",
-  },
-  {
-    customer: "Karel",
-    ticketNumber: 143,
-    password: "password",
-  },
-  {
-    customer: "Terry",
-    ticketNumber: 144,
-    password: "let me in",
-  },
-];
-let isActive: boolean = true;
-
-// useEffect(() => {
-//   if (!getData) {
-//     return;
-//   }
-//   setGetData(false);
-//   axios
-//     .get("/tellerQueueList", axiosConfig)
-//     .then((res: any) => {
-//       queueList = res.data.queueList;
-//       isActive = res.data.isActive;
-//     })
-//     .catch((err: any) => {
-//       window.alert("Connection error");
-//       console.log(err);
-//     });
-// }, [axiosConfig, getData]);
-
 export default function TellerPage() {
   const classes = useStyles();
+
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+    },
+  };
+
+  const [getData, setGetData] = useState(true);
+
+  const queueSlots: Array<queueSlot> = [];
+
+  const [queueList, setQueueList] = useState(queueSlots);
+
+  const [isActive, setActive] = useState(false);
+
+  const [currentWaitTime, setWaitTime] = useState(null);
+
+  const [queueLength, setQueueLength] = useState(null);
+
+  useEffect(() => {
+    if (!getData) {
+      return;
+    }
+    setGetData(false);
+    axios
+      .get("/getQueue", axiosConfig)
+      .then((res: any) => {
+        let queue = res.data.queue;
+        setQueueList(queue.queueList);
+        setActive(queue.isActive);
+        setWaitTime(queue.currentWaitTime);
+        setQueueLength(queue.queueLength);
+      })
+      .catch((err: any) => {
+        window.alert("Connection error");
+        console.log(err);
+      });
+  }, [getData]);
 
   const [selected, setSelected] = useState({
     id: -1,
@@ -102,18 +89,18 @@ export default function TellerPage() {
       window.alert("No one is selected");
       return;
     }
+    index = selected.id;
     const checkInData = {
-      customer: queueList[index].customer,
-      ticketNumber: queueList[index].customer,
+      ticketNumber: queueList[index].ticketNumber,
     };
 
     axios
-      .post("/checkInQueue", checkInData, axiosConfig)
+      .put("/checkInQueue", checkInData, axiosConfig)
       .then(() => {
         console.log(
           `Removed ticket number ${checkInData.ticketNumber} successfully`
         );
-        queueList.splice(index, 1);
+        setGetData(true);
       })
       .catch((err) => {
         console.error(err);
@@ -123,11 +110,22 @@ export default function TellerPage() {
 
   const handleVIP = (event: MouseEvent) => {
     event.preventDefault();
+    axios
+      .put("/VIPEnterQueue", {}, axiosConfig)
+      .then((res) => {
+        let VIPInfo = res.data.VIPSlotInfo;
+        console.log(`Added ${VIPInfo.customer} into the queue`);
+        setGetData(true);
+      })
+      .catch((err) => {
+        console.error(err);
+        window.alert("Connection error");
+      });
   };
 
   return (
     <>
-      <Header />
+      <Header logout />
       <section className="top-container">
         {isActive && (
           <Grid container alignItems="center" justify="space-around">
@@ -160,7 +158,7 @@ export default function TellerPage() {
                 className={classes.subHeading}
                 align="center"
               >
-                {queueList.length}
+                {queueLength}
               </Typography>
             </Grid>
             <Grid item xs={6}>
@@ -169,7 +167,7 @@ export default function TellerPage() {
                 className={classes.subHeading}
                 align="center"
               >
-                32mins
+                {currentWaitTime}
               </Typography>
             </Grid>
           </Grid>
