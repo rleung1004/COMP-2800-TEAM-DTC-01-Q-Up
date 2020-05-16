@@ -109,7 +109,7 @@ export default function QueueListRow(props: any) {
     <>
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Wait time</Typography>
-        <Typography variant="body2">{data.wait}</Typography>
+        <Typography variant="body2">{data.currentWaitTime? data.CurrentWaitTIme : "35m"}</Typography>
       </Grid>
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Queue Size</Typography>
@@ -122,7 +122,7 @@ export default function QueueListRow(props: any) {
     console.log("");
   };
   return (
-    <ExpansionPanel expanded={expanded} onChange={handleChange}>
+    <ExpansionPanel expanded={expanded} onChange={handleChange} square>
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         aria-controls="panel1bh-content"

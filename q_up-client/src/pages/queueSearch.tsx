@@ -18,8 +18,7 @@ import ConsumerNav from "../components/consumerNav";
 // import { Typography } from "@material-ui/core";
 // import PropTypes from "prop-types";
 import QueueListRow from "src/components/queueListRow";
-
-
+import "../styles/queueSearch.scss";
 
 export default function QueueSearchPage() {
   const searchClient = algoliasearch(
@@ -38,7 +37,9 @@ export default function QueueSearchPage() {
               placeholder: "Search for a queue",
             }}
           />
+          <section id="results">
           <InfiniteHits hitComponent={QueueListRow} />
+          </section>
         </InstantSearch>
       </div>
       <Footer />

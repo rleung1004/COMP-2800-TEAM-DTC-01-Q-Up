@@ -67,7 +67,7 @@ export default function ConsumerRegistrationPage() {
     };
 
     axios
-      .post("/updateCustomer", userData, axiosConfig)
+      .post("/registerCustomer", userData, axiosConfig)
       .then(() => {
         window.location.href = "/consumerDashboard";
       })
