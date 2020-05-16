@@ -1,12 +1,10 @@
 import * as chai from "chai";
-import {
-  isEmpty,
-  isEmail,
-  validateSignUpData,
-  validateLoginData,
-} from "../../util/validators";
+import {isEmail, isEmpty, validateLoginData, validateSignUpData} from "../../util/helpers";
 const assert = chai.assert;
 
+/**
+ * Tests the validators of our application api.
+ */
 describe("Validators", () => {
   describe("isEmpty", () => {
     it("should return false for non-empty strings", function () {
@@ -90,7 +88,7 @@ describe("Validators", () => {
       const mockData = {
         email: "ali.washangton.98@gmail.com",
         password: "123112",
-        confirmPassword: "123111",
+        confirmPassword: "123112",
         userType: "invalidType",
         businessName: "",
       };

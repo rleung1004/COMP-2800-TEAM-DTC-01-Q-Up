@@ -72,7 +72,7 @@ export default function TellerPage() {
         window.alert("Connection error");
         console.log(err);
       });
-  }, [getData]);
+  }, [axiosConfig, getData]);
 
   const [selected, setSelected] = useState({
     id: -1,
