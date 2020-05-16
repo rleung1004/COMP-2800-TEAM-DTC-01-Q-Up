@@ -180,7 +180,7 @@ export default function BusinessProfilePage() {
   const sectionSpacing = 3;
   return (
     <>
-      <Header Nav={BusinessNav} />
+      <Header Nav={BusinessNav} logout/>
       <main>
         <section>
           <Typography variant="h2">{formState.name}</Typography>

@@ -34,8 +34,8 @@ export default function ConsumerProfilePage() {
   }
   const errorObj: errors = {} 
   const classes = useStyles();
-  const [email, setEmail] = useState("some@email.ca");
-  const [phoneNumber, setPhoneNumber] = useState("(778)898-9898");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [passDialogOpen, setPassDialogOpen] = useState(false);
   const [getData, setGetData] = useState(true);
@@ -129,7 +129,7 @@ export default function ConsumerProfilePage() {
   
   return (
     <>
-      <Header Nav={ConsumerNav} />
+      <Header Nav={ConsumerNav} logout/>
       <main>
         <section>
           <Grid container justify="space-around">

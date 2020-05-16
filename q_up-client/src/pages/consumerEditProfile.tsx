@@ -86,7 +86,9 @@ export default function ConsumerEditProfilePage() {
     }
     setGetData(false)
     axios.get("/getCustomerInfo", axiosConfig)
-    .then((res: any) => {      
+    .then((res: any) => {    
+      console.log(res);
+        
       const data = res.data.customerData;       
       setFormState({
         phoneNumber: data.phoneNumber? data.phoneNumber : "",
@@ -102,7 +104,7 @@ export default function ConsumerEditProfilePage() {
   }, [axiosConfig, errorObject, getData]);
   return (
     <>
-      <Header Nav={ConsumerNav} />
+      <Header Nav={ConsumerNav} logout/>
       <main>
       <Grid container direction="column" justify="center" alignItems="center">
           <form
