@@ -197,7 +197,7 @@ export default function EmployeeManagementPage() {
 
   return (
     <>
-      <Header Nav={BusinessNav} />
+      <Header Nav={BusinessNav} logout/>
       <header>
         <Typography variant="h2">Employees</Typography>
       </header>

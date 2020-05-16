@@ -257,7 +257,7 @@ export default function EditBusinessProfilePage() {
 
   return (
     <>
-      <Header Nav={BusinessNav} />
+      <Header Nav={BusinessNav} logout/>
       <main>
         <form
           className={classes.root}

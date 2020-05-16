@@ -27,24 +27,24 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function ConsumerProfilePage() {
-   interface errors {
-      // oldPassword?: string,
-      newPassword?: string;
-      newPasswordConfirm?: string;
-   }
-   const errorObj: errors = {};
-   const classes = useStyles();
-   const [email, setEmail] = useState('some@email.ca');
-   const [phoneNumber, setPhoneNumber] = useState('(778)898-9898');
-   const [postalCode, setPostalCode] = useState('');
-   const [passDialogOpen, setPassDialogOpen] = useState(false);
-   const [getData, setGetData] = useState(true);
-   const [passwordForm, setPasswordForm] = useState({
-      // oldPassword: "",
-      newPassword: '',
-      newPasswordConfirm: '',
-      errors: errorObj,
-   });
+  interface errors {
+    // oldPassword?: string,
+    newPassword?:string,
+    newPasswordConfirm?: string
+  }
+  const errorObj: errors = {}
+  const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [passDialogOpen, setPassDialogOpen] = useState(false);
+  const [getData, setGetData] = useState(true);
+  const [passwordForm, setPasswordForm] = useState({
+    // oldPassword: "",
+    newPassword: "",
+    newPasswordConfirm: "",
+    errors: errorObj
+  });
 
    const axiosConfig = {
       headers: {
@@ -130,77 +130,73 @@ export default function ConsumerProfilePage() {
             console.log(err);
          });
    }, [axiosConfig, errorObj, getData]);
-
-   return (
-      <>
-         <Header Nav={ConsumerNav} />
-         <main>
-            <section>
-               <Grid container justify='space-around'>
-                  <Grid item xs={12} md={4}>
-                     <Button
-                        variant='contained'
-                        color='primary'
-                        className={classes.button}
-                        onClick={handleEditProfile}
-                     >
-                        Edit profile
-                     </Button>
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                     <Button
-                        variant='contained'
-                        color='primary'
-                        className={classes.button}
-                        onClick={handleDeleteProfile}
-                     >
-                        Delete account
-                     </Button>
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                     <Button
-                        variant='contained'
-                        color='primary'
-                        className={classes.button}
-                        onClick={handlePasswordChange}
-                     >
-                        Change password
-                     </Button>
-                  </Grid>
-               </Grid>
-            </section>
-            <section>
-               <Grid container>
-                  <Grid item sm={12} md={6}>
-                     <Typography variant='body1'>Email</Typography>
-                  </Grid>
-                  <Grid item sm={12} md={6}>
-                     <Typography variant='body2'>{email}</Typography>
-                  </Grid>
-                  <Grid item sm={12} md={6}>
-                     <Typography variant='body1'>Phone number</Typography>
-                  </Grid>
-                  <Grid item sm={12} md={6}>
-                     <Typography variant='body2'>{phoneNumber}</Typography>
-                  </Grid>
-                  <Grid item sm={12} md={6}>
-                     <Typography variant='body1'>Postal code</Typography>
-                  </Grid>
-                  <Grid item sm={12} md={6}>
-                     <Typography variant='body2'>{postalCode}</Typography>
-                  </Grid>
-               </Grid>
-            </section>
-         </main>
-         <Dialog
-            open={passDialogOpen}
-            onClose={handlePassChangeCancel}
-            PaperProps={{ style: { backgroundColor: '#242323' } }}
-         >
-            <DialogTitle>Change Password</DialogTitle>
-            <DialogContent>
-               <Grid container direction='column'>
-                  {/* <TextField
+  
+  return (
+    <>
+      <Header Nav={ConsumerNav} logout/>
+      <main>
+        <section>
+          <Grid container justify="space-around">
+            <Grid item xs={12} md={4}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handleEditProfile}
+              >
+                Edit profile
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handleDeleteProfile}
+              >
+                Delete account
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handlePasswordChange}
+              >
+                Change password
+              </Button>
+            </Grid>
+          </Grid>
+        </section>
+        <section>
+          <Grid container>
+            <Grid item sm={12} md={6}>
+              <Typography variant="body1">Email</Typography>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Typography variant="body2">{email}</Typography>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Typography variant="body1">Phone number</Typography>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Typography variant="body2">{phoneNumber}</Typography>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Typography variant="body1">Postal code</Typography>
+            </Grid>
+            <Grid item sm={12} md={6}>
+              <Typography variant="body2">{postalCode}</Typography>
+            </Grid>
+          </Grid>
+        </section>
+      </main>
+      <Dialog open={passDialogOpen} onClose={handlePassChangeCancel} PaperProps={{style: {backgroundColor:"#242323"}}}>
+        <DialogTitle>Change Password</DialogTitle>
+        <DialogContent>
+          <Grid container direction='column'>
+          {/* <TextField
           type="password"
             color="secondary"
             id="oldPassText"

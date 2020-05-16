@@ -68,6 +68,7 @@ export default function ConsumerEditProfilePage() {
       const userData = {
          phoneNumber: formState.phoneNumber,
          postalCode: formState.postalCode,
+         email: formState.postalCode,
       };
 
       axios

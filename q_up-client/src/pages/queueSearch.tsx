@@ -30,7 +30,7 @@ export default function QueueSearchPage() {
 
   return (
     <>
-      <Header Nav={ConsumerNav} />
+      <Header Nav={ConsumerNav} logout/>
       <div className="InstantSearch">
         <InstantSearch indexName="businesses" searchClient={searchClient}>
           <SearchBox
