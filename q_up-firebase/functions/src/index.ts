@@ -1,100 +1,109 @@
 import * as functions from "firebase-functions";
 import {
-  getTellerQueueList,
-  getQueueInfoForBusiness,
-  getQueueSlotInfo,
-  customerEnterQueue,
-  VIPEnterQueue,
-  abandonQueueSlot,
-  changeQueueStatus,
-  //   getFavouriteQueuesForCustomer,
-} from "./handlers/queues";
-import { boothEnterQueue, createNewBooth } from "./handlers/booths";
+    getQueue, getQueueSlotInfo, customerEnterQueue, vipEnterQueue, abandonQueue, changeQueueStatus,
+    getFavouriteQueuesForCustomer, changeStatusOfFavouriteBusiness, checkInQueue, boothEnterQueue
+} from "./controllers/queues";
 import * as express from "express";
 import * as cors from "cors";
-import { signup, login, changePassword } from "./handlers/users";
+import {signUp, login, changePassword, logout} from "./controllers/users";
+import { updateCustomerInfo, deleteCustomer, getCustomer, registerCustomer } from "./controllers/customers";
 import {
-  updateCustomerInfo,
-  deleteCustomer,
-  getCustomerInfo,
-} from "./handlers/customers";
-import {
-  updateBusiness,
-  uploadBusinessImage,
-  getBusiness,
-} from "./handlers/businesses";
-import { FBAuth } from "./util/fbAuth";
+    updateBusiness,
+    uploadBusinessImage,
+    getBusiness,
+    registerBusiness,
+    deleteBusiness,
+    registerNewBooth
+} from "./controllers/businesses";
+import {FirebaseAuthentication} from "./util/firebaseAuthentication";
 import algoliasearch from "algoliasearch";
-// TODO: bring in express-rate-limit (https://www.npmjs.com/package/express-rate-limit)
+import { registerEmployee, deleteEmployee, getEmployees, getOnlineEmployees, updateEmployee} from "./controllers/employees";
 
+// ========================
+// App Configuration
+// ========================
 const app = express();
 app.use(cors());
-
 const APP_ID = functions.config().algolia.app;
 const ADMIN_KEY = functions.config().algolia.key;
-
 const client = algoliasearch(APP_ID, ADMIN_KEY);
 const index = client.initIndex("businesses");
 
+// ===========================================================================
 // all routes start with https://us-central1-q-up-c2b70.cloudfunctions.net/api
+// ===========================================================================
 
-// Get route
-app.get("/getBusiness", FBAuth, getBusiness);
 
-// Signup route
-app.post("/signup", signup);
-
-// login route
+// ========================
+// Authentication Routes
+// ========================
+app.post("/signup", signUp);
 app.post("/login", login);
+app.get('/logout', FirebaseAuthentication, logout);
+app.put("/changePassword", FirebaseAuthentication, changePassword);
 
-// change password route
-app.post("/changePassword", FBAuth, changePassword);
 
-// add or update customer and business information
-app.post("/updateCustomer", FBAuth, updateCustomerInfo);
-app.post("/updateBusiness", FBAuth, updateBusiness);
-app.post("/uploadBusinessImage", FBAuth, uploadBusinessImage);
+// ========================
+// Business Routes
+// ========================
+app.post('/registerBusiness', FirebaseAuthentication, registerBusiness);
+app.post("/uploadBusinessImage", FirebaseAuthentication, uploadBusinessImage);
+app.get("/getBusiness", FirebaseAuthentication, getBusiness);
+app.put("/updateBusiness", FirebaseAuthentication, updateBusiness);
+app.delete('/deleteBusiness', FirebaseAuthentication, deleteBusiness);
+app.post("/registerBooth", FirebaseAuthentication, registerNewBooth);
 
-//Queue routes
-app.post("/tellerQueueList", FBAuth, getTellerQueueList);
-app.post("/businessQueueInfo", FBAuth, getQueueInfoForBusiness);
-app.get("/getCustomerQueueInfo", FBAuth, getQueueSlotInfo);
-app.post("/customerEnterQueue", FBAuth, customerEnterQueue);
-app.post("/VIPEnterQueue", FBAuth, VIPEnterQueue);
-app.post("/abandonQueueSlot", FBAuth, abandonQueueSlot);
-app.post("/changeQueueStatus", FBAuth, changeQueueStatus);
-// app.get("/getFavouriteQueues", FBAuth, getFavouriteQueuesForCustomer);
 
-// customer routes
-app.get("/getCustomerInfo", FBAuth, getCustomerInfo);
-app.delete("/deleteCustomer", FBAuth, deleteCustomer);
+// ========================
+// Customer Routes
+// ========================
+app.get("/getCustomer", FirebaseAuthentication, getCustomer);
+app.post('/registerCustomer', FirebaseAuthentication, registerCustomer);
+app.put("/updateCustomer", FirebaseAuthentication, updateCustomerInfo);
+app.delete("/deleteCustomer", FirebaseAuthentication, deleteCustomer);
 
-// booth routes
-app.post("/boothEnterQueue", FBAuth, boothEnterQueue);
-app.post("/createNewBooth", FBAuth, createNewBooth);
 
-exports.addToIndex = functions.firestore
-  .document("businesses/{businessId}")
-  .onCreate((snapshot) => {
-    const data = snapshot.data();
-    const objectID = snapshot.id;
+// ========================
+// Employee Routes
+// ========================
+app.post('/registerEmployee', FirebaseAuthentication, registerEmployee);
+app.put('/updateEmployee', FirebaseAuthentication, updateEmployee);
+app.put('/deleteEmployee', FirebaseAuthentication, deleteEmployee);
+app.get('/getEmployees', FirebaseAuthentication, getEmployees);
+app.get('/getOnlineEmployees', FirebaseAuthentication, getOnlineEmployees);
 
-    return index.saveObject({ ...data, objectID });
-  });
 
-exports.updateIndex = functions.firestore
-  .document("businesses/{businessId}")
-  .onUpdate((change) => {
-    const newData = change.after.data();
-    const objectID = change.after.id;
+// ========================
+// Queue Routes
+// ========================
+app.get("/getQueue", FirebaseAuthentication, getQueue);
+app.get("/getCustomerQueueInfo", FirebaseAuthentication, getQueueSlotInfo);
+app.post("/customerEnterQueue", FirebaseAuthentication, customerEnterQueue);
+app.put("/boothEnterQueue", FirebaseAuthentication, boothEnterQueue);
+app.put("/VIPEnterQueue", FirebaseAuthentication, vipEnterQueue);
+app.put("/abandonQueue", FirebaseAuthentication, abandonQueue);
+app.put("/changeQueueStatus", FirebaseAuthentication, changeQueueStatus);
+app.put('/checkInQueue', FirebaseAuthentication, checkInQueue);
+app.get("/getFavouriteQueues", FirebaseAuthentication, getFavouriteQueuesForCustomer);
+app.put('/changeFavoriteQueueStatus',FirebaseAuthentication, changeStatusOfFavouriteBusiness);
 
-    return index.saveObject({ ...newData, objectID });
-  });
 
-exports.deleteFromIndex = functions.firestore
-  .document("businesses/{businessId}")
-  .onDelete((snapshot) => {
-    index.deleteObject(snapshot.id);
-  });
+// ========================
+// Algolia exports
+// ========================
+exports.addToIndex = functions.firestore.document("businesses/{businessId}").onCreate((snapshot) => {
+        const data = snapshot.data();
+        const objectID = snapshot.id;
+        return index.saveObject({...data, objectID});
+    });
+exports.updateIndex = functions.firestore.document("businesses/{businessId}").onUpdate((change) => {
+        const newData = change.after.data();
+        const objectID = change.after.id;
+        return index.saveObject({...newData, objectID});
+    });
+exports.deleteFromIndex = functions.firestore.document("businesses/{businessId}").onDelete((snapshot) => {
+        index.deleteObject(snapshot.id);
+    });
+
 
 exports.api = functions.https.onRequest(app);
