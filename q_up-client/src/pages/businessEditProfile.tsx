@@ -507,9 +507,10 @@ export default function EditBusinessProfilePage() {
                   </Grid>
                 </Grid>
               </Grid>
+              
               <Grid container item direction="column">
-                <br />
-                <Typography variant="h6">
+              <Typography variant="h3">
+                <br/>
                   Estimated Serving Frequency(SF)
                 </Typography>
                 <Typography variant="caption">
@@ -526,7 +527,6 @@ export default function EditBusinessProfilePage() {
                     onChange={handleaverageWaitTImeChange}
                     value={formState.averageWaitTime}
                   ></TextField>
-                  <Typography variant="body1">minutes</Typography>
                 </Grid>
               </Grid>
             </Grid>
