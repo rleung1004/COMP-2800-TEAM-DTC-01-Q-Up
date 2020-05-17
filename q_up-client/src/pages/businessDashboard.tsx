@@ -121,56 +121,57 @@ export default function BusinessDashboardPage() {
           </Grid>
         </Grid>
       </Grid>
-      <Paper square>
-        <Grid container justify="center">
-          <Grid
-            container
-            item
-            alignItems="center"
-            justify="flex-start"
-            xs={12}
-          sm={8}
-          md={6}
-          lg={4}
-          >
-            <Grid item xs={6}>
-              <Typography variant="body1" align="left">
-                Current Size
-              </Typography>
-            </Grid>
+      <Grid container justify="center">
+        <Grid item xs={12} md={8} lg={6}>
+          <Paper>
+            <Grid container justify="center">
+              <Grid
+                container
+                item
+                alignItems="center"
+                justify="flex-start"
+                xs={12}
+                sm={8}
+                md={6}
+                lg={4}
+              >
+                <Grid item xs={6}>
+                  <Typography variant="body1" align="left">
+                    Current Size
+                  </Typography>
+                </Grid>
 
-            <Grid item xs={6}>
-              <Typography variant="body2">
-                {data.queueSize}
-              </Typography>
-            </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">{data.queueSize}</Typography>
+                </Grid>
 
-            <Grid item xs={6}>
-              <Typography variant="body1" align="left">
-                Queue Duration
-              </Typography>
-            </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body1" align="left">
+                    Queue Duration
+                  </Typography>
+                </Grid>
 
-            <Grid item xs={6}>
-              <Typography variant="body2">
-                {data.duration}
-              </Typography>
-            </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">{data.duration}</Typography>
+                </Grid>
 
-            <Grid container alignItems="center">
-              <Grid item xs={6}>
-                <Typography variant="body1" align="left">
-                  Employees online
-                </Typography>
+                <Grid container alignItems="center">
+                  <Grid item xs={6}>
+                    <Typography variant="body1" align="left">
+                      Employees online
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body2">
+                      {data.activeEmployees}
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body2">{data.activeEmployees}</Typography>
-              </Grid>
             </Grid>
-          </Grid>
+          </Paper>
         </Grid>
-      </Paper>
-
+      </Grid>
       <Footer />
     </>
   );
