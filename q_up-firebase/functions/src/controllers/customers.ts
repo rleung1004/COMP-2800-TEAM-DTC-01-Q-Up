@@ -5,7 +5,7 @@ import {validateCustomerData} from "../util/helpers";
 /**
  * Registers the customer.
  * first, checks if the user is a customer, then checks if the provided info is valid, then it updates the customer
- * information by adding thei phone number of postal code.
+ * information by adding their phone number of postal code.
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
@@ -67,7 +67,7 @@ export const updateCustomerInfo = async (req: Request, res: Response) => {
     const requestData = {
         userEmail: req.body.userEmail,
         userType: req.body.userType,
-        email: req.body.email,
+        email: req.body?.email,
         phoneNumber: req.body.phoneNumber,
         postalCode: req.body.postalCode,
     };
@@ -82,6 +82,7 @@ export const updateCustomerInfo = async (req: Request, res: Response) => {
     if (!valid) {
         return res.status(403).json(errors);
     }
+
     const oldCustomerInfo = await db
         .collection('users')
         .where('email', '==', requestData.userEmail)
@@ -119,41 +120,53 @@ export const updateCustomerInfo = async (req: Request, res: Response) => {
             })
             .catch(err => console.error(err));
     }
-    return await db
-        .collection('users')
-        .doc(requestData.userEmail)
-        .delete()
-        .then(async () => {
-            await admin
-                .auth()
-                .updateUser(oldCustomerInfo.userId, {
-                    email: requestData.email,
-                })
-                .then(async () => {
-                    await db
-                        .collection('users')
-                        .doc(requestData.email)
-                        .set({
-                            currentQueue: oldCustomerInfo.currentQueue,
-                            email: requestData.email,
-                            favoriteBusinesses: oldCustomerInfo.favoriteBusinesses,
-                            userId: oldCustomerInfo.userId,
-                            userType: requestData.userType,
-                            phoneNumber: req.body.phoneNumber,
-                            postalCode: req.body.postalCode,
-                        })
-                        .then(() => res.status(202).json({
-                            general: "user information have been updated successfully!"
-                        }))
-                })
-        })
-        .catch(async (err) => {
-            console.error(err);
-            return res.status(500).json({
-                general: "Internal Error. Something went wrong!",
-                error: await err.toString(),
+    if (requestData.email) {
+        return await db
+            .collection('users')
+            .doc(requestData.userEmail)
+            .delete()
+            .then(async () => {
+                await admin
+                    .auth()
+                    .updateUser(oldCustomerInfo.userId, {
+                        email: requestData.email,
+                    })
+                    .then(async () => {
+                        await db
+                            .collection('users')
+                            .doc(requestData.email)
+                            .set({
+                                currentQueue: oldCustomerInfo.currentQueue,
+                                email: requestData.email,
+                                favoriteBusinesses: oldCustomerInfo.favoriteBusinesses,
+                                userId: oldCustomerInfo.userId,
+                                userType: requestData.userType,
+                                phoneNumber: req.body.phoneNumber,
+                                postalCode: req.body.postalCode,
+                            })
+                            .then(() => res.status(202).json({
+                                general: "user information have been updated successfully!"
+                            }))
+                    })
+            })
+            .catch(async (err) => {
+                console.error(err);
+                return res.status(500).json({
+                    general: "Internal Error. Something went wrong!",
+                    error: await err.toString(),
+                });
             });
-        });
+    } else {
+        return await db
+            .collection("users")
+            .doc(requestData.userEmail)
+            .update(userInfo)
+            .then(()=> res.status(200).json({general:"success"}))
+            .catch(err => {
+                console.error(err);
+                return res.status(200).json({general:"bad bad bad abd fuck fuck fuck fuck fuck ..."});
+            })
+    }
 };
 
 /**
