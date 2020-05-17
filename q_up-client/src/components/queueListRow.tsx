@@ -43,13 +43,16 @@ function evaluateCloseTime(hours: any) {
 }
 
 export default function QueueListRow(props: any) {
-  const data = {
-    ...props.hit,
-    active: props.hit.queue.isActive,
-    size: props.hit.queue.queueSlots.length,
-    startTime: evaluateOpenTime(props.hit.hours),
-    closeTime: evaluateCloseTime(props.hit.hours)
-  };
+  console.log(props);
+  const data = props.data
+    ? props.data
+    : {
+        ...props.hit,
+        active: props.hit.queue.isActive,
+        size: props.hit.queue.queueSlots.length,
+        startTime: evaluateOpenTime(props.hit.hours),
+        closeTime: evaluateCloseTime(props.hit.hours),
+      };
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
@@ -108,7 +111,9 @@ export default function QueueListRow(props: any) {
     <>
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Wait time</Typography>
-        <Typography variant="body2">{data.currentWaitTime? data.CurrentWaitTIme : "35m"}</Typography>
+        <Typography variant="body2">
+          {data.currentWaitTime ? data.CurrentWaitTIme : "35m"}
+        </Typography>
       </Grid>
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Queue Size</Typography>
