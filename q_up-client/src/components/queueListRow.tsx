@@ -12,6 +12,7 @@ import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import MapIcon from "@material-ui/icons/Map";
+import Axios from "axios";
 
 function formatTime(time24h: string) {
   const [hours, mins] = time24h.split(":");
@@ -44,6 +45,11 @@ function evaluateCloseTime(hours: any) {
 
 export default function QueueListRow(props: any) {
   console.log(props);
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+    },
+  };
   const data = props.data
     ? props.data
     : {
@@ -70,19 +76,34 @@ export default function QueueListRow(props: any) {
       props.remove();
       return;
     }
-    if (fav) {
-      setFavicon(
-        <IconButton color="secondary" onClick={handleFavClick(false)}>
-          <StarBorderIcon color="primary" />
-        </IconButton>
-      );
-    } else {
-      setFavicon(
-        <IconButton color="secondary" onClick={handleFavClick(true)}>
-          <StarIcon />
-        </IconButton>
-      );
-    }
+    const iconButtonManager = () => {
+      if (fav) {
+        setFavicon(
+          <IconButton color="secondary" onClick={handleFavClick(false)}>
+            <StarBorderIcon color="primary" />
+          </IconButton>
+        );
+      } else {
+        setFavicon(
+          <IconButton color="secondary" onClick={handleFavClick(true)}>
+            <StarIcon />
+          </IconButton>
+        );
+      }
+    };
+    const packet = {
+      favoriteQueueName: data.name,
+    };
+
+    Axios.put("/changeFavoriteQueueStatus", packet, axiosConfig)
+      .then((res: any) => {
+        window.alert(res.data.general);
+        iconButtonManager();
+      })
+      .catch((err) => {
+        console.error(err);
+        window.alert("Connection failed. Please try again");
+      });
   };
 
   const favButtonModel = (
@@ -123,7 +144,24 @@ export default function QueueListRow(props: any) {
   );
 
   const queueUp = () => {
-    console.log("");
+    const packet = {
+      queueName: data.name
+    };
+    Axios.post('/customerEnterQueue', packet, axiosConfig)
+    .then((res) => {
+      console.log(res);
+      window.alert(res.data.general);
+      if (props.data) {
+        props.triggerGetStatus();
+      } else {
+        window.location.href = "/consumerDashboard";
+      }
+      
+    })
+    .catch((err) => {
+      console.error(err);
+      window.alert(err.response.general);
+    });
   };
   return (
     <ExpansionPanel expanded={expanded} onChange={handleChange} square>

@@ -240,12 +240,11 @@ export default function EditBusinessProfilePage() {
     axios
       .put("/updateBusiness", userData, axiosConfig)
       .then(() => {
-        console.log("success registering business");
-
+        console.log("success updating business");
         window.location.href = "/businessDashboard";
       })
       .catch((err: any) => {
-        console.log("firebase lets you down, ", err);
+        console.error(err);
         window.alert("Connection error");
         setFormState((prevState) => ({
           ...prevState,

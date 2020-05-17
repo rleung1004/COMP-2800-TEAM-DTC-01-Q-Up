@@ -37,6 +37,7 @@ export default function QueueList(props: any) {
           remove={removeRow(key)}
           isFavList={props.isFavList}
           isFav={isFav(q.name, props.favs)}
+          triggerGetStatus={props.triggerGetStatus}
         />
       ))}
     </>

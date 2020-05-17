@@ -27,7 +27,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ClientDashboardPage() {
   const classes = useStyles();
-
+  const [currentQueueInfo, setCurrentQueueInfo] = useState({
+    businessName: "",
+    estimatedWait: 0,
+    currentPosition: 0,
+    ticketNumber: 0,
+    password: "",
+    inQueue: false,
+  });
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
@@ -47,7 +54,38 @@ export default function ClientDashboardPage() {
     names: listNames,
   });
 
+  const toSearchQueuesHandler = () => {
+    window.location.href = "/searchQueues";
+  };
+
   const [getData, setGetData] = useState(true);
+  const triggerGetStatus = () => {
+    setGetData(true);
+  };
+
+  useEffect(() => {
+    if (!getData) {
+      return;
+    }
+    setGetData(false);
+    axios
+      .get("/getCustomerQueueInfo", axiosConfig)
+      .then((res) => {
+        const data = res.data.queueSlotInfo;
+        setCurrentQueueInfo({
+          businessName: data.currentQueue,
+          estimatedWait: data.currentWaitTime,
+          currentPosition: data.queuePosition,
+          ticketNumber: data.ticketNumber,
+          password: data.password,
+          inQueue: true,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        window.alert(err);
+      });
+  }, [axiosConfig, getData]);
 
   useEffect(() => {
     if (!getData) {
@@ -81,7 +119,16 @@ export default function ClientDashboardPage() {
     <>
       <Header Nav={ConsumerNav} logout />
       <main>
-        <section>{true ? <CurrentQueueInfo /> : noQueue}</section>
+        <section>
+          {currentQueueInfo.inQueue ? (
+            <CurrentQueueInfo
+              data={currentQueueInfo}
+              triggerGetStatus={triggerGetStatus}
+            />
+          ) : (
+            noQueue
+          )}
+        </section>
         <section>
           <Grid container direction="column">
             <Button
@@ -89,14 +136,7 @@ export default function ClientDashboardPage() {
               variant="contained"
               color="primary"
               className={classes.button}
-            >
-              Abandon Queue
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              className={classes.button}
+              onClick={toSearchQueuesHandler}
             >
               Search Queues
             </Button>
@@ -112,7 +152,11 @@ export default function ClientDashboardPage() {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
               <div>
-                <QueueList dataList={favQueues.data} favs={favQueues.names} />
+                <QueueList
+                  dataList={favQueues.data}
+                  favs={favQueues.names}
+                  triggerGetStatus={triggerGetStatus}
+                />
               </div>
             </ExpansionPanelDetails>
           </ExpansionPanel>

@@ -1,7 +1,42 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
+import axios from 'axios';
 
-function currentQueueInfo() {
+const useStyles = makeStyles(() => ({
+   button: {
+     margin: "20px auto 20px auto",
+   },
+ }));
+
+function CurrentQueueInfo(props:any) {
+   const classes = useStyles();
+   const data = props.data;
+   const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+      },
+    };
+
+   const abandonQueueHandler = () => {
+      const stringUser = sessionStorage.getItem("user");
+      const user = JSON.parse(stringUser? stringUser : "{}");
+      const packet = {
+         currentQueue: user,
+         userEmail: ,
+         userType: user,
+     };
+      axios
+      .put('/abandonQueue', axiosConfig)
+      .then((res) => {
+        console.log(res);
+        window.alert(res.data.general);
+        props.triggerGetStatus()
+      })
+      .catch((err) => {
+        console.error(err.response);
+        window.alert(err.response);
+      });
+    };
    return (
       <Grid container>
          <Grid container item xs={7} justify='flex-start'>
@@ -10,7 +45,7 @@ function currentQueueInfo() {
                   Current Queue{'  '}
                </Typography>
                <Typography display='inline' variant='body2'>
-                  Costco
+                  {data.businessName}
                </Typography>
             </Grid>
 
@@ -19,7 +54,7 @@ function currentQueueInfo() {
                   Wait Time{'  '}
                </Typography>
                <Typography display='inline' variant='body2'>
-                  45 min
+                  {data.estimatedWaitTime}
                </Typography>
             </Grid>
 
@@ -28,7 +63,7 @@ function currentQueueInfo() {
                   Current Position{'  '}
                </Typography>
                <Typography display='inline' variant='body2'>
-                  15
+                  {data.currentPosition}
                </Typography>
             </Grid>
          </Grid>
@@ -38,7 +73,7 @@ function currentQueueInfo() {
                   Ticket number{'  '}
                </Typography>
                <Typography display='inline' variant='body2'>
-                  #152
+                  {data.ticketNumber}
                </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -46,12 +81,23 @@ function currentQueueInfo() {
                   Password{'  '}
                </Typography>
                <Typography display='inline' variant='body2'>
-                  Calgary
+                  {data.password}
                </Typography>
             </Grid>
+         </Grid>
+         <Grid container direction="column">
+         <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              onClick={abandonQueueHandler}
+            >
+              Abandon Queue
+            </Button>
          </Grid>
       </Grid>
    );
 }
 
-export default currentQueueInfo;
+export default CurrentQueueInfo;
