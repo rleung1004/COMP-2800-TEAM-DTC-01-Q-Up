@@ -68,46 +68,56 @@ export default function LoginPage() {
       axios
          .post('/login', userData)
          .then((res) => {
-            if (res.data.userType === 'manager') {
-               sessionStorage.setItem(
+            switch (res.data.userType) {
+               case 'manager':
+                  sessionStorage.setItem(
                   'user',
                   JSON.stringify({
                      token: res.data.generatedToken,
                      type: 'manager',
                   })
                );
-            } else if (res.data.userType === 'customer') {
-               sessionStorage.setItem(
-                  'user',
-                  JSON.stringify({
-                     token: res.data.generatedToken,
-                     type: 'customer',
-                     email: res.data.userEmail,
-                  })
-               );
-            } else {
-               sessionStorage.setItem(
-                  'user',
-                  JSON.stringify({
-                     token: res.data.generatedToken,
-                     type: 'employee',
-                  })
-               );
-            }
-            switch (res.data.userType) {
-               case 'customer':
-                  history.push('/consumerDashboard');
-                  break;
-               case 'manager':
-                  history.push('/businessDashBoard');
+               history.push('/businessDashBoard');
                   break;
                case 'employee':
+                  sessionStorage.setItem(
+                     'user',
+                     JSON.stringify({
+                        token: res.data.generatedToken,
+                        type: 'employee',
+                     })
+                  );
                   history.push('/teller');
                   break;
+               case 'display':
+                  sessionStorage.setItem(
+                     'user',
+                     JSON.stringify({
+                        token: res.data.generatedToken,
+                        type: 'display',
+                     })
+                  );
+                  break;
                case 'booth':
+                  sessionStorage.setItem(
+                     'user',
+                     JSON.stringify({
+                        token: res.data.generatedToken,
+                        type: 'booth',
+                     })
+                  );
                   history.push('/boothDashBoard');
                   break;
                default:
+                  sessionStorage.setItem(
+                     'user',
+                     JSON.stringify({
+                        token: res.data.generatedToken,
+                        type: res.data.userType,
+                        email: res.data.userEmail,
+                     })
+                  );
+                  history.push('/consumerDashboard');
                   break;
             }
          })
