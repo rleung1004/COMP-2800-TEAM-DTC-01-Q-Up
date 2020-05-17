@@ -43,7 +43,6 @@ function evaluateCloseTime(hours: any) {
 }
 
 export default function QueueListRow(props: any) {
-  console.log(props.hit.hours);
   const data = {
     ...props.hit,
     active: props.hit.queue.isActive,

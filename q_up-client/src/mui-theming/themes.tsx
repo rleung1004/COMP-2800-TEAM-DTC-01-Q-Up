@@ -20,6 +20,7 @@ const theme = createMuiTheme({
     MuiButton: {
       root: {
         border: "thin solid #EEF13E",
+        minWidth: '12rem',
         "&&:focus-visible": {
             "outline": "thin dotted black"
           }
@@ -27,6 +28,7 @@ const theme = createMuiTheme({
     },
     MuiTextField: {
       root: {
+          minWidth: '12rem',
           "&&>div::before": {
               borderColor: "#EEF13E",
           },
@@ -57,9 +59,33 @@ const theme = createMuiTheme({
         }
       }
     },
+    MuiSelect: {
+      select: {
+        minWidth: '12rem'
+      }
+    },
     MuiDialogTitle: {
       root: {
         color:"#FFF"
+      }
+    },
+    MuiTypography: {
+      body1: {
+        fontSize: '1.2rem',
+        fontWeight: 'bold',
+      },
+      body2: {
+        fontSize: '1.1rem'
+      },
+      h2: {
+        fontSize: '1.8rem'
+      },
+      h3: {
+        fontSize: '1.6rem'
+      },
+      h4: {
+        fontSize: '1.3',
+        fontWeight: 'bold'
       }
     }
   },
