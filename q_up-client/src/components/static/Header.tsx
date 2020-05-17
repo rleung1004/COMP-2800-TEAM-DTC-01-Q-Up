@@ -33,12 +33,9 @@ export default function Header(props: any) {
         </Grid>
         <Grid item container xs={8} justify="center">
           <img src={require("../../img/logo.png")} alt="QUP logo" />
-<<<<<<< HEAD
         </Grid>
         <Grid item xs={2}>
           <Navbar />
-=======
->>>>>>> 8be47739136c95c4345ba5ed3751b54854adae79
         </Grid>
       </Grid>
     </header>
