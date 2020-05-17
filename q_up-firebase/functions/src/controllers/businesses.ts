@@ -40,6 +40,9 @@ export const registerBusiness = async (req: Request, res: Response) => {
         employees: [],
         queue: {
             averageWaitTime: req.body.averageWaitTime,
+            currentWaitTime: 0,
+            highestVipTicketNumber: 0,
+            highestNonVipTicketNumber: 0,
             queueSlots: [],
             isActive: false,
         },

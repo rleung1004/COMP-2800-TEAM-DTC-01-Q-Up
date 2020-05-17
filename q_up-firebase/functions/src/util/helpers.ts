@@ -355,7 +355,7 @@ export const validateBusinessData = (data: businessData) => {
  */
 export const createVIPSlot = (lastTicketNumber : number) => {
     return {
-        customer: `VIP-${Math.floor(Math.random() * 1000)}`,
+        customer: `VIP-${lastTicketNumber + 1}`,
         customerType: "VIP",
         ticketNumber: lastTicketNumber + 1,
         password: cities[Math.floor(Math.random() * cities.length)],
@@ -371,6 +371,9 @@ export const createVIPSlot = (lastTicketNumber : number) => {
  *                              password of type string.
  */
 export const createQueueSlot = (customerIdentifier: string, lastTicketNumber: number) => {
+    if (lastTicketNumber < 100) {
+        lastTicketNumber += 100;
+    }
     return {
         customer: customerIdentifier,
         customerType: "nonVIP",
@@ -387,4 +390,52 @@ export const createQueueSlot = (customerIdentifier: string, lastTicketNumber: nu
 export const getTheDayOfTheWeekForArray = () => {
     return new Date().getDay();
 
+};
+
+/**
+ * Gets the vip and nonVip Counts for the queue.
+ *
+ * @param queueSlots    an Object.
+ */
+export const getCounts = (queueSlots: any) => {
+    let VIPCounts = 0;
+    let nonVIPCounts = 0;
+    queueSlots.forEach((queueSlot: any) => {
+        if (queueSlot.customerType === "VIP") {
+            VIPCounts++;
+        } else {
+            nonVIPCounts++;
+        }
+    });
+    return {
+        vipCounts: VIPCounts,
+        nonVipCounts: nonVIPCounts,
+    }
+};
+
+/**
+ * Gets the highest ticket numbers for VIP and nonVIP customers in a queue.
+ *
+ * @param queueSlots    an Object
+ */
+export const getHighestTicketNumbers = (queueSlots: any) => {
+    let highestVIPTicketNumber = 0;
+    let highestNonVIPTicketNumber = 0;
+    queueSlots.forEach((queueSlot: any) => {
+        if (queueSlot.customerType === "VIP" && queueSlot.ticketNumber > highestVIPTicketNumber) {
+            highestVIPTicketNumber = queueSlot.ticketNumber;
+        } else if (queueSlot.customerType === "nonVIP" && queueSlot.ticketNumber > highestNonVIPTicketNumber) {
+            highestNonVIPTicketNumber = queueSlot.ticketNumber;
+        }
+    });
+    if (highestVIPTicketNumber > 100) {
+        highestVIPTicketNumber %= 100;
+    }
+    if (highestNonVIPTicketNumber > 1000) {
+        highestNonVIPTicketNumber %= 1000;
+    }
+    return {
+        highestVIPTicketNumber: highestVIPTicketNumber,
+        highestNonVIPTicketNumber: highestNonVIPTicketNumber,
+    }
 };
