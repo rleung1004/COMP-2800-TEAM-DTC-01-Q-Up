@@ -467,7 +467,10 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
                     .doc(requestData.userEmail)
                     .update({currentQueue: null});
                 return res.status(404).json({
-                    general: "the queue is no longer active!",
+                    general: "You are not currently in a queue!",
+                    queueSlotInfo: {
+                        currentQueue: null,
+                    }
                 });
             }
             const queueSlots = queue.queueSlots;
@@ -481,6 +484,7 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
             return res.status(200).json({
                 general: "obtained the customer's current queue information successfully",
                 queueSlotInfo: {
+                    currentQueue: requestData.currentQueue,
                     ticketNumber: queueSlots[queueSlotIndex].ticketNumber,
                     password: queueSlots[queueSlotIndex].password,
                     currentWaitTime: (queueSlotIndex * queue.averageWaitTime) / onlineEmployees,
@@ -658,14 +662,16 @@ const getFavouriteQueueInfo = async (queueName: string) => {
             const usableData = data.docs[0].data();
             const queue: any = usableData.queue;
             return {
-                isActive: queue.isActive,
-                currentWaitTime: queue.queueSlots.length * queue.averageWaitTime,
-                queueLength: queue.queueSlots.length,
+                name: queueName,
+                active: queue.isActive,
+                wait: queue.queueSlots.length * queue.averageWaitTime,
+                size: queue.queueSlots.length,
                 address: usableData.address,
-                startTime: usableData.hours.startTime[getTheDayOfTheWeekForArray()],
-                endTime: usableData.hours.endTime[getTheDayOfTheWeekForArray()],
+                startTime: usableData.hours.startTime,
+                closeTime: usableData.hours.endTime,
                 phoneNumber: usableData.phoneNumber,
                 website: usableData.website,
+                email: usableData.email,
             };
         })
         .catch(err => {
