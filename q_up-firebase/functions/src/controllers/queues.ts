@@ -150,7 +150,7 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
             queue.queueSlots.unshift(VIPSlot);
             await db.collection("businesses").doc(requestData.businessName).update({queue: queue});
             return res.status(201).json({
-                general: `${VIPSlot.customer} has been successfully added into the queue`,
+                general: `${VIPSlot.customer} has been added to ${requestData.businessName}'s queue successfully`,
                 VIPSlotInfo: {
                     customer: VIPSlot.customer,
                     password: VIPSlot.password,
@@ -428,7 +428,7 @@ export const getQueue = async (req: Request, res: Response) => {
                 queue: {
                     queueList: queue.queueSlots,
                     isActive: queue.isActive,
-                    currentWaitTime: Math.round((queue.queueSlots.length * queue.averageWaitTime) / onlineEmployees),
+                    currentWaitTime: queue.currentWaitTime,
                     queueLength: queue.queueSlots.length,
                 },
             });
@@ -452,6 +452,7 @@ export const getQueue = async (req: Request, res: Response) => {
  * @returns         Response the response data with the status code:
  *
  *                  - 401 if the user is not of type customer
+ *                  - 403 if there is no online employees for the queue
  *                  - 404 if Queue is no longer active
  *                  - 404 if customer is not in a queue
  *                  - 404 if can not find the customer position.
@@ -496,6 +497,9 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
                 return res.status(404).json({general: "could not find the customer position."});
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.currentQueue);
+            if (onlineEmployees < 1) {
+                return res.status(403).json({general:'There is no online tellers for this queue!, please wait!'});
+            }
             return res.status(200).json({
                 general: "obtained the customer's current queue information successfully",
                 queueSlotInfo: {
@@ -538,7 +542,6 @@ const deactivateQueue = async (req: Request, res: Response) => {
         .where("name", "==", requestData.businessName)
         .get()
         .then(async (data) => {
-            console.log(`The data in the query of deactivation is: ${JSON.stringify(data.docs[0].data())}`);
             const queue: any = data.docs[0].data().queue;
             for (const customer of queue.queueSlots.map((queueSlot: any) => queueSlot.customer)) {
                 await db
@@ -679,7 +682,7 @@ const getFavouriteQueueInfo = async (queueName: string) => {
             return {
                 name: queueName,
                 active: queue.isActive,
-                wait: queue.queueSlots.length * queue.averageWaitTime,
+                wait: queue.currentWaitTime,
                 size: queue.queueSlots.length,
                 address: usableData.address,
                 startTime: usableData.hours.startTime,
