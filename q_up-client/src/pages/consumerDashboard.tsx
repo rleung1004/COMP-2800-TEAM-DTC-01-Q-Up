@@ -147,6 +147,11 @@ export default function ClientDashboardPage() {
         <section>
           <Grid container justify="center">
             <Grid item xs={12} sm={10} md={8} lg={6}>
+            <Grid container item alignItems="center" justify="center"
+            xs={12}
+            sm={8}
+            md={6}
+          >
               <ExpansionPanel>
                 <ExpansionPanelSummary
                   aria-controls="panel1a-content"
@@ -160,6 +165,7 @@ export default function ClientDashboardPage() {
                   </div>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
+            </Grid>
             </Grid>
           </Grid>
         </section>

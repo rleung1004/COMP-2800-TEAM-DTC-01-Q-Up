@@ -1,0 +1,13 @@
+.profileTextLeft{
+    text-align: left;
+}
+
+.profileTextRight{
+    text-align: right;
+}
+
+@media screen and (max-width: 599px) {
+    .profileTextLeft, .profileTextRight{
+        text-align: center;
+    }   
+}

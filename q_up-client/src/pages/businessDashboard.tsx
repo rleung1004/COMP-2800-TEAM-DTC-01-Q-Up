@@ -224,7 +224,7 @@ export default function BusinessDashboardPage() {
         }
         window.alert("Connection error.");
       });
-  }, [axiosConfig, data]);
+  }, [axiosConfig, data, getData]);
   return (
     <>
       <Header Nav={BusinessNav} logout />
