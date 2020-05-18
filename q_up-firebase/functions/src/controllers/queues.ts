@@ -47,6 +47,7 @@ export const getOnlineEmployees = async (businessName: string) => {
  *                  - 401 if the user is not of type customer
  *                  - 404 if Queue is currently not active
  *                  - 403 if customer already in a queue
+ *                  - 403 if there is no online employees for that business
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if successful
  */
@@ -73,6 +74,10 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
             if (!queue.isActive) {
                 return res.status(404).json({general: "Queue is currently not active"});
             }
+            const onlineEmployees: number = await getOnlineEmployees(requestData.queueName);
+            if (onlineEmployees < 1) {
+                return res.status(403).json({general:'There is no online tellers for this queue!!'});
+            }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const customerSlot = createQueueSlot(requestData.userEmail, lastHighestTicketNumber);
             queueSlots.push(customerSlot);
@@ -86,7 +91,7 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
                 .doc(requestData.userEmail)
                 .update({currentQueue: requestData.queueName});
             return res.status(201).json({
-                general: `${requestData.userEmail} has been added into queue ${requestData.queueName} successfully`,
+                general: `you have been added into ${requestData.queueName}'s queue successfully`,
                 customerSlotInfo: {
                     customer: customerSlot.customer,
                     password: customerSlot.password,
@@ -114,6 +119,7 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
  *
  *                  - 401 if the user is not of type employee
  *                  - 404 if the queue is no longer active
+ *                  - 403 if there is no online employees for that business
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if successful
  */
@@ -129,16 +135,20 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
         .collection("businesses")
         .where("name", "==", requestData.businessName)
         .get()
-        .then((data) => {
+        .then(async (data) => {
             const queue: any = data.docs[0].data().queue;
             let queueSlots: Array<any> = queue.queueSlots;
             if (!queue.isActive) {
                 return res.status(404).json({general: "the queue is no longer active!",});
             }
+            const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
+            if (onlineEmployees < 1) {
+                return res.status(403).json({general:'There is no online tellers for this queue!!'});
+            }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestVIPTicketNumber;
             const VIPSlot = createVIPSlot(lastHighestTicketNumber);
             queue.queueSlots.unshift(VIPSlot);
-            db.collection("businesses").doc(requestData.businessName).update({queue: queue});
+            await db.collection("businesses").doc(requestData.businessName).update({queue: queue});
             return res.status(201).json({
                 general: `${VIPSlot.customer} has been successfully added into the queue`,
                 VIPSlotInfo: {
@@ -167,6 +177,7 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
  *
  *                  - 401 if the user is not of type booth
  *                  - 403 if queue is not active
+ *                  - 403 if there is no online employees for that business
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if successful
  */
@@ -183,17 +194,21 @@ export const boothEnterQueue = async (req: Request, res: Response) => {
         .collection("businesses")
         .where("name", "==", requestData.businessName)
         .get()
-        .then(data => {
+        .then(async data => {
             const queue: any = data.docs[0].data().queue;
             const queueSlots: Array<any> = queue.queueSlots;
             const isActive: boolean = queue.isActive;
             if (!isActive) {
                 return res.status(403).json({general: "Queue is currently not active"});
             }
+            const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
+            if (onlineEmployees < 1) {
+                return res.status(403).json({general:'There is no online tellers for this queue!!'});
+            }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const boothSlot = createQueueSlot(requestData.userName, lastHighestTicketNumber);
             queueSlots.push(boothSlot);
-            db.collection("businesses").doc(requestData.businessName).update({
+            await db.collection("businesses").doc(requestData.businessName).update({
                 "queue.queueSlots": queueSlots
             });
             return res.status(201).json({
@@ -225,7 +240,7 @@ export const boothEnterQueue = async (req: Request, res: Response) => {
  *
  *                  - 401 if the user is not of type customer
  *                  - 403 if the user is not in a queue
- *                  - 404 if customer not in a queue
+ *                  - 404 if can not find the customer position in their current queue.
  *                  - 500 if an error occurs in the midst of the query
  *                  - 202 if successful
  */

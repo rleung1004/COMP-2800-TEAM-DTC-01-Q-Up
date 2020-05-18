@@ -60,7 +60,7 @@ export const onQueueUpdate = trigger
             const newHighestTickets = getHighestTicketNumbers(newData.queue.queueSlots);
             if (prevCounts !== newCounts) {
                 if (newHighestTickets.highestNonVIPTicketNumber !== prevHighestTickets.highestNonVIPTicketNumber) {
-                    await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestNonVipTicketNumber, false);
+                    await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestVipTicketNumber, false);
                 } else {
                     await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestNonVipTicketNumber, true);
                 }
@@ -69,5 +69,3 @@ export const onQueueUpdate = trigger
         }
         return null;
     });
-
-
