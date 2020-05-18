@@ -44,7 +44,6 @@ function evaluateCloseTime(hours: any) {
 }
 
 export default function QueueListRow(props: any) {
-  console.log(props);
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
@@ -62,6 +61,7 @@ export default function QueueListRow(props: any) {
         triggerGetStatus: props.hit.triggerGetStatus,
         wait: props.hit.queue.currentWaitTime
       };
+  console.log(data);
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;

@@ -109,7 +109,7 @@ export default function ClientDashboardPage() {
           
         })
         .catch((err) => {
-          console.log(err.response);
+          console.log(err);
           if (err.response.status === 404) {
             return;
           }
@@ -118,7 +118,7 @@ export default function ClientDashboardPage() {
           );
         });
   }, [axiosConfig, getData]);
-
+  
   return (
     <>
       <Header Nav={ConsumerNav} logout />
