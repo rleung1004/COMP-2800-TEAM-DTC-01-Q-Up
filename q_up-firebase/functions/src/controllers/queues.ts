@@ -1,5 +1,5 @@
 import { db, } from "../util/firebaseConfig";
-import { Request, Response, } from "express";
+import { Request, Response } from "express";
 import * as firebase from "firebase-admin";
 import * as moment from "moment-timezone";
 import { createQueueSlot, createVIPSlot, getHighestTicketNumbers, getTheDayOfTheWeekForArray, } from "../util/helpers";
@@ -379,7 +379,7 @@ export const getQueue = async (req: Request, res: Response) => {
         userType: req.body.userType,
         businessName: req.body.businessName,
     };
-    if (requestData.userType !== "employee" && requestData.userType !== "manager") {
+    if (!(requestData.userType === "employee" || requestData.userType === "manager")) {
         return res.status(401).json({ general: "unauthorized. Login as an employee or manager of the business!" });
     }
     if (requestData.userType === 'employee') {
@@ -405,11 +405,14 @@ export const getQueue = async (req: Request, res: Response) => {
             const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
             if (onlineEmployees === -1) {
                 return res.status(404).json({
-                    general: "did not obtain the number of online employees",
+                    general: "Could not obtain the number of online employees, please add employees to your business.",
+                    businessName: requestData.businessName,
                 });
             }
             return res.status(200).json({
                 general: "obtained the queue information successfully!",
+                businessName : requestData.businessName,
+                onlineEmployees,
                 queue: {
                     queueList: queue.queueSlots,
                     isActive: queue.isActive,
@@ -589,6 +592,7 @@ const activateQueue = async (req: Request, res: Response) => {
     }
     const currentTime = new Date().toUTCString();
     const localTime = moment(currentTime).tz("America/Los_Angeles").format().slice(11, 16);
+    console.log(localTime);
     if (localTime < hours.startTime || localTime > hours.endTime) {
         return res.status(404).json({ general: "The store is closed now!" });
     }
