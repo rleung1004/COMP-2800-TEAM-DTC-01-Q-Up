@@ -11,7 +11,6 @@ const isFav = (q: string, favList: Array<string>) => {
 };
 
 export default function QueueList(props: any) {
-  console.log(props);
   const [expandedPanel, setExpanded] = React.useState<string | false>(false);
   const [dataList, setDataList] = useState(props.dataList);
 

@@ -21,12 +21,12 @@ function CurrentQueueInfo(props:any) {
       const stringUser = sessionStorage.getItem("user");
       const user = JSON.parse(stringUser? stringUser : "{}");
       const packet = {
-         currentQueue: user,
-         userEmail: ,
-         userType: user,
+         currentQueue: data.businessName,
+         userEmail: user.email,
+         userType: user.userType,
      };
       axios
-      .put('/abandonQueue', axiosConfig)
+      .put('/abandonQueue', packet, axiosConfig)
       .then((res) => {
         console.log(res);
         window.alert(res.data.general);
@@ -34,7 +34,7 @@ function CurrentQueueInfo(props:any) {
       })
       .catch((err) => {
         console.error(err.response);
-        window.alert(err.response);
+        window.alert(err.response.data.general);
       });
     };
    return (

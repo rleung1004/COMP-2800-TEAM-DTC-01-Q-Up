@@ -64,55 +64,63 @@ export default function ClientDashboardPage() {
   };
 
   useEffect(() => {
-    if (!getData) {
-      return;
-    }
-    setGetData(false);
-    axios
-      .get("/getCustomerQueueInfo", axiosConfig)
-      .then((res) => {
-        const data = res.data.queueSlotInfo;
-        setCurrentQueueInfo({
-          businessName: data.currentQueue,
-          estimatedWait: data.currentWaitTime,
-          currentPosition: data.queuePosition,
-          ticketNumber: data.ticketNumber,
-          password: data.password,
-          inQueue: true,
+    return () => {
+      if (!getData) {
+        return;
+      }
+      setGetData(false);
+      axios
+        .get("/getCustomerQueueInfo", axiosConfig)
+        .then((res) => {
+          const data = res.data.queueSlotInfo;
+          setCurrentQueueInfo({
+            businessName: data.currentQueue,
+            estimatedWait: data.currentWaitTime,
+            currentPosition: data.queuePosition,
+            ticketNumber: data.ticketNumber,
+            password: data.password,
+            inQueue: true,
+          });          
+        })
+        .catch((err) => {
+          console.error(err.response);
+          if (err.response.status === 404) {
+            setCurrentQueueInfo((prevState:any) => ({
+              ...prevState, inQueue: false
+            }));
+            return;
+          }
+          window.alert(err.response.data.general);
         });
-      })
-      .catch((err) => {
-        console.error(err);
-        window.alert(err);
-      });
+    };
   }, [axiosConfig, getData]);
 
   useEffect(() => {
-    if (!getData) {
-      return;
-    }
-    setGetData(false);
-
-    axios
-      .get("/getFavouriteQueues", axiosConfig)
-      .then((res) => {
-        let businesses = res.data.favoriteBusinesses;
-        let data: Array<object> = [];
-        let names: Array<string> = [];
-
-        console.log(data);
-        for (const business in businesses) {
-          names.push(businesses[business].name);
-          data.push(businesses[business]);
-        }
-        console.log(names);
-
-        setFavQueues({ data, names });
-      })
-      .catch((err) => {
-        console.error(err);
-        window.alert("Connection error: Could not load your favourite queues.");
-      });
+      if (!getData) {
+        return;
+      }
+      setGetData(false);
+      axios
+        .get("/getFavouriteQueues", axiosConfig)
+        .then((res) => {
+          const businesses = res.data.favoriteBusinesses;
+          const data: Array<object> = [];
+          const names: Array<string> = [];
+          for (const business in businesses) {
+            names.push(businesses[business].name);
+            data.push(businesses[business]);
+          }
+          setFavQueues({ data, names });
+        })
+        .catch((err) => {
+          console.log(err.response);
+          if (err.response.status === 404) {
+            return;
+          }
+          window.alert(
+            "Connection error: Could not load your favourite queues."
+          );
+        });
   }, [axiosConfig, getData]);
 
   return (
