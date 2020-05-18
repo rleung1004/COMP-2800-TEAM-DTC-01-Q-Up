@@ -13,6 +13,7 @@ import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import MapIcon from "@material-ui/icons/Map";
 import Axios from "axios";
+import { formatGoogleMapURL, formatAddress } from "src/utils/formatting";
 
 function formatTime(time24h: string) {
   const [hours, mins] = time24h.split(":");
@@ -49,6 +50,8 @@ export default function QueueListRow(props: any) {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
+  console.log(props.data);
+  
   const data = props.data
     ? {
         ...props.data,
@@ -68,7 +71,10 @@ export default function QueueListRow(props: any) {
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
-
+  
+  const handleToGMap = () => {
+    window.open( 'https://www.google.com/maps/search/?api=1&query=' + formatGoogleMapURL(formatAddress(address)), '_blank')
+  }
   // const unit =
   //   address.unit === "" ? (
   //     <div></div>
@@ -200,7 +206,7 @@ export default function QueueListRow(props: any) {
               </Typography>
             </Grid>
             <Grid container item xs={12} justify="flex-start">
-              <IconButton size="small">
+              <IconButton size="small" onClick={handleToGMap}>
                 <MapIcon color="primary" />
               </IconButton>
             </Grid>
