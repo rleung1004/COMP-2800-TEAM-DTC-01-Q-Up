@@ -1,8 +1,8 @@
-import {db,} from "../util/firebaseConfig";
-import {Request, Response,} from "express";
+import { db, } from "../util/firebaseConfig";
+import { Request, Response, } from "express";
 import * as firebase from "firebase-admin";
 import * as moment from "moment-timezone";
-import {createQueueSlot, createVIPSlot, getHighestTicketNumbers, getTheDayOfTheWeekForArray,} from "../util/helpers";
+import { createQueueSlot, createVIPSlot, getHighestTicketNumbers, getTheDayOfTheWeekForArray, } from "../util/helpers";
 
 /**
  * Gets the number of online Employees for the business.
@@ -58,10 +58,10 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
         queueName: req.body.queueName,
     };
     if (requestData.userType !== "customer") {
-        return res.status(401).json({general: "unauthorized. Login as a customer!"});
+        return res.status(401).json({ general: "unauthorized. Login as a customer!" });
     }
     if (requestData.currentQueue !== null) {
-        return res.status(403).json({general: "You are already enrolled in a queue!"});
+        return res.status(403).json({ general: "You are already enrolled in a queue!" });
     }
     return await db
         .collection("businesses")
@@ -71,7 +71,7 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
             const queue: any = data.docs[0].data().queue;
             let queueSlots: Array<any> = queue.queueSlots;
             if (!queue.isActive) {
-                return res.status(404).json({general: "Queue is currently not active"});
+                return res.status(404).json({ general: "Queue is currently not active" });
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const customerSlot = createQueueSlot(requestData.userEmail, lastHighestTicketNumber);
@@ -80,11 +80,11 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
             await db
                 .collection("businesses")
                 .doc(requestData.queueName)
-                .update({queue: queue});
+                .update({ queue: queue });
             await db
                 .collection("users")
                 .doc(requestData.userEmail)
-                .update({currentQueue: requestData.queueName});
+                .update({ currentQueue: requestData.queueName });
             return res.status(201).json({
                 general: `${requestData.userEmail} has been added into queue ${requestData.queueName} successfully`,
                 customerSlotInfo: {
@@ -123,7 +123,7 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
         businessName: req.body.businessName,
     };
     if (requestData.userType !== "employee") {
-        return res.status(401).json({general: "unauthorized. Login as an employee of the business!"});
+        return res.status(401).json({ general: "unauthorized. Login as an employee of the business!" });
     }
     return await db
         .collection("businesses")
@@ -133,12 +133,12 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
             const queue: any = data.docs[0].data().queue;
             let queueSlots: Array<any> = queue.queueSlots;
             if (!queue.isActive) {
-                return res.status(404).json({general: "the queue is no longer active!",});
+                return res.status(404).json({ general: "the queue is no longer active!", });
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestVIPTicketNumber;
             const VIPSlot = createVIPSlot(lastHighestTicketNumber);
             queue.queueSlots.unshift(VIPSlot);
-            db.collection("businesses").doc(requestData.businessName).update({queue: queue});
+            db.collection("businesses").doc(requestData.businessName).update({ queue: queue });
             return res.status(201).json({
                 general: `${VIPSlot.customer} has been successfully added into the queue`,
                 VIPSlotInfo: {
@@ -177,7 +177,7 @@ export const boothEnterQueue = async (req: Request, res: Response) => {
         businessName: req.body.businessName,
     };
     if (requestData.userType !== "booth") {
-        res.status(401).json({general: "unauthorized. Requires the booth of this business!"});
+        res.status(401).json({ general: "unauthorized. Requires the booth of this business!" });
     }
     return await db
         .collection("businesses")
@@ -188,7 +188,7 @@ export const boothEnterQueue = async (req: Request, res: Response) => {
             const queueSlots: Array<any> = queue.queueSlots;
             const isActive: boolean = queue.isActive;
             if (!isActive) {
-                return res.status(403).json({general: "Queue is currently not active"});
+                return res.status(403).json({ general: "Queue is currently not active" });
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const boothSlot = createQueueSlot(requestData.userName, lastHighestTicketNumber);
@@ -236,10 +236,10 @@ export const abandonQueue = async (req: Request, res: Response) => {
         userType: req.body.userType,
     };
     if (requestData.userType !== "customer") {
-        return res.status(401).json({general: "unauthorized. Login as a customer!"});
+        return res.status(401).json({ general: "unauthorized. Login as a customer!" });
     }
     if (requestData.currentQueue === null) {
-        return res.status(403).json({general: "You are not currently in a queue"});
+        return res.status(403).json({ general: "You are not currently in a queue" });
     }
     return await db
         .collection("businesses")
@@ -252,12 +252,12 @@ export const abandonQueue = async (req: Request, res: Response) => {
                 return queueSlot.customer === requestData.userEmail;
             });
             if (queueSlotIndex === -1) {
-                return res.status(404).json({general: "could not find the customer position."});
+                return res.status(404).json({ general: "could not find the customer position." });
             }
             queueSlots.splice(queueSlotIndex, 1);
             queue.queueSlots = queueSlots;
-            db.collection("businesses").doc(requestData.currentQueue).update({queue: queue});
-            db.collection("users").doc(requestData.userEmail).update({currentQueue: null});
+            db.collection("businesses").doc(requestData.currentQueue).update({ queue: queue });
+            db.collection("users").doc(requestData.userEmail).update({ currentQueue: null });
             return res.status(202).json({
                 general: `Removed ${requestData.userEmail} from queue ${requestData.currentQueue} successfully`,
             });
@@ -295,7 +295,7 @@ export const checkInQueue = async (req: Request, res: Response) => {
         ticketNumber: req.body.ticketNumber,
     };
     if (requestData.userType !== "employee") {
-        return res.status(401).json({general: "unauthorized. Login as an employee of the business!"});
+        return res.status(401).json({ general: "unauthorized. Login as an employee of the business!" });
     }
     const isAuthorized: boolean = await db
         .collection("businesses")
@@ -335,7 +335,7 @@ export const checkInQueue = async (req: Request, res: Response) => {
             return null;
         });
     if (customerLookUp === null) {
-        return res.status(404).json({general: "Did not find the customer to checkIn!"});
+        return res.status(404).json({ general: "Did not find the customer to checkIn!" });
     }
     // TODO: Insert the log here for checking in
     return await db
@@ -344,9 +344,9 @@ export const checkInQueue = async (req: Request, res: Response) => {
         .get()
         .then((docSnapshot) => {
             if (docSnapshot.exists) {
-                db.collection("users").doc(customerLookUp.customer).update({currentQueue: null});
+                db.collection("users").doc(customerLookUp.customer).update({ currentQueue: null });
             }
-            return res.status(202).json({general: "Removed the customer from the queue Successfully",});
+            return res.status(202).json({ general: "Removed the customer from the queue Successfully", });
         })
         .catch(async (err) => {
             console.error(err);
@@ -380,7 +380,7 @@ export const getQueue = async (req: Request, res: Response) => {
         businessName: req.body.businessName,
     };
     if (requestData.userType !== "employee" && requestData.userType !== "manager") {
-        return res.status(401).json({general: "unauthorized. Login as an employee or manager of the business!"});
+        return res.status(401).json({ general: "unauthorized. Login as an employee or manager of the business!" });
     }
     if (requestData.userType === 'employee') {
         const isEmployeeOfBusiness: boolean = await db
@@ -393,7 +393,7 @@ export const getQueue = async (req: Request, res: Response) => {
                 return false;
             });
         if (!isEmployeeOfBusiness) {
-            return res.status(404).json({general: "employee is not part of the business!"});
+            return res.status(404).json({ general: "employee is not part of the business!" });
         }
     }
     return await db
@@ -450,10 +450,10 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
         currentQueue: req.body.currentQueue,
     };
     if (requestData.userType !== "customer") {
-        return res.status(401).json({general: "unauthorized. Login as a customer!"});
+        return res.status(401).json({ general: "unauthorized. Login as a customer!" });
     }
     if (requestData.currentQueue === null) {
-        return res.status(404).json({general: "You are not in a queue"});
+        return res.status(404).json({ general: "You are not in a queue" });
     }
     return await db
         .collection("businesses")
@@ -465,7 +465,7 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
                 db
                     .collection("users")
                     .doc(requestData.userEmail)
-                    .update({currentQueue: null});
+                    .update({ currentQueue: null });
                 return res.status(404).json({
                     general: "You are not currently in a queue!",
                     queueSlotInfo: {
@@ -478,7 +478,7 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
                 return queueSlot.customer === requestData.userEmail;
             });
             if (queueSlotIndex === -1) {
-                return res.status(404).json({general: "could not find the customer position."});
+                return res.status(404).json({ general: "could not find the customer position." });
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.currentQueue);
             return res.status(200).json({
@@ -529,7 +529,7 @@ const deactivateQueue = async (req: Request, res: Response) => {
                 await db
                     .collection("users")
                     .doc(customer)
-                    .update({currentQueue: null})
+                    .update({ currentQueue: null })
                     .catch(err => console.error(err));
             }
             queue.queueSlots = new Array<any>();
@@ -537,8 +537,8 @@ const deactivateQueue = async (req: Request, res: Response) => {
             return await db
                 .collection("businesses")
                 .doc(requestData.businessName)
-                .update({queue: queue})
-                .then(() => res.status(202).json({general: "successfully deactivated the queue!"}))
+                .update({ queue: queue })
+                .then(() => res.status(202).json({ general: "successfully deactivated the queue!" }))
                 .catch();
         })
         .catch(async (err) => {
@@ -585,18 +585,18 @@ const activateQueue = async (req: Request, res: Response) => {
             return {};
         });
     if (!hours.endTime && !hours.startTime) {
-        return res.status(404).json({general: "could not obtain the hours of operation for this business"});
+        return res.status(404).json({ general: "could not obtain the hours of operation for this business" });
     }
     const currentTime = new Date().toUTCString();
     const localTime = moment(currentTime).tz("America/Los_Angeles").format().slice(11, 16);
     if (localTime < hours.startTime || localTime > hours.endTime) {
-        return res.status(404).json({general: "The store is closed now!"});
+        return res.status(404).json({ general: "The store is closed now!" });
     }
     return await db
         .collection("businesses")
         .doc(requestData.businessName)
-        .update({"queue.isActive": true})
-        .then(() => res.status(202).json({general: "successfully activated the queue!"}))
+        .update({ "queue.isActive": true })
+        .then(() => res.status(202).json({ general: "successfully activated the queue!" }))
         .catch(async (err) => {
             console.error(err);
             return res.status(500).json({
@@ -628,7 +628,7 @@ export const changeQueueStatus = async (req: Request, res: Response) => {
         userType: req.body.userType,
     };
     if (requestData.userType !== "manager") {
-        return res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
+        return res.status(401).json({ general: "unauthorized. Login as a manager of the business!" });
     }
     const isQueueActive: boolean = await db
         .collection("businesses")
@@ -667,8 +667,7 @@ const getFavouriteQueueInfo = async (queueName: string) => {
                 wait: queue.queueSlots.length * queue.averageWaitTime,
                 size: queue.queueSlots.length,
                 address: usableData.address,
-                startTime: usableData.hours.startTime,
-                closeTime: usableData.hours.endTime,
+                hours: usableData.hours,
                 phoneNumber: usableData.phoneNumber,
                 website: usableData.website,
                 email: usableData.email,
@@ -699,7 +698,7 @@ export const getFavouriteQueuesForCustomer = async (req: Request, res: Response)
         userEmail: req.body.userEmail,
     };
     if (requestData.userType !== "customer") {
-        return res.status(401).json({general: "unauthorized. Login as a customer!"});
+        return res.status(401).json({ general: "unauthorized. Login as a customer!" });
     }
     const favoriteBusinessNames: Array<string> = await db
         .collection("users")
@@ -708,7 +707,7 @@ export const getFavouriteQueuesForCustomer = async (req: Request, res: Response)
         .then((data) => data.docs[0].data().favoriteBusinesses)
         .catch(() => null);
     if (favoriteBusinessNames === null) {
-        return res.status(404).json({general: "Did not find any favourite businesses!"});
+        return res.status(404).json({ general: "Did not find any favourite businesses!" });
     }
     if (favoriteBusinessNames.length === 0) {
         return res.status(200).json({
@@ -749,7 +748,7 @@ export const changeStatusOfFavouriteBusiness = async (req: Request, res: Respons
         favoriteQueueName: req.body.favoriteQueueName,
     };
     if (requestData.userType !== "customer") {
-        return res.status(401).json({general: "unauthorized. Login as a customer!"});
+        return res.status(401).json({ general: "unauthorized. Login as a customer!" });
     }
     return await db
         .collection('users')
