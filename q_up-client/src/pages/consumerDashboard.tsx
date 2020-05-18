@@ -48,11 +48,7 @@ export default function ClientDashboardPage() {
   );
 
   const queueList: Array<object> = [];
-  const listNames: Array<string> = [];
-  const [favQueues, setFavQueues] = useState({
-    data: queueList,
-    names: listNames,
-  });
+  const [favQueues, setFavQueues] = useState(queueList);
 
   const toSearchQueuesHandler = () => {
     window.location.href = "/searchQueues";
@@ -105,12 +101,12 @@ export default function ClientDashboardPage() {
         .then((res) => {
           const businesses = res.data.favoriteBusinesses;
           const data: Array<object> = [];
-          const names: Array<string> = [];
           for (const business in businesses) {
-            names.push(businesses[business].name);
-            data.push(businesses[business]);
+            data.push({...businesses[business], triggerGetStatus, isFav: true});
           }
-          setFavQueues({ data, names });
+          setFavQueues(data);
+          console.log(data);
+          
         })
         .catch((err) => {
           console.log(err.response);
@@ -161,9 +157,7 @@ export default function ClientDashboardPage() {
             <ExpansionPanelDetails>
               <div>
                 <QueueList
-                  dataList={favQueues.data}
-                  favs={favQueues.names}
-                  triggerGetStatus={triggerGetStatus}
+                  dataList={favQueues}
                 />
               </div>
             </ExpansionPanelDetails>

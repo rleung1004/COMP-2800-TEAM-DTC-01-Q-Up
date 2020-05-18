@@ -58,6 +58,9 @@ export default function QueueListRow(props: any) {
         size: props.hit.queue.queueSlots.length,
         startTime: evaluateOpenTime(props.hit.hours),
         closeTime: evaluateCloseTime(props.hit.hours),
+        isFav: props.hit.isFav,
+        triggerGetStatus: props.hit.triggerGetStatus,
+        wait: props.hit.queue.currentWaitTime
       };
   const address = data.address;
   const expanded = props.isExpanded;
@@ -72,10 +75,8 @@ export default function QueueListRow(props: any) {
   //     </Grid>
   //   );
   const handleFavClick = (fav: Boolean) => () => {
-    if (props.isFavList) {
-      props.remove();
-      return;
-    }
+    
+    
     const iconButtonManager = () => {
       if (fav) {
         setFavicon(
@@ -91,6 +92,7 @@ export default function QueueListRow(props: any) {
         );
       }
     };
+    
     const packet = {
       favoriteQueueName: data.name,
     };
@@ -99,6 +101,7 @@ export default function QueueListRow(props: any) {
       .then((res: any) => {
         window.alert(res.data.general);
         iconButtonManager();
+        data.triggerGetStatus();
       })
       .catch((err) => {
         console.error(err);
@@ -117,7 +120,7 @@ export default function QueueListRow(props: any) {
     </IconButton>
   );
   const [favicon, setFavicon] = useState(
-    props.isFav ? favButtonModel : notFavButtonModel
+    data.isFav ? favButtonModel : notFavButtonModel
   );
 
   const closedQueueHeader = (
@@ -133,7 +136,7 @@ export default function QueueListRow(props: any) {
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Wait time</Typography>
         <Typography variant="body2">
-          {data.currentWaitTime ? data.CurrentWaitTIme : "35m"}
+          {data.wait}
         </Typography>
       </Grid>
       <Grid container item xs={2} direction="column">
@@ -152,7 +155,7 @@ export default function QueueListRow(props: any) {
       console.log(res);
       window.alert(res.data.general);
       if (props.data) {
-        props.triggerGetStatus();
+        data.triggerGetStatus();
       } else {
         window.location.href = "/consumerDashboard";
       }
