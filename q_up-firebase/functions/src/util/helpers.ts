@@ -1,3 +1,5 @@
+import * as moment from "moment-timezone";
+
 /**
  * Represents all the possible values for the queue slot passwords.
  */
@@ -388,8 +390,9 @@ export const createQueueSlot = (customerIdentifier: string, lastTicketNumber: nu
  * @return      Number between 0 to 6 for sunday to saturday respectively.
  */
 export const getTheDayOfTheWeekForArray = () => {
-    return new Date().getDay();
-
+    let time = new Date().toUTCString();
+    let localDay = moment(time).tz("America/Los_Angeles").day();
+    return localDay;
 };
 
 /**
