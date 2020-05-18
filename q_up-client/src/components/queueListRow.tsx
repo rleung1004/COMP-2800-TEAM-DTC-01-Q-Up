@@ -50,7 +50,11 @@ export default function QueueListRow(props: any) {
     },
   };
   const data = props.data
-    ? props.data
+    ? {
+        ...props.data,
+        startTime: evaluateOpenTime(props.data.hours),
+        closeTime: evaluateCloseTime(props.data.hours),
+      }
     : {
         ...props.hit,
         active: props.hit.queue.isActive,
@@ -59,9 +63,8 @@ export default function QueueListRow(props: any) {
         closeTime: evaluateCloseTime(props.hit.hours),
         isFav: props.hit.isFav,
         triggerGetStatus: props.hit.triggerGetStatus,
-        wait: props.hit.queue.currentWaitTime
+        wait: props.hit.queue.currentWaitTime,
       };
-  console.log(data);
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
@@ -75,8 +78,6 @@ export default function QueueListRow(props: any) {
   //     </Grid>
   //   );
   const handleFavClick = (fav: Boolean) => () => {
-    
-    
     const iconButtonManager = () => {
       if (fav) {
         setFavicon(
@@ -92,7 +93,7 @@ export default function QueueListRow(props: any) {
         );
       }
     };
-    
+
     const packet = {
       favoriteQueueName: data.name,
     };
@@ -135,9 +136,7 @@ export default function QueueListRow(props: any) {
     <>
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Wait time</Typography>
-        <Typography variant="body2">
-          {data.wait}
-        </Typography>
+        <Typography variant="body2">{data.wait}</Typography>
       </Grid>
       <Grid container item xs={2} direction="column">
         <Typography variant="caption">Queue Size</Typography>
@@ -148,23 +147,22 @@ export default function QueueListRow(props: any) {
 
   const queueUp = () => {
     const packet = {
-      queueName: data.name
+      queueName: data.name,
     };
-    Axios.post('/customerEnterQueue', packet, axiosConfig)
-    .then((res) => {
-      console.log(res);
-      window.alert(res.data.general);
-      if (props.data) {
-        data.triggerGetStatus();
-      } else {
-        window.location.href = "/consumerDashboard";
-      }
-      
-    })
-    .catch((err) => {
-      console.error(err);
-      window.alert(err.response.general);
-    });
+    Axios.post("/customerEnterQueue", packet, axiosConfig)
+      .then((res) => {
+        console.log(res);
+        window.alert(res.data.general);
+        if (props.data) {
+          data.triggerGetStatus();
+        } else {
+          window.location.href = "/consumerDashboard";
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        window.alert(err.response.general);
+      });
   };
   return (
     <ExpansionPanel expanded={expanded} onChange={handleChange} square>
