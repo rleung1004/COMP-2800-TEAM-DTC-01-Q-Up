@@ -228,6 +228,7 @@ export default function BusinessDashboardPage() {
   return (
     <>
       <Header Nav={BusinessNav} logout />
+      <main>
       <header className={classes.pageTitleContainer}>
         <Grid container justify="center">
           <Grid item xs={10}>
@@ -242,6 +243,7 @@ export default function BusinessDashboardPage() {
         </Grid>
       </header>
       <section>{data.withEmployees ? withEmployees : noEmployees}</section>
+      </main>
       <Footer />
     </>
   );

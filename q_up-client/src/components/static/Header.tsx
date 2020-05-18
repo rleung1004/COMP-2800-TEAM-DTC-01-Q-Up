@@ -27,15 +27,17 @@ export default function Header(props: any) {
 
   return (
     <header style={{ backgroundColor: "#242323" }}>
-      <Grid container alignItems="center">
-        <Grid item xs={2}>
-          {Logout}
-        </Grid>
-        <Grid item container xs={8} justify="center">
-          <img src={require("../../img/logo.png")} alt="QUP logo" />
-        </Grid>
-        <Grid item xs={2}>
-          <Navbar />
+      <Grid container justify="center">
+        <Grid item container alignItems="center" xs={12} sm={10} md={8}>
+          <Grid item xs={2}>
+            {Logout}
+          </Grid>
+          <Grid item container xs={8} justify="center">
+            <img src={require("../../img/logo.png")} alt="QUP logo" />
+          </Grid>
+          <Grid item xs={2}>
+            <Navbar />
+          </Grid>
         </Grid>
       </Grid>
     </header>

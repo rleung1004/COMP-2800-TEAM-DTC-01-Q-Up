@@ -34,20 +34,23 @@ export default function QueueSearchPage() {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
-  
+
   const triggerGetStatus = () => {
     setGetData(true);
   };
 
   const isFav = (hitName: string) => {
-   return favQueues.includes(hitName);
+    return favQueues.includes(hitName);
   };
 
-  const Hit = (data:any) => {
-    
-    const hitData = {...data.hit, triggerGetStatus, isFav: isFav(data.hit.name)};    
+  const Hit = (data: any) => {
+    const hitData = {
+      ...data.hit,
+      triggerGetStatus,
+      isFav: isFav(data.hit.name),
+    };
     return <QueueListRow hit={hitData} />;
-}
+  };
 
   useEffect(() => {
     if (!getData) {
@@ -58,7 +61,7 @@ export default function QueueSearchPage() {
       .get("/getFavouriteQueues", axiosConfig)
       .then((res) => {
         console.log("please dont");
-        
+
         const businesses = res.data.favoriteBusinesses;
         const names: Array<string> = [];
         for (const business in businesses) {
@@ -77,18 +80,20 @@ export default function QueueSearchPage() {
   return (
     <>
       <Header Nav={ConsumerNav} logout />
-      <div className="InstantSearch">
-        <InstantSearch indexName="businesses" searchClient={searchClient}>
-          <SearchBox
-            translations={{
-              placeholder: "Search for a queue",
-            }}
-          />
-          <section id="results">
-            <InfiniteHits hitComponent={Hit} transformItems={isFav} />
-          </section>
-        </InstantSearch>
-      </div>
+      <main>
+        <div className="InstantSearch">
+          <InstantSearch indexName="businesses" searchClient={searchClient}>
+            <SearchBox
+              translations={{
+                placeholder: "Search for a queue",
+              }}
+            />
+            <section id="results">
+              <InfiniteHits hitComponent={Hit} transformItems={isFav} />
+            </section>
+          </InstantSearch>
+        </div>
+      </main>
       <Footer />
     </>
   );
