@@ -18,15 +18,8 @@ function CurrentQueueInfo(props:any) {
     };
 
    const abandonQueueHandler = () => {
-      const stringUser = sessionStorage.getItem("user");
-      const user = JSON.parse(stringUser? stringUser : "{}");
-      const packet = {
-         currentQueue: data.businessName,
-         userEmail: user.email,
-         userType: user.userType,
-     };
       axios
-      .put('/abandonQueue', packet, axiosConfig)
+      .put('/abandonQueue', {}, axiosConfig)
       .then((res) => {
         console.log(res);
         window.alert(res.data.general);

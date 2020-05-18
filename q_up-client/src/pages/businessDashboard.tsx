@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 // import { Link } from 'react-router-dom';
 import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
@@ -8,7 +8,7 @@ import BusinessNav from "../components/businessNav";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Switch from "@material-ui/core/Switch";
-import { makeStyles, Paper } from "@material-ui/core";
+import { makeStyles, Paper, Button } from "@material-ui/core";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -41,14 +41,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function BusinessDashboardPage() {
+  const [getData, setGetData] = useState(true);
   const classes = useStyles();
 
   const [data, setData] = useState({
-    queueSize: "3",
-    duration: "3",
-    activeEmployees: "3",
+    queueSize: 0,
+    duration: 0,
+    activeEmployees: 0,
     queueStatus: false,
-    businessName: "3432",
+    businessName: "",
+    withEmployees: false,
   });
 
   const axiosConfig = {
@@ -57,39 +59,55 @@ export default function BusinessDashboardPage() {
     },
   };
 
-  const handleSwitchChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setData((prevState: any) => ({
-      ...prevState,
-      queueStatus: event.target.checked,
-    }));
-  };
-
-  useEffect(() => {
+  const handleSwitchChange = () => {
     axios
-      .get("ryan lets fix this!")
-      .then((res: any) => {
-        console.log(res);
-        setData({
-          queueStatus: true,
-          duration: "",
-          activeEmployees: "",
-          businessName: "",
-          queueSize: "",
-        });
+      .put("/changeQueueStatus", {}, axiosConfig)
+      .then(() => {
+        setData((prevState: any) => ({
+          ...prevState,
+          queueStatus: !data.queueStatus,
+        }));
+        setGetData(true);
+        window.alert("Successfully changed status.");
       })
       .catch((err: any) => {
-        console.log(err);
+        if (err.response.status === 404) {
+          window.alert(
+            "You are outside of normal operation hours. To start your queue change your operation hours."
+          );
+          return;
+        }
+        console.error(err);
         window.alert("Connection error.");
       });
-  }, [axiosConfig, data]);
-  return (
+  };
+
+  const handleToAddEmployees = () => {
+    window.location.href = "/employeeManagement";
+  };
+
+  const noEmployees = (
     <>
-      <Header Nav={BusinessNav} logout />
-      <header className={classes.pageTitleContainer}>
-        <Typography variant="h2" className={classes.pageTitle}>
-          {data.businessName}
-        </Typography>
-      </header>
+      <Grid container justify="center" spacing={6}>
+        <Grid item xs={10}>
+          <Typography variant="h3">You do not have any employees.</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleToAddEmployees}
+          >
+            Add employees
+          </Button>
+        </Grid>
+      </Grid>
+      <br />
+    </>
+  );
+
+  const withEmployees = (
+    <>
       <Grid container justify="center">
         <Grid
           container
@@ -172,6 +190,54 @@ export default function BusinessDashboardPage() {
           </Paper>
         </Grid>
       </Grid>
+    </>
+  );
+
+  useEffect(() => {
+    if (!getData) {
+      return;
+    }
+    setGetData(false);
+    axios
+      .get("/getQueue", axiosConfig)
+      .then((res: any) => {
+        console.log(res);
+        const info = res.data;
+        setData({
+          queueStatus: info.queue.isActive,
+          duration: info.queue.currentWaitTime,
+          activeEmployees: info.onlineEmployees,
+          businessName: info.businessName,
+          queueSize: info.queue.queueLength,
+          withEmployees: true,
+        });
+      })
+      .catch((err: any) => {
+        console.log(err);
+        if (err.response.status === 404) {
+          setData((prevState: any) => ({
+            ...prevState,
+            businessName: err.response.data.businessName,
+            withEmployees: false,
+          }));
+          return;
+        }
+        window.alert("Connection error.");
+      });
+  }, [axiosConfig, data]);
+  return (
+    <>
+      <Header Nav={BusinessNav} logout />
+      <header className={classes.pageTitleContainer}>
+        <Grid container>
+          <Grid item xs={11}>
+            <Typography variant="h3" className={classes.pageTitle}>
+              {data.businessName}
+            </Typography>
+          </Grid>
+        </Grid>
+      </header>
+      <section>{data.withEmployees ? withEmployees : noEmployees}</section>
       <Footer />
     </>
   );

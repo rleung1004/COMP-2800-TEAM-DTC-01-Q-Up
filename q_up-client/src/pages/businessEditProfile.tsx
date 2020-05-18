@@ -241,7 +241,7 @@ export default function EditBusinessProfilePage() {
       .put("/updateBusiness", userData, axiosConfig)
       .then(() => {
         console.log("success updating business");
-        window.location.href = "/businessDashboard";
+        window.location.href = "/businessProfile";
       })
       .catch((err: any) => {
         console.error(err);
