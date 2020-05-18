@@ -286,6 +286,16 @@ export default function EditBusinessProfilePage() {
               error={formState.errors.name ? true : false}
             />
             <TextField
+              id="filled-multiline-static"
+              label="Description"
+              multiline
+              rows={4}
+              name="description"
+              defaultValue="Default Value"
+              value={formState.description}
+              onChange={handleOnFieldChange}
+            />
+            <TextField
               required
               color="secondary"
               id="phone"
