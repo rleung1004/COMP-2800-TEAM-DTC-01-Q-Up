@@ -29,13 +29,7 @@ export default function QueueSearchPage() {
     "EU7O4R6VOS",
     "86a00161b4b0e5a68907e099e5962273"
   );
-  const [expandedPanel, setExpanded] = useState("panel");
-  const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
-    if (event.target.name === "fav") {
-      return;
-    }
-    setExpanded(isExpanded ? panel : "panel");
-  };
+  
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
@@ -56,10 +50,7 @@ export default function QueueSearchPage() {
       triggerGetStatus,
       isFav: isFav(data.hit.name),
     };
-    return <QueueListRow hit={hitData} 
-    handleChange={handleChange("panel" + hitData.__position )}
-    isExpanded={expandedPanel === "panel" + hitData.__position}
-    />;
+    return <QueueListRow hit={hitData} />;
   };
 
   useEffect(() => {
