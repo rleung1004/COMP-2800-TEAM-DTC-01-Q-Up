@@ -155,6 +155,14 @@ tutorial</a> to install them on your local machine.
   
     After a short while, the application will start running on your browser.
 
+### Testing using the provided files
+
+ This section guides the users to use the test files that are provided in the ```q_up-tests```.
+
+#### Postman
+
+Before proceeding with the following instructions, make sure to have <a href="">Postman</a> on your local machine.
+
 ## Technologies
 
 The following is a list of all technologies used to develop Q-UP.
