@@ -173,7 +173,7 @@ export const updateBusiness = async (req: Request, res: Response) => {
             .update({businessName: businessInfo.name})
             .catch(err => console.error(err));
     }
-    if (oldBusinessInfo.queue.queueSlots.length !==0) {
+    if (oldBusinessInfo.queue.queueSlots.length !== 0) {
         const customers: Array<string> = oldBusinessInfo.queue.queueSlots.map((queueSlot: any) => queueSlot.customer);
         for (const customer of customers) {
             await db.collection('users').doc(customer).update({currentQueue: businessInfo.name});
@@ -194,6 +194,20 @@ export const updateBusiness = async (req: Request, res: Response) => {
         })
         .catch(err => console.error(err));
     await db
+        .collection('users')
+        .where('businessName', '==', requestData.businessName)
+        .where('userType', '==', 'display')
+        .get()
+        .then(dataList => {
+            dataList.forEach(async (data) => {
+                await db
+                    .collection('users')
+                    .doc(data.data().businessName)
+                    .update({businessName: businessInfo.name})
+            })
+        })
+        .catch(err => console.error(err));
+    await db
         .collection('businesses')
         .doc(requestData.businessName)
         .delete()
@@ -203,7 +217,7 @@ export const updateBusiness = async (req: Request, res: Response) => {
         averageWaitTime: oldBusinessInfo.queue.averageWaitTime,
         isUpdating: true,
     });
-   await registerBusiness(req, res);
+    await registerBusiness(req, res);
     return await db
         .collection('businesses')
         .doc(businessInfo.name)
@@ -399,6 +413,32 @@ const deleteBoothFromBusiness = async (boothEmail: string) => {
         .catch(err => console.error(err))
 };
 
+
+/**
+ * Deletes the display for the specific business.
+ * first gets the display user id, then deletes it from the database and authentication.
+ *
+ * @param displayEmail    a string
+ */
+const deleteDisplayFromBusiness = async (displayEmail: string) => {
+    const boothUID: string = await db
+        .collection("users")
+        .where("userType", "==", "display")
+        .where("email", "==", displayEmail)
+        .get()
+        .then((data) => data.docs[0].data().userId)
+        .catch((err) => {
+            console.error(err);
+            return null;
+        });
+    await db
+        .collection('users')
+        .doc(displayEmail)
+        .delete()
+        .then(async () => await admin.auth().deleteUser(boothUID))
+        .catch(err => console.error(err))
+};
+
 /**
  * Deletes a business.
  * first, checks if the user uploading an image is a manager, then deletes the business and the queue, then deletes the
@@ -457,7 +497,19 @@ export const deleteBusiness = async (req: Request, res: Response) => {
             }
         })
         .catch(err => console.error(err));
-    //TODO: delete the display as well
+    await db
+        .collection('users')
+        .where('userType', '==', 'display')
+        .where('businessName', '==', requestData.businessName)
+        .get()
+        .then((dataList) => {
+            if (!dataList.empty) {
+                dataList.forEach((data => {
+                    deleteDisplayFromBusiness(data.data().email);
+                }))
+            }
+        })
+        .catch(err => console.error(err));
     return await db
         .collection('businesses')
         .doc(requestData.businessName)
