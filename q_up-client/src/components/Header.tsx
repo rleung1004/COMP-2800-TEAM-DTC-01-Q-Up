@@ -1,6 +1,6 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import "../../styles/staticHeader.scss";
+import "../styles/staticHeader.scss";
 import axios from "axios";
 import { IconButton, makeStyles } from "@material-ui/core";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
@@ -11,6 +11,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+/**
+ * Render a header. 
+ * 
+ * @param props.logout a boolean. If true, will display a logout button
+ * @param props.nav OPTIONAL a React Component. A hamburger menu to be displayed
+ *  
+ */
 export default function Header(props: any) {
   const classes = useStyles();
   
@@ -49,7 +56,7 @@ export default function Header(props: any) {
             {Logout}
           </Grid>
           <Grid item container xs={8} justify="center">
-            <img src={require("../../img/logo.png")} alt="QUP logo" />
+            <img src={require("../img/logo.png")} alt="QUP logo" />
           </Grid>
           <Grid item xs={2}>
             <Navbar />

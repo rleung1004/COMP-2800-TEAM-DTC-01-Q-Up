@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../../styles/staticFooter.scss';
+import '../styles/staticFooter.scss';
 import { Grid } from '@material-ui/core';
 import CopyrightIcon from '@material-ui/icons/Copyright';
 
+/**
+ * Render a footer.
+ */
 export default function Footer() {
    return (
       <footer>
@@ -17,25 +20,25 @@ export default function Footer() {
                <Grid item container>
                   <Grid item xs={3}>
                      <img
-                        src={require('../../img/twit.svg')}
+                        src={require('../img/twit.svg')}
                         alt='Twitter logo'
                      />
                   </Grid>
                   <Grid item xs={3}>
                      <img
-                        src={require('../../img/face.svg')}
+                        src={require('../img/face.svg')}
                         alt='Facebook logo'
                      />
                   </Grid>
                   <Grid item xs={3}>
                      <img
-                        src={require('../../img/insta.png')}
+                        src={require('../img/insta.png')}
                         alt='Instagram logo'
                      />
                   </Grid>
                   <Grid item xs={3}>
                      <img
-                        src={require('../../img/youtube.svg')}
+                        src={require('../img/youtube.svg')}
                         alt='Youtube logo'
                      />
                   </Grid>
