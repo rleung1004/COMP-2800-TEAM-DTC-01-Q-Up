@@ -4,16 +4,21 @@ Welcome to the official Q-UP github repository. In this repository you will find
 Q-UP made by Team-KART
 
 ## Table of Contents
-  * [About Q-UP](#About Q-UP)
-    + [TermsFeed](#termsFeed)
+  * [About Q-UP](#about-q-up)
+    + [Description](#description)
+    + [Implemented Features](#implemented-features)
   * [Contributors](#contributors)
   * [Installation](#installation)
+    + [Cloning Q-UP's repository using command line](#cloning-q-up-s-repository-using-command-line)
+    + [Installing project dependencies using command line](#installing-project-dependencies-using-command-line)
+    + [Running the application on your local machine](#running-the-application-on-your-local-machine)
   * [Technologies](#technologies)
-  * [References](#references)
-    + [TermsFeed](#termsFeed)
-    + [MaterialUI](#MaterialUI)
-    + [Images](#images)
-
+  * [Code References](#code-references)
+    + [TermsFeed](#termsfeed)
+    + [Pastebin](#pastebin)
+    + [MaterialUI](#materialui)
+    + [tealium IQ Learning Center](#tealium-iq-learning-center)
+    
 ## About Q-UP
 
 The following is the describes of Q-UP's application's motivations and its domain.
@@ -44,8 +49,8 @@ The following table lists the members of Team-KART.
 
 ## Installation
 
-In this section, you will find instructions to how install all the dependencies of our project, and start running the 
-development version on your local machine.
+In this section, you will find instructions to how install all the dependencies of our project, and start running our 
+ application on your local machine.
 
 ### Cloning Q-UP's repository using command line
 
@@ -76,19 +81,23 @@ development version on your local machine.
     > remove: Total 10 (delta 1), reused 10 (delta 1)
     > Unpacking objects: 100% (10/10), done.
     ```
+   
+  Now you have successfully cloned our application into your local machine. In the next section, we will install all the 
+  dependencies that are required to run our application.
+  
 ### Installing project dependencies using command line
 
 Note: In order to run our application locally on your machine, you need to have ```node.js``` and ```npm``` installed.
 please refer <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">Node and NPM installation 
 tutorial</a> to install them on your local machine.
 
-1. open Terminal.
+1. Open Terminal.
 
 2. Change the current working directory to the location where you want previously cloned our repository.
 
     Note: The name of the root directory is ```COMP-2800-TEAM-DTC-01-Q-Up```.
 
-3. navigate to```functions``` folder inside ```q-up_firebase```.
+3. Navigate to```functions``` folder inside ```q-up_firebase```.
     
     ```html
     $ cd q-up_firebase/functions/
@@ -110,27 +119,74 @@ tutorial</a> to install them on your local machine.
     ```html
     $ cd ../..
     ```
-6. navigate to ```q-up_client``` folder.
+6. Navigate to ```q-up_client``` folder.
     
     ```html
     $ cd q-up_client/
     ```
-
+7. Run ```npm install``` in the ```q-up_client``` folder.
+   
+       ```html
+       $ npm install
+       audited 862 packages in 4.235s
+         
+       67 packages are looking for funding
+        run `npm fund` for details
+      
+       found 0 vulnerabilities
+       ```
+  Now you have successfully installed all the necessary dependencies that are required to run this application. 
+  In the next section, we will run the application on your local machine.
+  
+### Running the application on your local machine
+      
 1. Open the cloned project on any IDE of your choice.
 
     Note: our team used <a href="how to install webstorm themes">WebStorm</a> and 
     <a href="https://code.visualstudio.com/docs/setup/setup-overview">Visual Studio Code</a>. Please refer to these 
-    links if you want an installation tutorial for those IDEs
+    links if you want an installation tutorial for those IDEs.
 
-2.
+2. Open your IDEs' terminal.
 
-To run this application, first run \$npm install in the q_up-client directory, and open index.ts.
+3. Navigate to ```q-up_client``` folder.
+    
+    ```html
+    $ cd q-up_client/
+    ```
+4. Type ```npm start``` to start our application.
+    
+    ```html
+    $ npm start
+    ```
+  
+    After a short while, the application will start running on your browser.
 
 ## Technologies
 
-The following is a list of all technologies used to develop Q-UP
+The following is a list of all technologies used to develop Q-UP.
 
-## References
+
+| Technology               | Official Website                           | Description                                                                                                                                                                                                                 |
+|--------------------------|--------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| npm                      | https://www.npmjs.com                      | An online repository for the publishing of open-source Node. js projects, and a command-line utility for interacting with said repository that aids in package installation, version management, and dependency management. |
+| React.js                 | https://reactjs.org                        | A declarative, Component-Based, open-source JavaScript library that is used for building user interfaces specifically for single-page applications. It's used for handling the view layer for web and mobile apps.          |
+| Node.js                  | https://nodejs.org/en/                     | A platform built on Chrome's JavaScript runtime for easily building fast and scalable network applications.                                                                                                                 |
+| Express.js               | https://expressjs.com                      | A minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.                                                                                            |
+| Typescript               | https://www.typescriptlang.org             | A typed superset of Javascript that compiles to plain JavaScript.                                                                                                                                                           |
+| Material UI              | https://material-ui.com                    | An open-source project that features React components that implement Google's Material Design.                                                                                                                              |
+| SCSS                     | https://sass-lang.com/guide                | A CSS preprocessor that runs on the server and compiles to CSS code that your browser understands.It contains more features that are not present in CSS which makes it a good choice for developers to use it.              |
+| Firebase firestore       | https://firebase.google.com/docs/firestore | A flexible, scalable database for mobile, web, and server development from Firebase and Google Cloud Platform.                                                                                                              |
+| Firebase Authentication  | https://firebase.google.com/docs/auth/     | A collection of backend services, easy-to-use SDKs, and ready-made UI libraries to authenticate users to web-applications.                                                                                                  |
+| Firebase Cloud Functions | https://firebase.google.com/docs/functions | A serverless framework that lets you automatically run backend code in response to events triggered by Firebase features and HTTPS requests.                                                                                |
+| Algolia                  | https://www.algolia.com                    | A hosted search engine capable of delivering real-time results from the first keystroke.                                                                                                                                    |
+| BusBoy                   | https://www.npmjs.com/package/busboy       | A node.js module for parsing incoming HTML form data.                                                                                                                                                                       |
+| Moment.js-TimeZone       | https://momentjs.com/timezone/             | A free and open-source javascript library that removes the need to use the native JavaScript Date object directly.                                                                                                          |
+| Axios                    | https://www.axios.com                      | A library that helps developers make http requests to external resources.                                                                                                                                                   |
+| JSON Web Tokens          | https://jwt.io                             | An open standard that defines a compact and self-contained way for securely transmitting information between parties as a JSON object.                                                                                      |
+
+## Code References
+
+In this section, the code references used in Q-UP's application are listed and described.
 
 ### TermsFeed
 
@@ -138,7 +194,7 @@ The content for the two static pages of "Terms and Conditions" and "Privacy Poli
 <a href="https://www.termsfeed.com/privacy-policy-generator/?gclid=CjwKCAjwwYP2BRBGEiwAkoBpAroNfqrmxN6JbvY3Drc4v2kvodrQ1dmhvyYqmtL-_IIpvSlGzgNyqxoC1JsQAvD_BwE">TermsFeed</a>
 . TermsFeed is an online Terms and conditions generator that provides free generated content depending on the users needs.
 
-For more information please visit their website at:  www.termsfeed.com
+For more information please visit their website at:  www.termsfeed.com.
 
 ### Pastebin
 
@@ -146,7 +202,7 @@ The regular express that is used to determine the validity of the email addresse
 was found in <a href= "https://pastebin.com/f33g85pd">Pastebin</a>. Pastebin is a website that allows users to share plain text 
 through public posts. 
 
-For more information please visit their website at: www.pastebin.com
+For more information please visit their website at: www.pastebin.com.
 
 ### MaterialUI
 
@@ -157,12 +213,14 @@ implement Google's Material Design.
 You will be able to find the list of all available UI components by selecting the hamburger menu located at the top 
 left corner, and visiting "Components" and "Components API" options.
 
-For more information please visit their website at: www.material-ui.com
- 
-### Images
+For more information please visit their website at: www.material-ui.com.
 
-The following are the links to where the images used in our applications were taken: 
+### tealium IQ Learning Center
 
-1.
-2. 
-3.
+The detector that determines if the users of our applications are using a mobile device or not, has been taken from 
+<a href="https://community.tealiumiq.com/t5/Developers/How-do-you-build-a-load-rule-for-mobile-only-devices/td-p/5282">
+community.tealium </a>. tealium is center that has support guides for Tealium iQ Tag Manager, EventStream, 
+AudienceStream and DataAccess.
+
+For more information please visit their website at: www.community.tealiumiq.com
+
