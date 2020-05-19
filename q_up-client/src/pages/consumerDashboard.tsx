@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: "20px auto 20px auto",
   },
+  expansionDetails: {
+    paddingLeft: "0px",
+    paddingRight: "0px",
+  },
 }));
 
 export default function ClientDashboardPage() {
@@ -162,7 +166,7 @@ export default function ClientDashboardPage() {
                   >
                     <Typography>Favorite queues</Typography>
                   </ExpansionPanelSummary>
-                  <ExpansionPanelDetails>
+                  <ExpansionPanelDetails className={classes.expansionDetails}>
                     <div>
                       <QueueList dataList={favQueues} />
                     </div>
