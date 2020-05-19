@@ -3,16 +3,24 @@ import React, { useEffect, useState, ChangeEvent } from "react";
 import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
 import BusinessNav from "../components/businessNav";
-import { Typography, Grid, Button, makeStyles, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@material-ui/core";
+import {
+  Typography,
+  Grid,
+  Button,
+  makeStyles,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+} from "@material-ui/core";
 import axios from "axios";
-import { mockEmployees } from "src/mockData";
 import EmployeeListRow from "../components/employeeListRow";
 import "../styles/employeeManagement.scss";
 
-
 const useStyles = makeStyles(() => ({
   button: {
-     margin: '20px auto 20px auto',
+    margin: "20px auto 20px auto",
   },
   textField: {
     margin: "20px auto 20px auto",
@@ -20,7 +28,7 @@ const useStyles = makeStyles(() => ({
 }));
 export default function EmployeeManagementPage() {
   interface passwordErrors {
-    newEmail?: string,
+    newEmail?: string;
     newPassword?: string;
     newPasswordConfirm?: string;
   }
@@ -31,13 +39,13 @@ export default function EmployeeManagementPage() {
   }
 
   const addErrorObj: addErrors = {};
-  const passErrorObj:passwordErrors = {};
+  const passErrorObj: passwordErrors = {};
   const classes = useStyles();
   const array: Array<any> = [];
   const [employeeList, setEmployeeList] = useState(array);
   const [selected, setSelected] = useState({ id: -1 });
   const [getData, setGetData] = useState(true);
-  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [passDialogOpen, setPassDialogOpen] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
     newEmail: "",
@@ -48,22 +56,16 @@ export default function EmployeeManagementPage() {
   const [addForm, setAddForm] = useState({
     email: "",
     password: "",
-    errors: addErrorObj
+    errors: addErrorObj,
   });
 
   const confirm = () => {
     return window.confirm("Are you sure? it cannot be undone.");
   };
 
-  // const axiosConfig = {
-  //   headers: {
-  //     Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
-  //   },
-  // };
-
   const axiosConfig = {
     headers: {
-      Authorization: "",
+      Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
 
@@ -121,22 +123,23 @@ export default function EmployeeManagementPage() {
         console.log(err);
       });
   };
-  
+
   const handleAddCancel = () => {
     setAddDialogOpen(false);
-  }
-  
+  };
+
   const addClick = () => {
     setAddDialogOpen(true);
   };
 
   const handleAddFormChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
-    const value =  event.target.value;
-    setAddForm((prevState:any) => ({
-      ...prevState, [name]: [value]
+    const value = event.target.value;
+    setAddForm((prevState: any) => ({
+      ...prevState,
+      [name]: value,
     }));
-  }
+  };
 
   const handleAddSubmit = () => {
     if (!window.confirm("Are you sure?")) {
@@ -145,19 +148,26 @@ export default function EmployeeManagementPage() {
 
     const packet = {
       employeeEmail: addForm.email,
-      password: addForm.password
-    }
+      password: addForm.password,
+    };
 
-    axios.post('/registerEmployee', packet, axiosConfig)
-    .then(() => {
-      window.alert("Employee registered.");
-      setGetData(true);
-    })
-    .catch((err:any) => {
-      console.log(err);
-      window.alert("Connection error. Could not register employee.");
-    });
-  }
+    axios
+      .post("/registerEmployee", packet, axiosConfig)
+      .then(() => {
+        window.alert("Employee registered.");
+        setGetData(true);
+        setAddDialogOpen(false);
+        setAddForm({
+          email: "",
+          password: "",
+          errors: addErrorObj,
+        });
+      })
+      .catch((err: any) => {
+        console.log(err);
+        window.alert("Connection error. Could not register employee.");
+      });
+  };
 
   const deleteClick = () => {
     const index = selected.id;
@@ -170,17 +180,18 @@ export default function EmployeeManagementPage() {
     }
 
     const data = {
-      email: employeeList[index].email
-    }
-    
-    axios.put('/deleteEmployee', data, axiosConfig)
-    .then(() => {
-      setGetData(true);
-    })
-    .catch((err:any) => {
-      console.log(err);
-      window.alert("Connection error");
-    });
+      employeeEmail: employeeList[index].email,
+    };
+
+    axios
+      .put("/deleteEmployee", data, axiosConfig)
+      .then(() => {
+        setGetData(true);
+      })
+      .catch((err: any) => {
+        console.log(err);
+        window.alert("Connection error");
+      });
   };
 
   const selectHandler = (selectorID: number) => () => {
@@ -192,45 +203,69 @@ export default function EmployeeManagementPage() {
       return;
     }
     setGetData(false);
-    setEmployeeList(mockEmployees());
+
+    axios
+      .get("/getEmployees", axiosConfig)
+      .then((res: any) => {
+        let employees = res.data.employees;
+        let employeeList: Array<object> = [];
+
+        for (const employee in employees) {
+          employeeList.push(employees[employee]);
+        }
+
+        setEmployeeList(employeeList);
+      })
+      .catch((err) => {
+        console.error(err);
+        if (err.response.status === 404) {
+          window.alert(
+            "Could not find any employees, please add new employees to your business."
+          );
+        } else if (err.response.status === 401) {
+          window.alert("You are unauthorized, please login as a manager.");
+        } else {
+          window.alert("Connection error. Please try again.");
+        }
+      });
   }, [axiosConfig, getData]);
 
   return (
     <>
-      <Header Nav={BusinessNav} logout/>
+      <Header Nav={BusinessNav} logout />
       <header>
         <Typography variant="h2">Employees</Typography>
       </header>
       <section>
         <Grid container>
-        <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4}>
             <Button
-            color="primary"
-            variant="contained"
-            className={classes.button}
-            onClick={addClick}
+              color="primary"
+              variant="contained"
+              className={classes.button}
+              onClick={addClick}
             >
-            Add new
+              Add new
             </Button>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Button
-            color="primary"
-            variant="contained"
-            className={classes.button}
-            onClick={editClick}
+              color="primary"
+              variant="contained"
+              className={classes.button}
+              onClick={editClick}
             >
               Change password
             </Button>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Button
-            color="primary"
-            variant="contained"
-            className={classes.button}
-            onClick={deleteClick}
+              color="primary"
+              variant="contained"
+              className={classes.button}
+              onClick={deleteClick}
             >
-            Delete
+              Delete
             </Button>
           </Grid>
         </Grid>
@@ -314,16 +349,16 @@ export default function EmployeeManagementPage() {
         <DialogContent>
           <Grid container direction="column">
             <TextField
-            color="secondary"
-            id="newEmployeeName"
-            label="Employee email"
-            name="email"
-            onChange={handlePassFormChange}
-            value={addForm.email}
-            className={classes.textField}
-            helperText={addForm.errors.email}
-            error={addForm.errors.email ? true : false}
-          />
+              color="secondary"
+              id="newEmployeeName"
+              label="Employee email"
+              name="email"
+              onChange={handleAddFormChange}
+              value={addForm.email}
+              className={classes.textField}
+              helperText={addForm.errors.email}
+              error={addForm.errors.email ? true : false}
+            />
             <TextField
               type="password"
               color="secondary"
