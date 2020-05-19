@@ -27,7 +27,6 @@ describe("Validators", () => {
                 businessName: "",
             };
             const actualData = validateSignUpData(mockData);
-            console.log(actualData);
             assert.deepEqual(actualData, {
                 errors: {email: "Must not be empty"},
                 valid: false,
