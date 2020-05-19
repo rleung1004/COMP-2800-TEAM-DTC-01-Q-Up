@@ -85,7 +85,7 @@ const theme = createMuiTheme({
       },
       h4: {
         fontSize: '1.3',
-        fontWeight: 'bold'
+        fontStyle: 'italic'
       }
     }
   },
