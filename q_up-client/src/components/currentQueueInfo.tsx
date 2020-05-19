@@ -2,12 +2,24 @@ import React from 'react';
 import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
 import axios from 'axios';
 
+// Mui stylings
 const useStyles = makeStyles(() => ({
    button: {
      margin: "20px auto 20px auto",
    },
  }));
 
+ /**
+  * Render the customer's current queue info.
+  * 
+  * @param props.data.businessName a string, the name of the business the customer is queued on
+  * @param props.data.estimatedWaitTime an integer, the estimated wait time
+  * @param props.data.currentPosition an integer, the number of customers in front
+  * @param props.data.ticketNumber an integer, the queue slot identifier
+  * @param props.data.password a string, the code to give to the teller
+  * 
+  * Accessible to: cutomers
+  */
 function CurrentQueueInfo(props:any) {
    const classes = useStyles();
    const data = props.data;
@@ -17,6 +29,9 @@ function CurrentQueueInfo(props:any) {
       },
     };
 
+   /**
+    * Remove the customer from the queue.
+    */
    const abandonQueueHandler = () => {
       axios
       .put('/abandonQueue', {}, axiosConfig)

@@ -47,11 +47,13 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function BusinessRegistrationPage() {
   const classes = useStyles();
+  
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
+
   interface errors {
     hours?: {
       startTime?: string;
