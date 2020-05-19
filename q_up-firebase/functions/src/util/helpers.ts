@@ -256,7 +256,8 @@ export const validateSignUpData = (data: signUpData) => {
         data.userType !== "customer" &&
         data.userType !== "manager" &&
         data.userType !== "employee" &&
-        data.userType !== "booth"
+        data.userType !== "booth" &&
+        data.userType !== "display"
     ) {
         Object.assign(errors, {userType: "Invalid user type"});
     }

@@ -76,7 +76,7 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.queueName);
             if (onlineEmployees < 1) {
-                return res.status(403).json({general:'There is no online tellers for this queue!!'});
+                return res.status(403).json({general: 'There is no online tellers for this queue!!'});
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const customerSlot = createQueueSlot(requestData.userEmail, lastHighestTicketNumber);
@@ -143,7 +143,7 @@ export const vipEnterQueue = async (req: Request, res: Response) => {
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
             if (onlineEmployees < 1) {
-                return res.status(403).json({general:'There is no online tellers for this queue!!'});
+                return res.status(403).json({general: 'There is no online tellers for this queue!!'});
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestVIPTicketNumber;
             const VIPSlot = createVIPSlot(lastHighestTicketNumber);
@@ -203,7 +203,7 @@ export const boothEnterQueue = async (req: Request, res: Response) => {
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
             if (onlineEmployees < 1) {
-                return res.status(403).json({general:'There is no online tellers for this queue!!'});
+                return res.status(403).json({general: 'There is no online tellers for this queue!!'});
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const boothSlot = createQueueSlot(requestData.userName, lastHighestTicketNumber);
@@ -425,12 +425,15 @@ export const getQueue = async (req: Request, res: Response) => {
             }
             return res.status(200).json({
                 general: "obtained the queue information successfully!",
+                businessName: requestData.businessName,
+                onlineEmployees,
                 queue: {
                     queueList: queue.queueSlots,
                     isActive: queue.isActive,
                     currentWaitTime: queue.currentWaitTime,
                     queueLength: queue.queueSlots.length,
                 },
+
             });
         })
         .catch(async (err) => {
@@ -498,7 +501,7 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.currentQueue);
             if (onlineEmployees < 1) {
-                return res.status(403).json({general:'There is no online tellers for this queue!, please wait!'});
+                return res.status(403).json({general: 'There is no online tellers for this queue!, please wait!'});
             }
             return res.status(200).json({
                 general: "obtained the customer's current queue information successfully",
@@ -657,7 +660,6 @@ export const changeQueueStatus = async (req: Request, res: Response) => {
             console.error(err);
             return false;
         });
-    console.log(`The current status of the queue is : ${isQueueActive};`);
     if (isQueueActive) {
         return deactivateQueue(req, res);
     } else {
@@ -685,8 +687,10 @@ const getFavouriteQueueInfo = async (queueName: string) => {
                 wait: queue.currentWaitTime,
                 size: queue.queueSlots.length,
                 address: usableData.address,
-                startTime: usableData.hours.startTime,
-                closeTime: usableData.hours.endTime,
+                hours: {
+                    startTime: usableData.hours.startTime,
+                    endTime: usableData.hours.endTime,
+                },
                 phoneNumber: usableData.phoneNumber,
                 website: usableData.website,
                 email: usableData.email,
