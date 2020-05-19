@@ -26,6 +26,7 @@ export default function LandingPage() {
     <>
       <Header Nav={StaticNav} />
       <main>
+        <section>
         <Grid
           container
           justify="center"
@@ -66,7 +67,7 @@ export default function LandingPage() {
             </Grid>
           </Grid>
         </Grid>
-      </main>
+        </section>
       <section id="iframe-container">
         <iframe
           title="Pitch"
@@ -104,6 +105,7 @@ export default function LandingPage() {
           </div>
         </section>
       </section>
+      </main>
       <Footer />
     </>
   );

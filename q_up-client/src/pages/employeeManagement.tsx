@@ -13,6 +13,7 @@ import {
   DialogContent,
   TextField,
   DialogActions,
+  Paper,
 } from "@material-ui/core";
 import axios from "axios";
 import EmployeeListRow from "../components/employeeListRow";
@@ -233,57 +234,67 @@ export default function EmployeeManagementPage() {
   return (
     <>
       <Header Nav={BusinessNav} logout />
-      <header>
-        <Typography variant="h2">Employees</Typography>
-      </header>
-      <section>
-        <Grid container>
-          <Grid item xs={12} sm={4}>
-            <Button
-              color="primary"
-              variant="contained"
-              className={classes.button}
-              onClick={addClick}
-            >
-              Add new
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Button
-              color="primary"
-              variant="contained"
-              className={classes.button}
-              onClick={editClick}
-            >
-              Change password
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Button
-              color="primary"
-              variant="contained"
-              className={classes.button}
-              onClick={deleteClick}
-            >
-              Delete
-            </Button>
+      <main>
+        <header>
+          <Typography variant="h2">Employees</Typography>
+        </header>
+        <Grid container justify="center">
+          <Grid item xs={12} md={8} lg={6}>
+            <section>
+              <Grid container>
+                <Grid item xs={12} sm={4}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.button}
+                    onClick={addClick}
+                  >
+                    Add new
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.button}
+                    onClick={editClick}
+                  >
+                    Change password
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.button}
+                    onClick={deleteClick}
+                  >
+                    Delete
+                  </Button>
+                </Grid>
+              </Grid>
+            </section>
           </Grid>
         </Grid>
-      </section>
-      <section>
         <section>
-          {employeeList.map((employee: any, key: number) => {
-            return (
-              <EmployeeListRow
-                key={key}
-                selectHandler={selectHandler(key)}
-                data={employee}
-                isSelected={key === selected.id}
-              />
-            );
-          })}
+          <Grid container justify="center">
+            <Grid item xs={12} sm={10} md={8} lg={6}>
+              <Paper className="employeePaper">
+                {employeeList.map((employee: any, key: number) => {
+                  return (
+                    <EmployeeListRow
+                      key={key}
+                      selectHandler={selectHandler(key)}
+                      data={employee}
+                      isSelected={key === selected.id}
+                    />
+                  );
+                })}
+              </Paper>
+            </Grid>
+          </Grid>
         </section>
-      </section>
+      </main>
       <Dialog
         open={passDialogOpen}
         onClose={handlePassChangeCancel}

@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: "20px auto 20px auto",
   },
+  expansionDetails: {
+    paddingLeft: "0px",
+    paddingRight: "0px",
+  },
 }));
 
 export default function ClientDashboardPage() {
@@ -76,13 +80,14 @@ export default function ClientDashboardPage() {
             ticketNumber: data.ticketNumber,
             password: data.password,
             inQueue: true,
-          });          
+          });
         })
         .catch((err) => {
           console.error(err.response);
           if (err.response.status === 404) {
-            setCurrentQueueInfo((prevState:any) => ({
-              ...prevState, inQueue: false
+            setCurrentQueueInfo((prevState: any) => ({
+              ...prevState,
+              inQueue: false,
             }));
             return;
           }
@@ -92,33 +97,30 @@ export default function ClientDashboardPage() {
   }, [axiosConfig, getData]);
 
   useEffect(() => {
-      if (!getData) {
-        return;
-      }
-      setGetData(false);
-      axios
-        .get("/getFavouriteQueues", axiosConfig)
-        .then((res) => {
-          const businesses = res.data.favoriteBusinesses;
-          const data: Array<object> = [];
-          for (const business in businesses) {
-            data.push({...businesses[business], triggerGetStatus, isFav: true});
-          }
-          setFavQueues(data);
-          console.log(data);
-          
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.response.status === 404) {
-            return;
-          }
-          window.alert(
-            "Connection error: Could not load your favourite queues."
-          );
-        });
+    if (!getData) {
+      return;
+    }
+    setGetData(false);
+    axios
+      .get("/getFavouriteQueues", axiosConfig)
+      .then((res) => {
+        const businesses = res.data.favoriteBusinesses;
+        const data: Array<object> = [];
+        for (const business in businesses) {
+          data.push({ ...businesses[business], triggerGetStatus, isFav: true });
+        }
+        setFavQueues(data);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 404) {
+          return;
+        }
+        window.alert("Connection error: Could not load your favourite queues.");
+      });
   }, [axiosConfig, getData]);
-  
+
   return (
     <>
       <Header Nav={ConsumerNav} logout />
@@ -147,21 +149,32 @@ export default function ClientDashboardPage() {
           </Grid>
         </section>
         <section>
-          <ExpansionPanel>
-            <ExpansionPanelSummary
-              aria-controls="panel1a-content"
-              expandIcon={<ExpandMoreIcon />}
-            >
-              <Typography>Favorite queues</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
-              <div>
-                <QueueList
-                  dataList={favQueues}
-                />
-              </div>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+          <Grid container justify="center">
+            <Grid item container xs={12} md={10} justify="center">
+              <Grid
+                container
+                item
+                alignItems="center"
+                justify="center"
+                xs={12}
+                md={10}
+              >
+                <ExpansionPanel>
+                  <ExpansionPanelSummary
+                    aria-controls="panel1a-content"
+                    expandIcon={<ExpandMoreIcon />}
+                  >
+                    <Typography>Favorite queues</Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails className={classes.expansionDetails}>
+                    <div>
+                      <QueueList dataList={favQueues} />
+                    </div>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+              </Grid>
+            </Grid>
+          </Grid>
         </section>
       </main>
       <Footer />

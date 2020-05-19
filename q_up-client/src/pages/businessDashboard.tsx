@@ -109,33 +109,34 @@ export default function BusinessDashboardPage() {
   const withEmployees = (
     <>
       <Grid container justify="center">
-        <Grid
-          container
-          item
-          alignItems="center"
-          justify="flex-start"
-          xs={12}
-          sm={8}
-          md={6}
-          lg={4}
-        >
-          <Grid item xs={7}>
-            <Typography
-              variant="body1"
-              className={classes.subHeading}
-              align="left"
-            >
-              Queue Status
-            </Typography>
-          </Grid>
-          <Grid item xs={5}>
-            <Switch
-              checked={data.queueStatus}
-              onChange={handleSwitchChange}
-              name="queueSwitch"
-              inputProps={{ "aria-label": "secondary checkbox" }}
-              className={classes.switch}
-            />
+        <Grid item container justify="center" xs={12} md={8} lg={6}>
+          <Grid
+            container
+            item
+            alignItems="center"
+            justify="center"
+            xs={12}
+            sm={8}
+            md={6}
+          >
+            <Grid item xs={6}>
+              <Typography
+                variant="body1"
+                className={classes.subHeading}
+                align="left"
+              >
+                Queue Status
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Switch
+                checked={data.queueStatus}
+                onChange={handleSwitchChange}
+                name="queueSwitch"
+                inputProps={{ "aria-label": "secondary checkbox" }}
+                className={classes.switch}
+              />
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -147,11 +148,10 @@ export default function BusinessDashboardPage() {
                 container
                 item
                 alignItems="center"
-                justify="flex-start"
+                justify="center"
                 xs={12}
                 sm={8}
                 md={6}
-                lg={4}
               >
                 <Grid item xs={6}>
                   <Typography variant="body1" align="left">
@@ -159,7 +159,7 @@ export default function BusinessDashboardPage() {
                   </Typography>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={2}>
                   <Typography variant="body2">{data.queueSize}</Typography>
                 </Grid>
 
@@ -169,17 +169,17 @@ export default function BusinessDashboardPage() {
                   </Typography>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={2}>
                   <Typography variant="body2">{data.duration}</Typography>
                 </Grid>
 
-                <Grid container alignItems="center">
+                <Grid container alignItems="center" justify="center">
                   <Grid item xs={6}>
                     <Typography variant="body1" align="left">
                       Employees online
                     </Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={2}>
                     <Typography variant="body2">
                       {data.activeEmployees}
                     </Typography>
@@ -224,20 +224,26 @@ export default function BusinessDashboardPage() {
         }
         window.alert("Connection error.");
       });
-  }, [axiosConfig, data]);
+  }, [axiosConfig, data, getData]);
   return (
     <>
       <Header Nav={BusinessNav} logout />
+      <main>
       <header className={classes.pageTitleContainer}>
-        <Grid container>
-          <Grid item xs={11}>
-            <Typography variant="h3" className={classes.pageTitle}>
+        <Grid container justify="center">
+          <Grid item xs={10}>
+            <Typography
+              variant="h3"
+              className={classes.pageTitle}
+              align="center"
+            >
               {data.businessName}
             </Typography>
           </Grid>
         </Grid>
       </header>
       <section>{data.withEmployees ? withEmployees : noEmployees}</section>
+      </main>
       <Footer />
     </>
   );
