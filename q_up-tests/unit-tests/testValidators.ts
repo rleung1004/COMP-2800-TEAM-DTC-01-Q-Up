@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import {isEmail, isEmpty, validateLoginData, validateSignUpData} from "../../util/helpers";
+import {isEmail, isEmpty, validateLoginData, validateSignUpData} from "../../q_up-firebase/functions/src/util/helpers";
 const assert = chai.assert;
 
 /**

@@ -6,8 +6,7 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log",
-    "test": "mocha -r ts-node/register src/**/**/*.ts"
+    "logs": "firebase functions:log"
   },
   "engines": {
     "node": "8"

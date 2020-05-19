@@ -6,10 +6,9 @@ Q-UP made by Team-KART
 ## Table of Contents
   * [About Q-UP](#about-q-up)
     + [Description](#description)
-    + [Implemented Features](#implemented-features)
   * [Contributors](#contributors)
   * [Installation](#installation)
-    + [Cloning Q-UP's repository using command line](#cloning-q-up-s-repository-using-command-line)
+    + [Cloning the repository using command line](#cloning-the-repository-using-command-line)
     + [Installing project dependencies using command line](#installing-project-dependencies-using-command-line)
     + [Running the application on your local machine](#running-the-application-on-your-local-machine)
   * [Technologies](#technologies)
@@ -31,11 +30,6 @@ tackling a universal problem which is wasting time in queues. Our application wi
 efficiently and thus lead better lives. We also aim to make our application accessible to the least privileged 
 implementing a system to allow users without electronic means to enter the queue.
 
-### Implemented Features
-
-The following is a list of currently implemented features for this application.
-* 
-
 ## Contributors
 
 The following table lists the members of Team-KART.
@@ -52,7 +46,7 @@ The following table lists the members of Team-KART.
 In this section, you will find instructions to how install all the dependencies of our project, and start running our 
  application on your local machine.
 
-### Cloning Q-UP's repository using command line
+### Cloning the repository using command line
 
 1. On GitHub, navigate to the main page of the repository.
     

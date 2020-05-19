@@ -1,0 +1,11 @@
+{
+  "name": "q_up-tests",
+  "version": "1.0.0",
+  "description": "The tests for the Q-UP application",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -r ts-node/register unit-tests/*.ts"
+  },
+  "author": "",
+  "license": "ISC"
+}
