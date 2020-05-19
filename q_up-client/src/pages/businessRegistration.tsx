@@ -40,6 +40,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a business registration page.
+ * 
+ * Accessible to: managers
+ */
 export default function BusinessRegistrationPage() {
   const classes = useStyles();
   const axiosConfig = {
@@ -97,7 +102,6 @@ export default function BusinessRegistrationPage() {
     loading: false,
     errors: errorObject,
   });
-  //
 
   const handleOnFieldChange = (event: any) => {
     const fieldNameTokens = event.target.name.split("-");

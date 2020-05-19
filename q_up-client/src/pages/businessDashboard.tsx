@@ -40,6 +40,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a business dashboard.
+ * 
+ * Accessible to: managers
+ */
 export default function BusinessDashboardPage() {
   const [getData, setGetData] = useState(true);
   const classes = useStyles();

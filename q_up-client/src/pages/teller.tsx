@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a teller page.
+ * 
+ * Accessible to: employees
+ */
 export default function TellerPage() {
   const classes = useStyles();
 

@@ -34,6 +34,11 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
+/**
+ * Render a login page.
+ * 
+ * Accessible to: All users
+ */
 export default function LoginPage() {
    const history = useHistory();
    const classes = useStyles();

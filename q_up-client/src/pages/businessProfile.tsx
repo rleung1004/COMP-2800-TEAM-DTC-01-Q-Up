@@ -27,6 +27,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+/**
+ * Render a business profile page.
+ * 
+ * Accessible to: managers
+ */
 export default function BusinessProfilePage() {
   interface errors {
     // oldPassword?: string,

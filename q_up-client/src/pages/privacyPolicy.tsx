@@ -4,6 +4,11 @@ import Footer from '../components/Footer';
 import '../styles/termsAndPrivacy.scss';
 import StaticNav from 'src/components/staticNav';
 
+/**
+ * Render a privacy page.
+ * 
+ * Accessible to: All users
+ */
 export default function privacyPage() {
    return (
       <>

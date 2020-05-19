@@ -27,6 +27,12 @@ const useStyles = makeStyles(() => ({
     margin: "20px auto 20px auto",
   },
 }));
+
+/**
+ * Render an employee management page.
+ * 
+ * Accessible to: Managers
+ */
 export default function EmployeeManagementPage() {
   interface addErrors {
     email?: string;

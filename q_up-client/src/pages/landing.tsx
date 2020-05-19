@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Render a landing page.
+ * 
+ * Accessible to: All users.
  */
 export default function LandingPage() {
   const classes = useStyles();

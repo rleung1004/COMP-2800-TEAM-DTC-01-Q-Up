@@ -4,6 +4,11 @@ import Footer from "src/components/Footer";
 import StaticNav from "src/components/staticNav";
 import { Typography } from "@material-ui/core";
 
+/**
+ * Render a contact us page.
+ * 
+ * Accessible to: all users.
+ */
 export default function ContactUsPage() {
   return (
     <>

@@ -27,6 +27,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+/**
+ * Render a customer profile page.
+ * 
+ * Accessible to: customers
+ */
 export default function ConsumerProfilePage() {
   interface errors {
     // oldPassword?: string,

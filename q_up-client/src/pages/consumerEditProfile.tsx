@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
+/**
+ * Render a consumer edit profile page.
+ * 
+ * Accessible to: customers
+ */
 export default function ConsumerEditProfilePage() {
    const classes = useStyles();
    interface errors {

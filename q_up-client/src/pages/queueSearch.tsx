@@ -15,6 +15,11 @@ import axios from "axios";
 import Grid from "@material-ui/core/Grid/Grid";
 import { Paper } from "@material-ui/core";
 
+/**
+ * Render a queue search page.
+ * 
+ * Accessible to: customer.
+ */
 export default function QueueSearchPage() {
   const [getData, setGetData] = useState(true);
   const listNames: Array<string> = [];

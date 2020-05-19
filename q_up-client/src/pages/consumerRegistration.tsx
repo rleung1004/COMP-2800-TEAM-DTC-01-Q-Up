@@ -23,6 +23,11 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
+/**
+ * Render a consumer registration page.
+ * 
+ * Accessible to: customers
+ */
 export default function ConsumerRegistrationPage() {
    const classes = useStyles();
    interface errors {

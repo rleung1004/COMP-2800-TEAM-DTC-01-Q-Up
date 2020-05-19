@@ -12,6 +12,8 @@ import StaticNav from 'src/components/staticNav';
 
 /**
  * Render an about us page.
+ * 
+ * Accessible to: all users
  */
 export default function aboutUsPage() {
    return (

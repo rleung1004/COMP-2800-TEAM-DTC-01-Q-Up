@@ -41,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a business edit profile page.
+ * 
+ * Accessible to: managers
+ */
 export default function EditBusinessProfilePage() {
   const classes = useStyles();
   const axiosConfig = {

@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a customer dashboard page.
+ * 
+ * Accessible to: customers
+ */
 export default function ClientDashboardPage() {
   const classes = useStyles();
   const [currentQueueInfo, setCurrentQueueInfo] = useState({

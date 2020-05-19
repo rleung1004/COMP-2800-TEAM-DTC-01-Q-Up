@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a signup page.
+ * 
+ * Accessible to: All users
+ */
 export default function SignupPage() {
   const history = useHistory();
   const classes = useStyles();

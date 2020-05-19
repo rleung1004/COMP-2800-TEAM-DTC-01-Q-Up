@@ -7,6 +7,8 @@ import EasterEgg from "src/components/easterEgg";
 
 /**
  * Render a terms and conditions page.
+ * 
+ * Accessible to: All users
  */
 export default function TermsPage() {
   const [eggCount, setEggcount] = useState({ value: 0 });
