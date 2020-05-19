@@ -109,7 +109,7 @@ export default function ConsumerEditProfilePage() {
    }, [axiosConfig, errorObject, getData]);
    return (
       <>
-         <Header Nav={ConsumerNav} />
+         <Header Nav={ConsumerNav} logout/>
          <main>
             <Grid
                container

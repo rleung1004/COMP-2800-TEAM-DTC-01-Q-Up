@@ -3,16 +3,26 @@ import React, { useEffect, useState, ChangeEvent } from "react";
 import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
 import BusinessNav from "../components/businessNav";
-import { Typography, Grid, Button, makeStyles, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@material-ui/core";
+import {
+  Typography,
+  Grid,
+  Button,
+  makeStyles,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Paper,
+} from "@material-ui/core";
 import axios from "axios";
 import { mockEmployees } from "src/mockData";
 import EmployeeListRow from "../components/employeeListRow";
 import "../styles/employeeManagement.scss";
 
-
 const useStyles = makeStyles(() => ({
   button: {
-     margin: '20px auto 20px auto',
+    margin: "20px auto 20px auto",
   },
   textField: {
     margin: "20px auto 20px auto",
@@ -20,7 +30,7 @@ const useStyles = makeStyles(() => ({
 }));
 export default function EmployeeManagementPage() {
   interface passwordErrors {
-    newEmail?: string,
+    newEmail?: string;
     newPassword?: string;
     newPasswordConfirm?: string;
   }
@@ -31,13 +41,13 @@ export default function EmployeeManagementPage() {
   }
 
   const addErrorObj: addErrors = {};
-  const passErrorObj:passwordErrors = {};
+  const passErrorObj: passwordErrors = {};
   const classes = useStyles();
   const array: Array<any> = [];
   const [employeeList, setEmployeeList] = useState(array);
   const [selected, setSelected] = useState({ id: -1 });
   const [getData, setGetData] = useState(true);
-  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [passDialogOpen, setPassDialogOpen] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
     newEmail: "",
@@ -48,7 +58,7 @@ export default function EmployeeManagementPage() {
   const [addForm, setAddForm] = useState({
     email: "",
     password: "",
-    errors: addErrorObj
+    errors: addErrorObj,
   });
 
   const confirm = () => {
@@ -121,22 +131,23 @@ export default function EmployeeManagementPage() {
         console.log(err);
       });
   };
-  
+
   const handleAddCancel = () => {
     setAddDialogOpen(false);
-  }
-  
+  };
+
   const addClick = () => {
     setAddDialogOpen(true);
   };
 
   const handleAddFormChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
-    const value =  event.target.value;
-    setAddForm((prevState:any) => ({
-      ...prevState, [name]: [value]
+    const value = event.target.value;
+    setAddForm((prevState: any) => ({
+      ...prevState,
+      [name]: [value],
     }));
-  }
+  };
 
   const handleAddSubmit = () => {
     if (!window.confirm("Are you sure?")) {
@@ -145,19 +156,20 @@ export default function EmployeeManagementPage() {
 
     const packet = {
       employeeEmail: addForm.email,
-      password: addForm.password
-    }
+      password: addForm.password,
+    };
 
-    axios.post('/registerEmployee', packet, axiosConfig)
-    .then(() => {
-      window.alert("Employee registered.");
-      setGetData(true);
-    })
-    .catch((err:any) => {
-      console.log(err);
-      window.alert("Connection error. Could not register employee.");
-    });
-  }
+    axios
+      .post("/registerEmployee", packet, axiosConfig)
+      .then(() => {
+        window.alert("Employee registered.");
+        setGetData(true);
+      })
+      .catch((err: any) => {
+        console.log(err);
+        window.alert("Connection error. Could not register employee.");
+      });
+  };
 
   const deleteClick = () => {
     const index = selected.id;
@@ -170,17 +182,18 @@ export default function EmployeeManagementPage() {
     }
 
     const data = {
-      email: employeeList[index].email
-    }
-    
-    axios.put('/deleteEmployee', data, axiosConfig)
-    .then(() => {
-      setGetData(true);
-    })
-    .catch((err:any) => {
-      console.log(err);
-      window.alert("Connection error");
-    });
+      email: employeeList[index].email,
+    };
+
+    axios
+      .put("/deleteEmployee", data, axiosConfig)
+      .then(() => {
+        setGetData(true);
+      })
+      .catch((err: any) => {
+        console.log(err);
+        window.alert("Connection error");
+      });
   };
 
   const selectHandler = (selectorID: number) => () => {
@@ -197,58 +210,68 @@ export default function EmployeeManagementPage() {
 
   return (
     <>
-      <Header Nav={BusinessNav} logout/>
-      <header>
-        <Typography variant="h2">Employees</Typography>
-      </header>
-      <section>
-        <Grid container>
-        <Grid item xs={12} sm={4}>
-            <Button
-            color="primary"
-            variant="contained"
-            className={classes.button}
-            onClick={addClick}
-            >
-            Add new
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Button
-            color="primary"
-            variant="contained"
-            className={classes.button}
-            onClick={editClick}
-            >
-              Change password
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <Button
-            color="primary"
-            variant="contained"
-            className={classes.button}
-            onClick={deleteClick}
-            >
-            Delete
-            </Button>
+      <Header Nav={BusinessNav} logout />
+      <main>
+        <header>
+          <Typography variant="h2">Employees</Typography>
+        </header>
+        <Grid container justify="center">
+          <Grid item xs={12} md={8} lg={6}>
+            <section>
+              <Grid container>
+                <Grid item xs={12} sm={4}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.button}
+                    onClick={addClick}
+                  >
+                    Add new
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.button}
+                    onClick={editClick}
+                  >
+                    Change password
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    className={classes.button}
+                    onClick={deleteClick}
+                  >
+                    Delete
+                  </Button>
+                </Grid>
+              </Grid>
+            </section>
           </Grid>
         </Grid>
-      </section>
-      <section>
         <section>
-          {employeeList.map((employee: any, key: number) => {
-            return (
-              <EmployeeListRow
-                key={key}
-                selectHandler={selectHandler(key)}
-                data={employee}
-                isSelected={key === selected.id}
-              />
-            );
-          })}
+          <Grid container justify="center">
+            <Grid item xs={12} sm={10} md={8} lg={6}>
+              <Paper className="employeePaper">
+                {employeeList.map((employee: any, key: number) => {
+                  return (
+                    <EmployeeListRow
+                      key={key}
+                      selectHandler={selectHandler(key)}
+                      data={employee}
+                      isSelected={key === selected.id}
+                    />
+                  );
+                })}
+              </Paper>
+            </Grid>
+          </Grid>
         </section>
-      </section>
+      </main>
       <Dialog
         open={passDialogOpen}
         onClose={handlePassChangeCancel}
@@ -314,16 +337,16 @@ export default function EmployeeManagementPage() {
         <DialogContent>
           <Grid container direction="column">
             <TextField
-            color="secondary"
-            id="newEmployeeName"
-            label="Employee email"
-            name="email"
-            onChange={handlePassFormChange}
-            value={addForm.email}
-            className={classes.textField}
-            helperText={addForm.errors.email}
-            error={addForm.errors.email ? true : false}
-          />
+              color="secondary"
+              id="newEmployeeName"
+              label="Employee email"
+              name="email"
+              onChange={handlePassFormChange}
+              value={addForm.email}
+              className={classes.textField}
+              helperText={addForm.errors.email}
+              error={addForm.errors.email ? true : false}
+            />
             <TextField
               type="password"
               color="secondary"
