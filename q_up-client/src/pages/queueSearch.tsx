@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from "react";
-// import { useHistory } from "react-router-dom";
-// import { Link } from 'react-router-dom';
-// import QueueListRow from "../components/queueListRow";
+
 import algoliasearch from "algoliasearch/lite";
 import {
   InstantSearch,
   InfiniteHits,
   SearchBox,
-  // Pagination,
-  // ClearRefinements,
-  // RefinementList,
-  // Configure,
 } from "react-instantsearch-dom";
 import Footer from "../components/static/Footer";
 import Header from "../components/static/Header";
 import ConsumerNav from "../components/consumerNav";
-// import { Typography } from "@material-ui/core";
-// import PropTypes from "prop-types";
 import QueueListRow from "src/components/queueListRow";
 import "../styles/queueSearch.scss";
 import axios from "axios";
+import Grid from "@material-ui/core/Grid/Grid";
+import { Paper } from "@material-ui/core";
 
 export default function QueueSearchPage() {
   const [getData, setGetData] = useState(true);
@@ -29,7 +23,7 @@ export default function QueueSearchPage() {
     "EU7O4R6VOS",
     "86a00161b4b0e5a68907e099e5962273"
   );
-  
+
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
@@ -44,7 +38,7 @@ export default function QueueSearchPage() {
     return favQueues.includes(hitName);
   };
 
-  const Hit = (data: any) => {    
+  const Hit = (data: any) => {
     const hitData = {
       ...data.hit,
       triggerGetStatus,
@@ -87,9 +81,16 @@ export default function QueueSearchPage() {
               translations={{
                 placeholder: "Search for a queue",
               }}
+              
             />
             <section id="results">
-              <InfiniteHits hitComponent={Hit} transformItems={isFav} />
+              <Grid container justify="center">
+                <Grid container item xs={12} md={10} lg={8} justify="center">
+                  <Paper className="searchPaper">
+                      <InfiniteHits hitComponent={Hit} transformItems={isFav} />
+                  </Paper>
+                </Grid>
+              </Grid>
             </section>
           </InstantSearch>
         </div>

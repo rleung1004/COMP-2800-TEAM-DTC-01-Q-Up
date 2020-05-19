@@ -1,4 +1,54 @@
 .MuiPaper-rounded {
-    border-radius: 0px;
+  border-radius: 0px;
 }
 
+.searchPaper {
+  padding: 1rem 0rem;
+}
+
+.ais-SearchBox-form {
+  padding: 1rem;
+  input[type="search"] {
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    border-top: thin solid #eef13e;
+    border-left: thin solid #eef13e;
+    border-bottom: thin solid #eef13e;
+    box-shadow: 0px 0px 4px inset;
+    border-right: none;
+  }
+
+  button {
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top: thin solid #eef13e;
+    border-right: thin solid #eef13e;
+    border-bottom: thin solid #eef13e;
+    background-color: #2c2b2b;
+    border-left: none;
+    svg {
+      fill: white;
+    }
+    &:hover {
+      background-color: #606060;
+      -webkit-transition: background-color 150ms linear;
+      -ms-transition: background-color 150ms linear;
+      transition: background-color 150ms linear;
+    }
+  }
+}
+
+.ais-InfiniteHits-loadMore{
+    padding: 0.45rem 1.2rem;
+    width: 12rem;
+    border: thin solid #eef13e;
+    border-radius: 5px;
+    background-color: #2c2b2b;
+    color: #FFF;
+    &:hover {
+        background-color: #606060;
+        -webkit-transition: background-color 150ms linear;
+        -ms-transition: background-color 150ms linear;
+        transition: background-color 150ms linear;
+      }
+}
