@@ -146,26 +146,29 @@ export default function ClientDashboardPage() {
         </section>
         <section>
           <Grid container justify="center">
-            <Grid item xs={12} sm={10} md={8} lg={6}>
-            <Grid container item alignItems="center" justify="center"
-            xs={12}
-            sm={8}
-            md={6}
-          >
-              <ExpansionPanel>
-                <ExpansionPanelSummary
-                  aria-controls="panel1a-content"
-                  expandIcon={<ExpandMoreIcon />}
-                >
-                  <Typography>Favorite queues</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <div>
-                    <QueueList dataList={favQueues} />
-                  </div>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-            </Grid>
+            <Grid item container xs={12} md={10} justify="center">
+              <Grid
+                container
+                item
+                alignItems="center"
+                justify="center"
+                xs={12}
+                md={10}
+              >
+                <ExpansionPanel>
+                  <ExpansionPanelSummary
+                    aria-controls="panel1a-content"
+                    expandIcon={<ExpandMoreIcon />}
+                  >
+                    <Typography>Favorite queues</Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <div>
+                      <QueueList dataList={favQueues} />
+                    </div>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+              </Grid>
             </Grid>
           </Grid>
         </section>
