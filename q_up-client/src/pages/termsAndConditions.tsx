@@ -5,6 +5,9 @@ import "../styles/termsAndPrivacy.scss";
 import StaticNav from "src/components/staticNav";
 import EasterEgg from "src/components/easterEgg";
 
+/**
+ * Render a terms and conditions page.
+ */
 export default function TermsPage() {
   const [eggCount, setEggcount] = useState({ value: 0 });
   const [showEgg, setShowEgg] = useState({ value: false });
