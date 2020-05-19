@@ -7,6 +7,7 @@ import {
   IconButton,
   Button,
   ExpansionPanel,
+  makeStyles,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
 import StarIcon from "@material-ui/icons/Star";
@@ -14,6 +15,22 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import MapIcon from "@material-ui/icons/Map";
 import Axios from "axios";
 import { formatGoogleMapURL, formatAddress } from "src/utils/formatting";
+import '../styles/queueListRow.scss';
+
+const useStyles = makeStyles({
+  qupButton: {
+    minWidth: "auto",
+  },
+  expansion: {
+    borderBottom: '0.5px solid black' 
+  },
+  expansionSummary: {
+   
+  },
+  expansionDetails: {
+    backgroundColor: '#F6F6F6',
+  }
+});
 
 function formatTime(time24h: string) {
   const [hours, mins] = time24h.split(":");
@@ -45,13 +62,14 @@ function evaluateCloseTime(hours: any) {
 }
 
 export default function QueueListRow(props: any) {
+  const classes = useStyles();
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
   console.log(props.data);
-  
+
   const data = props.data
     ? {
         ...props.data,
@@ -71,18 +89,15 @@ export default function QueueListRow(props: any) {
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
-  
+
   const handleToGMap = () => {
-    window.open( 'https://www.google.com/maps/search/?api=1&query=' + formatGoogleMapURL(formatAddress(address)), '_blank')
-  }
-  // const unit =
-  //   address.unit === "" ? (
-  //     <div></div>
-  //   ) : (
-  //     <Grid container item xs={1}>
-  //       <Typography variant="body2">{address.unit}</Typography>
-  //     </Grid>
-  //   );
+    window.open(
+      "https://www.google.com/maps/search/?api=1&query=" +
+        formatGoogleMapURL(formatAddress(address)),
+      "_blank"
+    );
+  };
+
   const handleFavClick = (fav: Boolean) => () => {
     const iconButtonManager = () => {
       if (fav) {
@@ -131,22 +146,20 @@ export default function QueueListRow(props: any) {
   );
 
   const closedQueueHeader = (
-    <Grid container item xs={4}>
+    <Grid container item xs={12} justify="center" alignItems="center">
       <Typography variant="body2">
-        Now closed. Opens at {formatTime(data.startTime)}
+        Closed. Opens at {formatTime(data.startTime)}
       </Typography>
     </Grid>
   );
 
   const openQueueHeader = (
     <>
-      <Grid container item xs={2} direction="column">
-        <Typography variant="caption">Wait time</Typography>
-        <Typography variant="body2">{data.wait}</Typography>
+      <Grid container item xs={6} justify="center" alignItems="center">
+        <Typography variant="body2">Wait time {data.wait}</Typography>
       </Grid>
-      <Grid container item xs={2} direction="column">
-        <Typography variant="caption">Queue Size</Typography>
-        <Typography variant="body2">{data.size}</Typography>
+      <Grid container item xs={6} justify="center" alignItems="center">
+        <Typography variant="body2">Queue Size {data.size}</Typography>
       </Grid>
     </>
   );
@@ -171,66 +184,68 @@ export default function QueueListRow(props: any) {
       });
   };
   return (
-    <ExpansionPanel expanded={expanded} onChange={handleChange} square>
+    <ExpansionPanel expanded={expanded} onChange={handleChange} square className={classes.expansion}>
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         aria-controls="panel1bh-content"
         id="panel1bh-header"
+        className={classes.expansionSummary}
       >
         {/* the header of expansion */}
         <Grid container alignItems="center">
-          <Grid item xs={6}>
-            <Typography variant="body1">{data.name}</Typography>
+          <Grid item container xs={10}>
+            <Grid item xs={12}>
+              <Typography variant="body1">{data.name}</Typography>
+            </Grid>
+            {data.active ? openQueueHeader : closedQueueHeader}
           </Grid>
-          {data.active ? openQueueHeader : closedQueueHeader}
           <Grid item xs={2}>
             {favicon}
           </Grid>
         </Grid>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
+      <ExpansionPanelDetails className={classes.expansionDetails}>
         {/* the body */}
         <Grid container>
-          <Grid container item xs={6} justify="flex-start">
-            {" "}
-            {/* address*/}
-            <Grid item xs={12}>
-              <Typography variant="body2" align="left">
-                {address.unit +
-                  " " +
-                  address.streetAddress +
-                  ", " +
-                  address.city}{" "}
-                <br />
-                {address.province + ", " + address.postalCode}
-              </Typography>
-            </Grid>
-            <Grid container item xs={12} justify="flex-start">
-              <IconButton size="small" onClick={handleToGMap}>
-                <MapIcon color="primary" />
-              </IconButton>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body2" align="left">
+          <Grid container item xs={12} sm={6} justify="flex-start" >
+          <Grid item xs={12} >
+              <Typography variant="body2" className="leftText">
                 {data.active
                   ? "Closes at " + formatTime(data.closeTime)
                   : "Opens at " + formatTime(data.startTime)}
               </Typography>
             </Grid>
-          </Grid>
-          <Grid container item xs={6}>
+            {" "}
+            {/* address*/}
             <Grid item xs={12}>
-              <Typography variant="body2" align="left">
+             
+                <Typography variant="body2" className="leftText">
+                  {address.unit +
+                    " " +
+                    address.streetAddress +
+                    ", " +
+                    address.city}{" "}
+                  {address.province + ", " + address.postalCode}
+                  <IconButton size="small" onClick={handleToGMap}>
+                <MapIcon color="primary" />
+              </IconButton>
+              </Typography>
+              
+            </Grid>
+          </Grid>
+          <Grid container item xs={12} sm={6}>
+            <Grid item xs={12}>
+              <Typography variant="body2" className="rightText">
                 {data.phoneNumber}
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body2" align="left">
+              <Typography variant="body2" className="rightText">
                 {data.email}
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body2" align="left">
+              <Typography variant="body2" className="rightText">
                 {data.website}
               </Typography>
             </Grid>
@@ -240,6 +255,7 @@ export default function QueueListRow(props: any) {
                 color="primary"
                 onClick={queueUp}
                 disabled={!data.active}
+                className={classes.qupButton}
               >
                 Queue up
               </Button>

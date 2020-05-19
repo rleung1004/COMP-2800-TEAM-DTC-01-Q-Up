@@ -71,7 +71,7 @@ const theme = createMuiTheme({
     },
     MuiTypography: {
       body1: {
-        fontSize: '1.2rem',
+        fontSize: '1.1rem',
         fontWeight: 'bold',
       },
       body2: {
