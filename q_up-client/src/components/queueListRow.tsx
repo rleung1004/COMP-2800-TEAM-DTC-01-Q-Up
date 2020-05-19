@@ -207,6 +207,9 @@ export default function QueueListRow(props: any) {
       <ExpansionPanelDetails className={classes.expansionDetails}>
         {/* the body */}
         <Grid container>
+          <Grid item xs={12}>
+            <Typography variant="body2" align="center">{data.description}</Typography>
+          </Grid>
           <Grid container item xs={12} sm={6} justify="flex-start" >
           <Grid item xs={12} >
               <Typography variant="body2" className="leftText">
