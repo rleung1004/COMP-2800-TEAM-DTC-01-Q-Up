@@ -10,6 +10,9 @@ import ourCulture from '../img/our-culture.jpeg';
 import logo from '../img/logo.png';
 import StaticNav from 'src/components/staticNav';
 
+/**
+ * Render an about us page.
+ */
 export default function aboutUsPage() {
    return (
       <>
