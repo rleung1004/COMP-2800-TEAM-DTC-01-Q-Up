@@ -16,6 +16,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { formatPhone } from "../utils/formatting";
+import "../styles/businessProfile.scss";
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -176,148 +177,215 @@ export default function BusinessProfilePage() {
         console.log(err);
       });
   }, [axiosConfig, errorObj, getData]);
-  
+
   const sectionSpacing = 3;
   return (
     <>
-      <Header Nav={BusinessNav} logout/>
+      <Header Nav={BusinessNav} logout />
       <main>
         <section>
           <Typography variant="h2">{formState.name}</Typography>
         </section>
         <section>
-          <Grid container justify="space-around">
-            <Grid item xs={12} md={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={handleEditProfile}
-              >
-                Edit profile
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={handleDeleteProfile}
-              >
-                Delete account
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={handlePasswordChange}
-              >
-                Change password
-              </Button>
+          <Grid container justify="center">
+            <Grid container item xs={12} md={8} lg={6} justify="space-around">
+              <Grid item xs={12} md={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={handleEditProfile}
+                >
+                  Edit profile
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={handleDeleteProfile}
+                >
+                  Delete account
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={handlePasswordChange}
+                >
+                  Change password
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </section>
-        <br/>
+        <br />
+        <section>
+          <Grid container justify="center">
+            <Grid item xs={12}>
+              <Typography variant="body1">Description</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body2">{formState.description}</Typography>
+            </Grid>
+          </Grid>
+        </section>
         <section>
           <Grid container direction="column" alignItems="center">
             <Typography variant="h3">Hours</Typography>
-            <Grid container item xs={10} lg={4} spacing={sectionSpacing}>
+            <Grid
+              container
+              item
+              xs={12}
+              sm={8}
+              md={6}
+              lg={4}
+              spacing={sectionSpacing}
+            >
               <Grid item xs={12}>
-                <Typography variant="h4" align="center">Weekdays</Typography>{" "}
+                <Typography variant="h4" align="center">
+                  Weekdays
+                </Typography>{" "}
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Open</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Open
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
+                <Typography variant="body2" className="textRight">
                   {formState.hours.startTime[1]}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Close</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Close
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
+                <Typography variant="body2" className="textRight">
                   {formState.hours.endTime[1]}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h4" align="center">Weekend</Typography>{" "}
+                <Typography variant="h4" align="center">
+                  Weekend
+                </Typography>{" "}
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Open</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Open
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
+                <Typography variant="body2" className="textRight">
                   {formState.hours.startTime[0]}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Close</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Close
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
+                <Typography variant="body2" className="textRight">
                   {formState.hours.endTime[0]}
                 </Typography>
               </Grid>
             </Grid>
           </Grid>
         </section>
-        <br/>
         <section>
           <Grid container direction="column" alignItems="center">
-            <Grid container item xs={10} lg={4} spacing={sectionSpacing}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Email</Typography>
+            <Grid
+              container
+              item
+              xs={12}
+              sm={8}
+              md={6}
+              lg={4}
+              spacing={sectionSpacing}
+            >
+              <Grid item xs={12} sm={4}>
+                <Typography variant="body1" className="textLeft">
+                  Email
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{formState.email}</Typography>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="body2" className="textRight">
+                  {formState.email}
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Phone number</Typography>
+              <Grid item xs={12} sm={4}>
+                <Typography variant="body1" className="textLeft">
+                  Phone number
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{formatPhone(formState.phoneNumber)}</Typography>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="body2" className="textRight">
+                  {formatPhone(formState.phoneNumber)}
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Website</Typography>
+              <Grid item xs={12} sm={4}>
+                <Typography variant="body1" className="textLeft">
+                  Website
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{formState.website}</Typography>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="body2" className="textRight">
+                  {formState.website}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
         </section>
-        <br/>
         <section>
           <Grid container direction="column" alignItems="center">
-            <Grid container item xs={10} lg={4} spacing={sectionSpacing}>
+            <Grid
+              container
+              item
+              xs={12}
+              sm={8}
+              md={6}
+              lg={4}
+              spacing={sectionSpacing}
+            >
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Address</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Address
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{compileAddress()}</Typography>
+                <Typography variant="body2" className="textRight">
+                  {compileAddress()}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
         </section>
-        <br/>
         <section>
-        <Grid container direction="column" alignItems="center">
-            <Grid container item xs={10} lg={4} spacing={sectionSpacing} >
+          <Grid container direction="column" alignItems="center">
+            <Grid
+              container
+              item
+              xs={12}
+              sm={8}
+              md={6}
+              lg={4}
+              spacing={sectionSpacing}
+            >
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Business category</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Business category
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{formState.category}</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body1">Description</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body2">{formState.description}</Typography>
+                <Typography variant="body2" className="textRight">
+                  {formState.category}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>

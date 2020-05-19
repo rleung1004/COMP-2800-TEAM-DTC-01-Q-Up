@@ -132,19 +132,19 @@ export default function ConsumerNav() {
                   />
                   </Link>
                </ListItem>
-               <ListItem button key={'profile'}>
-                  <Link className={classes.nodecor} to='/consumerProfile'>
-                  <ListItemText
-                     className={classes.white}
-                     primary={'Profile'}
-                  />
-                  </Link>
-               </ListItem>
                <ListItem button key={'SearchQueues'}>
                   <Link className={classes.nodecor} to='/searchQueues'>
                   <ListItemText
                      className={classes.white}
                      primary={'Search queues'}
+                  />
+                  </Link>
+               </ListItem>
+               <ListItem button key={'profile'}>
+                  <Link className={classes.nodecor} to='/consumerProfile'>
+                  <ListItemText
+                     className={classes.white}
+                     primary={'Profile'}
                   />
                   </Link>
                </ListItem>

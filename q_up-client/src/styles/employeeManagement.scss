@@ -1,5 +1,5 @@
 header {
-    border-bottom: thin solid black;
+    border-bottom: none;
 }
 
 li {
@@ -10,4 +10,11 @@ li {
 
 ul {
     padding: 0rem;
+}
+
+.employeePaper{
+    padding: 0.15rem 0rem;
+    &>section:last-child>div{
+        border-bottom: none;
+    }
 }

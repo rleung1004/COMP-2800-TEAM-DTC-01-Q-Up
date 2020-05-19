@@ -126,101 +126,107 @@ export default function TellerPage() {
   return (
     <>
       <Header logout />
-      <section className="top-container">
-        {isActive && (
-          <Grid container alignItems="center" justify="space-around">
-            <Grid item xs={6}>
-              <Typography
-                variant="subtitle1"
-                className={classes.subHeading}
-                align="center"
-              >
-                Current Size
-              </Typography>
+      <main>
+        <section className="top-container">
+          {isActive && (
+            <Grid container alignItems="center" justify="space-around">
+              <Grid item xs={6}>
+                <Typography
+                  variant="subtitle1"
+                  className={classes.subHeading}
+                  align="center"
+                >
+                  Current Size
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography
+                  variant="subtitle1"
+                  className={classes.subHeading}
+                  align="center"
+                >
+                  Queue Duration*
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <Typography
-                variant="subtitle1"
-                className={classes.subHeading}
-                align="center"
-              >
-                Queue Duration*
-              </Typography>
-            </Grid>
-          </Grid>
-        )}
+          )}
 
-        {isActive && (
-          <Grid container alignItems="center" justify="space-around">
-            <Grid item xs={6}>
-              <Typography
-                variant="subtitle1"
-                className={classes.subHeading}
-                align="center"
-              >
-                {queueLength}
-              </Typography>
+          {isActive && (
+            <Grid container alignItems="center" justify="space-around">
+              <Grid item xs={6}>
+                <Typography
+                  variant="subtitle1"
+                  className={classes.subHeading}
+                  align="center"
+                >
+                  {queueLength}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography
+                  variant="subtitle1"
+                  className={classes.subHeading}
+                  align="center"
+                >
+                  {currentWaitTime}
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <Typography
-                variant="subtitle1"
-                className={classes.subHeading}
-                align="center"
-              >
-                {currentWaitTime}
-              </Typography>
-            </Grid>
-          </Grid>
-        )}
+          )}
 
-        {!isActive && (
+          {!isActive && (
+            <Grid container alignItems="center" justify="space-around">
+              <Grid item xs={12}>
+                <Typography
+                  variant="h1"
+                  className={classes.title}
+                  align="center"
+                >
+                  Queue is Not Active
+                </Typography>
+              </Grid>
+            </Grid>
+          )}
+        </section>
+        <section className="center-container">
+          {queueList.map((queueSlot, key) => {
+            return (
+              <QueueSlot
+                key={key}
+                data={queueSlot}
+                isSelected={key === selected.id}
+                selectHandler={selectHandler(key)}
+              />
+            );
+          })}
+        </section>
+        <section className="bottom-container">
           <Grid container alignItems="center" justify="space-around">
-            <Grid item xs={12}>
-              <Typography variant="h1" className={classes.title} align="center">
-                Queue is Not Active
-              </Typography>
+            <Grid item xs={6}>
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handleVIP}
+              >
+                VIP
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                type="button"
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handleCheckIn}
+              >
+                Check in
+              </Button>
             </Grid>
           </Grid>
-        )}
-      </section>
-      <section className="center-container">
-        {queueList.map((queueSlot, key) => {
-          return (
-            <QueueSlot
-              key={key}
-              data={queueSlot}
-              isSelected={key === selected.id}
-              selectHandler={selectHandler(key)}
-            />
-          );
-        })}
-      </section>
-      <section className="bottom-container">
-        <Grid container alignItems="center" justify="space-around">
-          <Grid item xs={6}>
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={handleVIP}
-            >
-              VIP
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              onClick={handleCheckIn}
-            >
-              Check in
-            </Button>
-          </Grid>
-        </Grid>
-      </section>
+        </section>
+      </main>
       <Footer />
     </>
   );
