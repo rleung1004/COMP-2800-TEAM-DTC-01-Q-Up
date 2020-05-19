@@ -68,7 +68,6 @@ export default function QueueListRow(props: any) {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
-  console.log(props.data);
 
   const data = props.data
     ? {
