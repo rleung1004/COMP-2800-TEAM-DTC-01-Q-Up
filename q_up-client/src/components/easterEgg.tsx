@@ -5,10 +5,25 @@ import isMobile from "../utils/mobileDetection";
 /**
  * Deploy a smashing easter egg.
  * 
+ * To insert easter egg in any page copy the folowing code into the parent component:
+ * 
+ * In JS body:
+ * const [showEgg, setShowEgg] = useState({ value: false });
+ *
+ * const exitEgg = () => {
+ *   setShowEgg({ value: false });
+ * };
+ * const startEgg = () => {
+ *   setShowEgg({ value: true });
+ * };
+ * 
+ * In JSX content: 
+ * {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : <> </>}
+ * 
  * @param props must contain a function named exitEgg that accepts no params
  */
 export default function EasterEgg(props: any) {
-  const arr:Array<any> = [];
+  const arr: Array<any> = [];
   const [cracks, setCracks] = useState(arr);
   const [hammer, setHammer] = useState({ img: <></> });
   const clickHandler = (
@@ -63,12 +78,9 @@ export default function EasterEgg(props: any) {
       }
       container.className = "removeCursor";
       always();
-      setTimeout(
-        () =>{
-          container.className = "applyCursor"
-          },
-        700
-        );
+      setTimeout(() => {
+        container.className = "applyCursor";
+      }, 700);
     };
 
     const always = () => {
