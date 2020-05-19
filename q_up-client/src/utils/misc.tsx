@@ -1,3 +1,8 @@
+/**
+ * Evaluate if the current day is weekend
+ * 
+ * @returns a boolean, true if current day is weekend
+ */
 export function isWeekend() {
   const date = new Date();
   const dayOfWeek = date.getDay();
