@@ -197,9 +197,11 @@ export const isEmpty = (string: string) => {
 /**
  * Checks if the string is an email.
  * checks the given parameter against a regex to determine the validity of the email.
+ * The regex's source is: www.pastebin.com
  *
  * @param email     an string
  * @return          Boolean true if the string is an email otherwise false
+ * @see             https://pastebin.com/f33g85pd
  */
 export const isEmail = (email: string) => {
     const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -256,7 +258,8 @@ export const validateSignUpData = (data: signUpData) => {
         data.userType !== "customer" &&
         data.userType !== "manager" &&
         data.userType !== "employee" &&
-        data.userType !== "booth"
+        data.userType !== "booth" &&
+        data.userType !== "display"
     ) {
         Object.assign(errors, {userType: "Invalid user type"});
     }

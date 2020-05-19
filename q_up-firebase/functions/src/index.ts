@@ -13,7 +13,6 @@ import {
     getBusiness,
     registerBusiness,
     deleteBusiness,
-    registerNewBooth
 } from "./controllers/businesses";
 import {FirebaseAuthentication} from "./util/firebaseAuthentication";
 import algoliasearch from "algoliasearch";
@@ -59,7 +58,6 @@ app.post("/uploadBusinessImage", FirebaseAuthentication, uploadBusinessImage);
 app.get("/getBusiness", FirebaseAuthentication, getBusiness);
 app.put("/updateBusiness", FirebaseAuthentication, updateBusiness);
 app.delete('/deleteBusiness', FirebaseAuthentication, deleteBusiness);
-app.post("/registerBooth", FirebaseAuthentication, registerNewBooth);
 
 
 // ========================

@@ -33,7 +33,7 @@ const changeQueueSlotHighestTicketNumber = async (businessName: string, newTicke
 const changeCurrentWaitTimeOfQueue = async (newBusiness: any) => {
     const queue: any = newBusiness.queue;
     const onlineEmployees: number = await getOnlineEmployees(newBusiness.name);
-    const newCurrentWaitTime = (queue.queueSlots.length * queue.averageWaitTime) / onlineEmployees;
+    const newCurrentWaitTime = Math.round((queue.queueSlots.length * queue.averageWaitTime) / onlineEmployees);
     await db
         .collection("businesses")
         .doc(newBusiness.name)
@@ -60,7 +60,7 @@ export const onQueueUpdate = trigger
             const newHighestTickets = getHighestTicketNumbers(newData.queue.queueSlots);
             if (prevCounts !== newCounts) {
                 if (newHighestTickets.highestNonVIPTicketNumber !== prevHighestTickets.highestNonVIPTicketNumber) {
-                    await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestNonVipTicketNumber, false);
+                    await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestVipTicketNumber, false);
                 } else {
                     await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestNonVipTicketNumber, true);
                 }
@@ -69,5 +69,3 @@ export const onQueueUpdate = trigger
         }
         return null;
     });
-
-

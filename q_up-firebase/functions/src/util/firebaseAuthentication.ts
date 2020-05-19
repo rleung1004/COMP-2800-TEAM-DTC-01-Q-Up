@@ -31,7 +31,6 @@ export const FirebaseAuthentication = async (req: Request, res: Response, next: 
                 .where("userId", "==", req.body.decodedToken.uid)
                 .get()
                 .then((data) => {
-                    console.log(data);
                     let userEmail = data.docs[0].data().email;
                     let userType = data.docs[0].data().userType;
                     if (userType === "customer") {

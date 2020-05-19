@@ -5,12 +5,12 @@ import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
 import {imageObject, validateBusinessData} from "../util/helpers";
-import {signUp} from "./users";
+import {internalSingUp} from "./users";
 
 /**
  * Registers a business.
  * first Checks if the accessing user has the authority, then checks the validity of the provided info, then registers
- * the user and creates a queue for it.
+ * the user and creates a queue for it. Registers a default booth and a default display for the business as well.
  *
  * @param req:      express Request Object
  * @param res:      express Response Object
@@ -18,6 +18,8 @@ import {signUp} from "./users";
  *
  *                  - 401 if the user is not of type manager
  *                  - 403 if provided information are not valid
+ *                  - 404 if can not register booth properly
+ *                  - 404 if can not register display properly
  *                  - 409 if the business already exists
  *                  - 500 if an error occurs in the midst of the query
  *                  - 201 if created the business successfully
@@ -25,12 +27,13 @@ import {signUp} from "./users";
  */
 export const registerBusiness = async (req: Request, res: Response) => {
     const noImg = "no-img.png";
-
     const requestData = {
         userEmail: req.body.userEmail,
         userType: req.body.userType,
         businessName: req.body.businessName,
         isUpdating: req.body?.isUpdating,
+        gadgetPassword: req.body.gadgetPassword,
+        gadgetConfirmPassword: req.body.gadgetConfirmPassword,
     };
     const businessInfo = {
         name: requestData.businessName,
@@ -60,6 +63,9 @@ export const registerBusiness = async (req: Request, res: Response) => {
     if (!valid) {
         return res.status(403).json(errors);
     }
+    if (requestData.gadgetPassword !== requestData.gadgetConfirmPassword) {
+        return res.status(403).json({gadgetConfirmPassword: "Passwords must match"});
+    }
     const doesExist = await db
         .collection('businesses')
         .doc(requestData.businessName)
@@ -72,10 +78,24 @@ export const registerBusiness = async (req: Request, res: Response) => {
         .collection('businesses')
         .doc(businessInfo.name)
         .set(businessInfo)
-        .then(() => {
-            db.collection("users").doc(req.body.userEmail).update({businessName: businessInfo.name});
+        .then(async () => {
+            await db
+                .collection("users")
+                .doc(req.body.userEmail)
+                .update({businessName: businessInfo.name})
+                .catch(err => console.error(err));
+            const [registeredBooth] = await Promise.all([registerNewBooth(req)]);
+            console.log(`registeredBooth value is: ${registeredBooth}`);
+            if (!registeredBooth) {
+                return res.status(404).json({general: "did not register the booth properly!"})
+            }
+            Object.assign(req.body, {userType: 'manager'});
+            const [registeredDisplay] = await Promise.all([registerNewDisplay(req)]);
+            console.log(`registeredDisplay value is: ${registeredDisplay}`);
+            if (!registeredDisplay) {
+                return res.status(404).json({general: "did not register the display properly!"})
+            }
             if (requestData.isUpdating) {
-                console.log("we are in the updating function!");
                 return null;
             }
             return res.status(201).json({general: "registered the business successfully"})
@@ -152,7 +172,7 @@ export const updateBusiness = async (req: Request, res: Response) => {
             .update({businessName: businessInfo.name})
             .catch(err => console.error(err));
     }
-    if (oldBusinessInfo.queue.queueSlots.length !==0) {
+    if (oldBusinessInfo.queue.queueSlots.length !== 0) {
         const customers: Array<string> = oldBusinessInfo.queue.queueSlots.map((queueSlot: any) => queueSlot.customer);
         for (const customer of customers) {
             await db.collection('users').doc(customer).update({currentQueue: businessInfo.name});
@@ -173,6 +193,20 @@ export const updateBusiness = async (req: Request, res: Response) => {
         })
         .catch(err => console.error(err));
     await db
+        .collection('users')
+        .where('businessName', '==', requestData.businessName)
+        .where('userType', '==', 'display')
+        .get()
+        .then(dataList => {
+            dataList.forEach(async (data) => {
+                await db
+                    .collection('users')
+                    .doc(data.data().businessName)
+                    .update({businessName: businessInfo.name})
+            })
+        })
+        .catch(err => console.error(err));
+    await db
         .collection('businesses')
         .doc(requestData.businessName)
         .delete()
@@ -182,7 +216,7 @@ export const updateBusiness = async (req: Request, res: Response) => {
         averageWaitTime: oldBusinessInfo.queue.averageWaitTime,
         isUpdating: true,
     });
-   await registerBusiness(req, res);
+    await registerBusiness(req, res);
     return await db
         .collection('businesses')
         .doc(businessInfo.name)
@@ -378,6 +412,32 @@ const deleteBoothFromBusiness = async (boothEmail: string) => {
         .catch(err => console.error(err))
 };
 
+
+/**
+ * Deletes the display for the specific business.
+ * first gets the display user id, then deletes it from the database and authentication.
+ *
+ * @param displayEmail    a string
+ */
+const deleteDisplayFromBusiness = async (displayEmail: string) => {
+    const boothUID: string = await db
+        .collection("users")
+        .where("userType", "==", "display")
+        .where("email", "==", displayEmail)
+        .get()
+        .then((data) => data.docs[0].data().userId)
+        .catch((err) => {
+            console.error(err);
+            return null;
+        });
+    await db
+        .collection('users')
+        .doc(displayEmail)
+        .delete()
+        .then(async () => await admin.auth().deleteUser(boothUID))
+        .catch(err => console.error(err))
+};
+
 /**
  * Deletes a business.
  * first, checks if the user uploading an image is a manager, then deletes the business and the queue, then deletes the
@@ -436,6 +496,19 @@ export const deleteBusiness = async (req: Request, res: Response) => {
             }
         })
         .catch(err => console.error(err));
+    await db
+        .collection('users')
+        .where('userType', '==', 'display')
+        .where('businessName', '==', requestData.businessName)
+        .get()
+        .then((dataList) => {
+            if (!dataList.empty) {
+                dataList.forEach((data => {
+                    deleteDisplayFromBusiness(data.data().email);
+                }))
+            }
+        })
+        .catch(err => console.error(err));
     return await db
         .collection('businesses')
         .doc(requestData.businessName)
@@ -468,25 +541,47 @@ export const deleteBusiness = async (req: Request, res: Response) => {
  * first Checks if the accessing user has the authority, then signs up a booth
  *
  * @param req:      express Request Object
- * @param res:      express Response Object
- * @returns         Response the response data with the status code:
- *
- *                  - 401 if the user is not of type manager
- *                  - the return status of signUp function
+ * @returns         Boolean true if registered successfully, otherwise false
  */
-export const registerNewBooth = async (req: Request, res: Response) => {
+const registerNewBooth = async (req: Request) => {
     const requestData = {
-        boothEmail: req.body.boothEmail,
+        businessName: req.body.businessName,
         userType: req.body.userType,
-        password: req.body.password,
+        password: req.body.gadgetPassword,
     };
     if (requestData.userType !== "manager") {
-        res.status(401).json({general: "unauthorized. Login as a manager of the business!"});
+        return false;
     }
     Object.assign(req.body, {
         userType: "booth",
+        password: requestData.password,
         confirmPassword: requestData.password,
-        email: requestData.boothEmail,
+        email: `defaultBooth@${requestData.businessName}.qup`,
     });
-    return await signUp(req, res);
+    return await internalSingUp(req);
+};
+
+/**
+ * Creates a new account for the display.
+ * first Checks if the accessing user has the authority, then signs up a booth
+ *
+ * @param req:      express Request Object
+ * @returns         Boolean true if registered successfully, otherwise false
+ */
+const registerNewDisplay = async (req: Request) => {
+    const requestData = {
+        businessName: req.body.businessName,
+        userType: req.body.userType,
+        password: req.body.gadgetPassword,
+    };
+    if (requestData.userType !== "manager") {
+        return false;
+    }
+    Object.assign(req.body, {
+        userType: "display",
+        password: requestData.password,
+        confirmPassword: requestData.password,
+        email: `defaultDisplay@${requestData.businessName}.qup`,
+    });
+    return await internalSingUp(req);
 };

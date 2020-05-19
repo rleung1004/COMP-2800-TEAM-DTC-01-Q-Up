@@ -251,7 +251,7 @@ export const deleteCustomer = async (req: Request, res: Response) => {
                         let queueSlots: Array<any> = queue.queueSlots;
                         queueSlots = queueSlots.filter(queueSlot => queueSlot.customer !== requestData.userEmail);
                         queue.queueSlots = queueSlots;
-                        db.collection('queues').doc(currentQueue).update({queue: queue});
+                        db.collection('businesses').doc(currentQueue).update({queue: queue});
                     })
             }
             await admin.auth().deleteUser(userUID);
