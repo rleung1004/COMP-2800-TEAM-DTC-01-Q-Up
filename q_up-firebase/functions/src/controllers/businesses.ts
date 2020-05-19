@@ -125,7 +125,6 @@ export const registerBusiness = async (req: Request, res: Response) => {
  *                  - 500 if an error occurs in the midst of the query
  *                  - 202 if updated the business successfully
  */
-//TODO: need to update the booth and display of the business too
 export const updateBusiness = async (req: Request, res: Response) => {
     const requestData = {
         userEmail: req.body.userEmail,

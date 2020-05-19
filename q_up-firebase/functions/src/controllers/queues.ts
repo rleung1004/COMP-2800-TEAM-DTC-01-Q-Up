@@ -352,7 +352,6 @@ export const checkInQueue = async (req: Request, res: Response) => {
     if (customerLookUp === null) {
         return res.status(404).json({general: "Did not find the customer to checkIn!"});
     }
-    // TODO: Insert the log here for checking in
     return await db
         .collection("users")
         .doc(customerLookUp.customer)
