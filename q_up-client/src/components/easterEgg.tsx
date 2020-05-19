@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import "../styles/easterEgg.scss";
 import isMobile from "../utils/mobileDetection";
 
+/**
+ * Deploy a smashing easter egg.
+ * 
+ * @param props must contain a function named exitEgg that accepts no params
+ */
 export default function EasterEgg(props: any) {
   const arr:Array<any> = [];
   const [cracks, setCracks] = useState(arr);
