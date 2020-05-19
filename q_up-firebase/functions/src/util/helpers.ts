@@ -3,7 +3,7 @@ import * as moment from "moment-timezone";
 /**
  * Represents all the possible values for the queue slot passwords.
  */
-const cities: Array<string> = [
+export const cities: Array<string> = [
     "moscow",
     "HonKong",
     "Singapore",
@@ -212,24 +212,36 @@ export const isEmail = (email: string) => {
  * Checks if the string is a postal code.
  * checks the given parameter against a regex to determine the validity of the postal code.
  *
- * @param string     an string
- * @return          Boolean true if the string is a postal code otherwise false
+ * @param postalCode        an string
+ * @return                  Boolean true if the string is a postal code otherwise false
  */
-const isPostalCode = (string: string) => {
+export const isPostalCode = (postalCode: string) => {
     const regEx = /^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$/;
-    return !!string.match(regEx);
+    return !!postalCode.match(regEx);
 };
 
 /**
- * Checks if the string is a phone number.
+ * Checks if the phoneNumber is a phone number.
  * checks the given parameter against a regex to determine the validity of the a phone number.
  *
- * @param string     an string
- * @return          Boolean true if the string is a phone number otherwise false
+ * @param phoneNumber       a string
+ * @return                  Boolean true if the phoneNumber is a phone number otherwise false
  */
-const isPhoneNumber = (string: string) => {
+export const isPhoneNumber = (phoneNumber: string) => {
     const regEx = /^\d{10}$/;
-    return !!string.match(regEx);
+    return !!phoneNumber.match(regEx);
+};
+
+/**
+ * Checks if the password is a strong password.
+ * checks the given parameter against a regex to determine the validity of the a phone number.
+ *
+ * @param password          a string
+ * @return                  Boolean true if the phoneNumber is a phone number otherwise false
+ */
+export const isStrongPassword = (password: string) => {
+    const regEx = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
+    return !!password.match(regEx);
 };
 
 /**
@@ -247,6 +259,9 @@ export const validateSignUpData = (data: signUpData) => {
     }
     if (isEmpty(data.password)) {
         Object.assign(errors, {password: "Must not be empty"});
+    }
+    else if (!isStrongPassword(data.password)) {
+        Object.assign(errors, {password: "must include 1 uppercase, 1 lowercase or 1 number, and be 6 characters"})
     }
     if (data.password !== data.confirmPassword) {
         Object.assign(errors, {confirmPassword: "Passwords must match"});
@@ -355,8 +370,8 @@ export const validateBusinessData = (data: businessData) => {
 /**
  * Creates a VIP queue slot with a unique vip identifier.
  *
- * @return          Object with three fields of customer of type string, ticketNumber of type number, and password
- *                  of type string.
+ * @return Object        with three fields of customer of type string, ticketNumber of type number, and password
+ *                       of type string.
  */
 export const createVIPSlot = (lastTicketNumber : number) => {
     return {
@@ -372,7 +387,7 @@ export const createVIPSlot = (lastTicketNumber : number) => {
  *
  * @param customerIdentifier    a string
  * @param lastTicketNumber      a number
- * @returns                     Object with three fields of customer of type string, ticketNumber of type number, and
+ * @returns Object              with three fields of customer of type string, ticketNumber of type number, and
  *                              password of type string.
  */
 export const createQueueSlot = (customerIdentifier: string, lastTicketNumber: number) => {
@@ -390,18 +405,18 @@ export const createQueueSlot = (customerIdentifier: string, lastTicketNumber: nu
 /**
  * Gets the day of the week for today.
  *
- * @return      Number between 0 to 6 for sunday to saturday respectively.
+ * @return Number       between 0 to 6 for sunday to saturday respectively.
  */
 export const getTheDayOfTheWeekForArray = () => {
     let time = new Date().toUTCString();
-    let localDay = moment(time).tz("America/Los_Angeles").day();
-    return localDay;
+    return moment(time).tz("America/Los_Angeles").day();
 };
 
 /**
  * Gets the vip and nonVip Counts for the queue.
  *
- * @param queueSlots    an Object.
+ * @param queueSlots    an Object that represents the queueSlots array.
+ * @return Object       an Object containing the vipCounts and nonVipCounts
  */
 export const getCounts = (queueSlots: any) => {
     let VIPCounts = 0;
@@ -423,6 +438,7 @@ export const getCounts = (queueSlots: any) => {
  * Gets the highest ticket numbers for VIP and nonVIP customers in a queue.
  *
  * @param queueSlots    an Object
+ * @return Object       an Object containing the highestVIPTicketNumber and highestNonVIPTicketNumber
  */
 export const getHighestTicketNumbers = (queueSlots: any) => {
     let highestVIPTicketNumber = 0;

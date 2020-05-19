@@ -426,7 +426,6 @@ export const getQueue = async (req: Request, res: Response) => {
             return res.status(200).json({
                 general: "obtained the queue information successfully!",
                 businessName : requestData.businessName,
-                businessName: requestData.businessName,
                 onlineEmployees,
                 queue: {
                     queueList: queue.queueSlots,
