@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import Footer from "../components/static/Footer";
-import Header from "../components/static/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import ConsumerNav from "../components/consumerNav";
 import { Button, Grid, Typography } from "@material-ui/core";

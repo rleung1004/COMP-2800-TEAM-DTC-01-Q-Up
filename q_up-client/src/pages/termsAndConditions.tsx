@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Header from "../components/static/Header";
-import Footer from "../components/static/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import "../styles/termsAndPrivacy.scss";
 import StaticNav from "src/components/staticNav";
 import EasterEgg from "src/components/easterEgg";

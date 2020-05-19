@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ChangeEvent } from "react";
 // import { Link } from 'react-router-dom';
-import Footer from "../components/static/Footer";
-import Header from "../components/static/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import BusinessNav from "../components/businessNav";
 import {
   Typography,

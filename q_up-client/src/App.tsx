@@ -8,7 +8,7 @@ import SignupPage from "./pages/signup";
 import aboutUsPage from "./pages/aboutUs";
 import themes from "./mui-theming/themes";
 import termsPage from "./pages/termsAndConditions";
-import privacyPage from "./pages/privaryPolicy";
+import privacyPage from "./pages/privacyPolicy";
 import { ThemeProvider } from "@material-ui/core";
 import ConsumerRegistrationPage from "./pages/consumerRegistration";
 import BusinessRegistrationPage from "./pages/businessRegistration";

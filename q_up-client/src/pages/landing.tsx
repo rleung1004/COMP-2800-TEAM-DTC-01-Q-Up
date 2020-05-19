@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Header from "../components/static/Header";
-import Footer from "../components/static/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import "../styles/landing.scss";
 import { Grid } from "@material-ui/core";
 import Button from "@material-ui/core/Button";

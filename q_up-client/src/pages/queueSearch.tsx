@@ -6,8 +6,8 @@ import {
   InfiniteHits,
   SearchBox,
 } from "react-instantsearch-dom";
-import Footer from "../components/static/Footer";
-import Header from "../components/static/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import ConsumerNav from "../components/consumerNav";
 import QueueListRow from "src/components/queueListRow";
 import "../styles/queueSearch.scss";

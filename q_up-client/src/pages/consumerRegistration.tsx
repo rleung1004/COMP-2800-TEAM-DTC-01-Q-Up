@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import Footer from '../components/static/Footer';
-import Header from '../components/static/Header';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import axios from 'axios';

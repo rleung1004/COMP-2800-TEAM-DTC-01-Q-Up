@@ -1,6 +1,6 @@
 import * as React from "react";
-import Header from "src/components/static/Header";
-import Footer from "src/components/static/Footer";
+import Header from "src/components/Header";
+import Footer from "src/components/Footer";
 import StaticNav from "src/components/staticNav";
 import { Typography } from "@material-ui/core";
 

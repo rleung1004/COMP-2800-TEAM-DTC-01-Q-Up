@@ -1,6 +1,6 @@
 import React from 'react';
-import Footer from 'src/components/static/Footer';
-import Header from 'src/components/static/Header';
+import Footer from 'src/components/Footer';
+import Header from 'src/components/Header';
 import '../styles/aboutUs.scss';
 import { Grid } from '@material-ui/core';
 import us from '../img/us.png';
