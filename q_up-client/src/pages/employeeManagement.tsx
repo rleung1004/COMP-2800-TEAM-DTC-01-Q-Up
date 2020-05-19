@@ -28,32 +28,18 @@ const useStyles = makeStyles(() => ({
   },
 }));
 export default function EmployeeManagementPage() {
-  interface passwordErrors {
-    newEmail?: string;
-    newPassword?: string;
-    newPasswordConfirm?: string;
-  }
-
   interface addErrors {
     email?: string;
     password?: string;
   }
 
   const addErrorObj: addErrors = {};
-  const passErrorObj: passwordErrors = {};
   const classes = useStyles();
   const array: Array<any> = [];
   const [employeeList, setEmployeeList] = useState(array);
   const [selected, setSelected] = useState({ id: -1 });
   const [getData, setGetData] = useState(true);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [passDialogOpen, setPassDialogOpen] = useState(false);
-  const [passwordForm, setPasswordForm] = useState({
-    newEmail: "",
-    newPassword: "",
-    newPasswordConfirm: "",
-    errors: passErrorObj,
-  });
   const [addForm, setAddForm] = useState({
     email: "",
     password: "",
@@ -68,61 +54,6 @@ export default function EmployeeManagementPage() {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
-  };
-
-  const editClick = () => {
-    const index = selected.id;
-    if (index === -1) {
-      window.alert("Select an employee first.");
-      return;
-    }
-    setPassDialogOpen(true);
-  };
-
-  const handlePassChangeCancel = () => {
-    setPassDialogOpen(false);
-  };
-
-  const handlePassFormChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setPasswordForm((prevState: any) => ({ ...prevState, [name]: value }));
-  };
-
-  const handlePasswordSubmit = () => {
-    const index = selected.id;
-    if (index === -1 || index > employeeList.length) {
-      window.alert("Form error. Please start again");
-      setPassDialogOpen(false);
-      setPasswordForm({
-        newEmail: "",
-        newPassword: "",
-        newPasswordConfirm: "",
-        errors: passErrorObj,
-      });
-      return;
-    }
-    if (!confirm()) {
-      return;
-    }
-    const packet = {
-      employeeEmail: employeeList[index].email,
-      employeeNewEmail: "",
-      password: passwordForm.newPassword,
-      confirmPassword: passwordForm.newPasswordConfirm,
-    };
-    axios
-      .put("/updateEmployee", packet, axiosConfig)
-      .then((res) => {
-        console.log(res.data);
-
-        window.alert("Password successfully changed");
-        setPassDialogOpen(false);
-      })
-      .catch((err: any) => {
-        window.alert("Connection error");
-        console.log(err);
-      });
   };
 
   const handleAddCancel = () => {
@@ -242,7 +173,7 @@ export default function EmployeeManagementPage() {
           <Grid item xs={12} md={8} lg={6}>
             <section>
               <Grid container>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <Button
                     color="primary"
                     variant="contained"
@@ -252,17 +183,7 @@ export default function EmployeeManagementPage() {
                     Add new
                   </Button>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    className={classes.button}
-                    onClick={editClick}
-                  >
-                    Change password
-                  </Button>
-                </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={6}>
                   <Button
                     color="primary"
                     variant="contained"
@@ -295,61 +216,6 @@ export default function EmployeeManagementPage() {
           </Grid>
         </section>
       </main>
-      <Dialog
-        open={passDialogOpen}
-        onClose={handlePassChangeCancel}
-        PaperProps={{ style: { backgroundColor: "#242323" } }}
-      >
-        <DialogTitle>Edit employee</DialogTitle>
-        <DialogContent>
-          <Grid container direction="column">
-            <Typography variant="caption">
-              To not modify the email, leave new email empty
-            </Typography>
-            <TextField
-              color="secondary"
-              id="newEmail"
-              label="New email"
-              name="newEmail"
-              onChange={handlePassFormChange}
-              value={passwordForm.newEmail}
-              className={classes.textField}
-              helperText={passwordForm.errors.newEmail}
-              error={passwordForm.errors.newEmail ? true : false}
-            />
-            <TextField
-              type="password"
-              color="secondary"
-              id="newPassConfirm"
-              label="Cornfirm password"
-              name="newPasswordConfirm"
-              onChange={handlePassFormChange}
-              value={passwordForm.newPasswordConfirm}
-              className={classes.textField}
-              helperText={passwordForm.errors.newPasswordConfirm}
-              error={passwordForm.errors.newPasswordConfirm ? true : false}
-            />
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={handlePassChangeCancel}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            onClick={handlePasswordSubmit}
-          >
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog
         open={addDialogOpen}
