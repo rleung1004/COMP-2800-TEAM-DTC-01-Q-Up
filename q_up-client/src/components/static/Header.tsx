@@ -1,6 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import "../../styles/staticHeader.scss";
+import axios from "axios";
 import { IconButton, makeStyles } from "@material-ui/core";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 
@@ -12,7 +13,22 @@ const useStyles = makeStyles(() => ({
 
 export default function Header(props: any) {
   const classes = useStyles();
+  
   const onLogoutHandler = () => {
+    const userType = JSON.parse(sessionStorage.user).type;
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+      },
+    };
+    if (userType === "employee") {
+      axios.get("/logout", axiosConfig)
+      .catch((err) => {
+        console.error(err);
+        window.alert("Connection error, please try again");
+        return;
+      })
+    }
     sessionStorage.removeItem("user");
     window.location.href = "/";
   };
