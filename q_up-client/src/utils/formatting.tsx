@@ -45,3 +45,10 @@ export function formatGoogleMapURL(formattedAddress:string) {
     }
     return newString;
   };
+
+  // Format time string in order to appropriately 
+export function formatTimeInto12h(time24h: string) {
+    const [hours, mins] = time24h.split(":");
+    const intHours = parseInt(hours);
+    return (intHours % 12 || 12) + ":" + mins + (intHours >= 12 ? "PM" : "AM");
+  }
