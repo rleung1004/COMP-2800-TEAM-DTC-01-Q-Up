@@ -3,7 +3,6 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
-// material-ui components
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Radio from "@material-ui/core/Radio";
