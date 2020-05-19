@@ -44,6 +44,86 @@ The following table lists the members of Team-KART.
 
 ## Installation
 
+In this section, you will find instructions to how install all the dependencies of our project, and start running the 
+development version on your local machine.
+
+### Cloning Q-UP's repository using command line
+
+1. On GitHub, navigate to the main page of the repository.
+    
+2. Under the repository name, click Clone or download.
+
+3. To clone the repository using HTTPS, under "Clone with HTTPS",copy the provided link.
+  
+    Note: For conscience, here's link to clone the project 
+    ```html
+    https://github.com/rleung1004/COMP_2800_Feature_Branch_Workflow.git
+    ```
+4. Open Terminal.
+
+5. Change the current working directory to the location where you want the cloned directory.
+
+6. Type ``` git clone ```, and then paste the URL you copied earlier.
+    ```html
+    $ git clone https://github.com/rleung1004/COMP_2800_Feature_Branch_Workflow.git
+    ```
+7. Press Enter to create your local clone.
+    ```html
+    $ git clone https://github.com/rleung1004/COMP_2800_Feature_Branch_Workflow.git
+    > Cloning into `the-best-project`...
+    > remote: Counting objects: 10, done.
+    > remote: Compressing objects: 100% (8/8), done.
+    > remove: Total 10 (delta 1), reused 10 (delta 1)
+    > Unpacking objects: 100% (10/10), done.
+    ```
+### Installing project dependencies using command line
+
+Note: In order to run our application locally on your machine, you need to have ```node.js``` and ```npm``` installed.
+please refer <a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm">Node and NPM installation 
+tutorial</a> to install them on your local machine.
+
+1. open Terminal.
+
+2. Change the current working directory to the location where you want previously cloned our repository.
+
+    Note: The name of the root directory is ```COMP-2800-TEAM-DTC-01-Q-Up```.
+
+3. navigate to```functions``` folder inside ```q-up_firebase```.
+    
+    ```html
+    $ cd q-up_firebase/functions/
+    ```
+
+4. Run ```npm install``` in the ```functions``` folder.
+
+    ```html
+    $ npm install
+    audited 435 packages in 1.562s
+      
+    35 packages are looking for funding
+     run `npm fund` for details
+   
+    found 0 vulnerabilities
+    ```
+5. Navigate back to the root directory.
+    
+    ```html
+    $ cd ../..
+    ```
+6. navigate to ```q-up_client``` folder.
+    
+    ```html
+    $ cd q-up_client/
+    ```
+
+1. Open the cloned project on any IDE of your choice.
+
+    Note: our team used <a href="how to install webstorm themes">WebStorm</a> and 
+    <a href="https://code.visualstudio.com/docs/setup/setup-overview">Visual Studio Code</a>. Please refer to these 
+    links if you want an installation tutorial for those IDEs
+
+2.
+
 To run this application, first run \$npm install in the q_up-client directory, and open index.ts.
 
 ## Technologies
