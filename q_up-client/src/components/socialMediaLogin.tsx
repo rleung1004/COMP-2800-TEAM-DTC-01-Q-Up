@@ -42,6 +42,21 @@ export default function FirebaseLogin() {
       return;
     }
 
+    if (!userData.email) {
+      await firebase
+        .auth()
+        .currentUser?.delete()
+        .then(() => {
+          window.alert(
+            "You must have an email associated on your Twitter account, use another login method or add an email to your Twitter."
+          );
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      return;
+    }
+
     sessionStorage.setItem(
       "user",
       JSON.stringify({
@@ -59,11 +74,15 @@ export default function FirebaseLogin() {
         .then(() => {
           window.location.href = "/consumerRegistration";
         })
-        .catch((err) => {
+        .catch(async (err) => {
           if (err.response.status === 409) {
-            window.alert(
-              "This account already exists! Please login with the right method."
-            );
+            await firebase.auth().currentUser?.delete()
+            .then(() => {
+              window.alert("This account already exists! Please login with the right method.");
+            })
+            .catch((err) => {
+              console.error(err);
+            });
           } else {
             console.error(err);
             window.alert(
@@ -85,6 +104,11 @@ export default function FirebaseLogin() {
   const signInWithFacebook = () => {
     let provider = new firebase.auth.FacebookAuthProvider();
     provider.addScope("email");
+    oAuthSignup(provider);
+  };
+
+  const signInWithTwitter = () => {
+    let provider = new firebase.auth.TwitterAuthProvider();
     oAuthSignup(provider);
   };
 
@@ -111,6 +135,14 @@ export default function FirebaseLogin() {
           onClick={signInWithFacebook}
         >
           Login with Facebook
+        </Button>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={signInWithTwitter}
+        >
+          Login with Twitter
         </Button>
         <Button
           type="submit"
