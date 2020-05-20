@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField, Button, Box } from '@material-ui/core';
 
-export default function boothEnterName() {
+export default function boothEnterName(props: any) {
    return (
       <>
          <Box mt={20}>
@@ -14,7 +14,7 @@ export default function boothEnterName() {
          </Box>
          <br />
          <Box mb={20}>
-            <Button>Queue Up</Button>
+            <Button onlcick={props.enterQueue}>Queue Up</Button>
          </Box>
       </>
    );
