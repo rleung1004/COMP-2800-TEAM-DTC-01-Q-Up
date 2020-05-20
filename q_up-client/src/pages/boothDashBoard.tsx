@@ -21,7 +21,11 @@ export default function BoothDashBoard() {
       <>
          <Header />
          <main>
-            <section>
+            {/* <Grid container direction="center>
+                  <Grid container item xs={12} sm={} md={} lg={}>
+                     <Paper className=" yourElementPaper">
+                        <Grid item xs={12} sm={} md={} lg={}> */}
+            <Grid>
                {state.standBy ? (
                   <BoothEnterName enterQueue={onChangeDisplay} />
                ) : (
@@ -31,7 +35,7 @@ export default function BoothDashBoard() {
                      password={state.password}
                   />
                )}
-            </section>
+            </Grid>
             <Grid container spacing={8} justify='center'>
                <Grid item xs={3}>
                   <Typography>Feature</Typography>
@@ -61,6 +65,10 @@ export default function BoothDashBoard() {
                   </Typography>
                </Grid>
             </Grid>
+            {/* </Grid>
+                  </Paper>
+               </Grid>
+            </Grid> */}
          </main>
          <Footer />
       </>
