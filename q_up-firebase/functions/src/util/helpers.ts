@@ -375,6 +375,7 @@ export const validateBusinessData = (data: businessData) => {
  */
 export const createVIPSlot = (lastTicketNumber : number) => {
     return {
+        receivedEmail: false,
         customer: `VIP-${lastTicketNumber + 1}`,
         customerType: "VIP",
         ticketNumber: lastTicketNumber + 1,
@@ -395,6 +396,7 @@ export const createQueueSlot = (customerIdentifier: string, lastTicketNumber: nu
         lastTicketNumber += 100;
     }
     return {
+        receivedEmail: false,
         customer: customerIdentifier,
         customerType: "nonVIP",
         ticketNumber: lastTicketNumber + 1,

@@ -393,7 +393,10 @@ export const getQueue = async (req: Request, res: Response) => {
         userType: req.body.userType,
         businessName: req.body.businessName,
     };
-    if (!(requestData.userType === "employee" || requestData.userType === "manager")) {
+    if (!(requestData.userType === "employee"
+        || requestData.userType === "manager"
+        || requestData.userType === "booth"
+        || requestData.userType === "display")) {
         return res.status(401).json({ general: "unauthorized. Login as an employee or manager of the business!" });
     }
     if (requestData.userType === 'employee') {
