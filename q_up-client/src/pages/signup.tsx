@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { Link, useHistory } from "react-router-dom";
+import "../styles/signupPage.scss";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -13,7 +14,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { makeStyles } from "@material-ui/core/styles";
-import FirebaseLogin from "../components/socialMediaLogin";
+import FirebaseSignup from "../components/socialMediaSignup";
 
 // Mui styling
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Render a signup page.
- * 
+ *
  * Accessible to: All users
  */
 export default function SignupPage() {
@@ -65,7 +66,7 @@ export default function SignupPage() {
 
   /**
    * sync input data with form data
-   * 
+   *
    * Each input is assigned a name analog to the form data it represents.
    * On change the proper property in form data is access by using the name of the event emitter.
    * @param event an event with target
@@ -217,11 +218,12 @@ export default function SignupPage() {
             </Grid>
           </form>
           {formState.userType === "customer" && (
-            <Grid container direction="column" justify="center">
-              <Typography variant="body1">Or</Typography>
-              <FirebaseLogin />
-            </Grid>
+            <Typography variant="body1">Or</Typography>
           )}
+          {formState.userType === "customer" && (
+            <FirebaseSignup />
+          )}
+          
           <Button
             type="button"
             variant="contained"
