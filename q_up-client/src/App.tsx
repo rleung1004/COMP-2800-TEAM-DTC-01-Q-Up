@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.scss";
 import axios from "axios";
+import firebase from "firebase";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import LandingPage from "./pages/landing";
 import LoginPage from "./pages/login";
@@ -21,10 +22,16 @@ import BusinessEditProfilePage from "./pages/businessEditProfile";
 import EmployeeManagementPage from "./pages/employeeManagement";
 import QueueSearchPage from "./pages/queueSearch";
 import TellerPage from "./pages/teller";
+import Booth from './pages/booth';
 import ContactUsPage from "./pages/contactUs";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
+
+  firebase.initializeApp({
+    apiKey: "AIzaSyCd2O4kN23xnVMtzVKm_fzt4iBQ7VH7T_8",
+    authDomain: "q-up-c2b70.firebaseapp.com",
+  });
 
 function App() {
   const theme = themes();
@@ -50,6 +57,7 @@ function App() {
             <Route path="/searchQueues" component={QueueSearchPage} exact />
             <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
             <Route path="/teller" component={TellerPage} exact />
+            <Route path="/boothDashBoard" component={Booth} exact />
             <Route path="/contactUs" component={ContactUsPage} exact/>
           </Switch>
         </ThemeProvider>

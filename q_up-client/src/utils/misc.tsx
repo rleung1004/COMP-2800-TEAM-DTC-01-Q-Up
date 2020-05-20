@@ -12,6 +12,38 @@ export function isWeekend() {
   return false;
 }
 
+/**
+ * Helper function to evaluate opening time to display in relation to the day of the week
+ * @param hours an object such as:
+ * {
+ * startTime: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"],
+ * endTIme: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"]
+ * }
+ * where time is in 24h format
+ */
+export function evaluateOpenTime(hours: any) {
+  if (isWeekend()) {
+    return hours.startTime[0];
+  }
+  return hours.startTime[1];
+}
+
+/**
+ * Helper function to evaluate closing time to display in relation to the day of the week
+ * @param hours an object such as:
+ * {
+ * startTime: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"],
+ * endTIme: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"]
+ * }
+ * where time is in 24h format
+ */
+export function evaluateCloseTime(hours: any) {
+  if (isWeekend()) {
+    return hours.endTime[0];
+  }
+  return hours.endTime[1];
+}
+
 
 /**
  * Detect if the app is being run in mobile or web.

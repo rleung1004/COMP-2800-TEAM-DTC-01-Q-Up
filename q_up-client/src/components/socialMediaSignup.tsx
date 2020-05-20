@@ -1,7 +1,7 @@
 import React from "react";
 import firebase from "firebase";
 import axios from "axios";
-import "../styles/loginPage.scss";
+import "../styles/signupPage.scss";
 import {
   GoogleLoginButton,
   FacebookLoginButton,
@@ -10,7 +10,7 @@ import {
 } from "react-social-login-buttons";
 import { Grid } from "@material-ui/core";
 
-export default function FirebaseLogin() {
+export default function FirebaseSignup() {
   const oAuthSignup = async (provider: firebase.auth.AuthProvider) => {
     let token: string = "";
     let userData: any;
@@ -91,12 +91,9 @@ export default function FirebaseLogin() {
               });
           } else {
             console.error(err);
-            if (err.response.status === 332) {
-              window.alert("Please login again to continue, your token expired");
-              window.location.href = '/login';
-              return;
-            }
-            window.alert("Something went wrong with sign up, please try again.");
+            window.alert(
+              "Something went wrong with sign up, please try again."
+            );
           }
         });
     } else {
@@ -129,27 +126,28 @@ export default function FirebaseLogin() {
   return (
     <>
       <div className="social-btn">
-        <Grid container direction="column">
-          <Grid item xs={12}>
-            <GoogleLoginButton onClick={signInWithGoogle}>
-              Sign in with Google
-            </GoogleLoginButton>
-          </Grid>
-          <Grid item xs={12}>
-            <FacebookLoginButton onClick={signInWithFacebook}>
-              Sign in with Facebook
-            </FacebookLoginButton>
-          </Grid>
-          <Grid item xs={12}>
-            <TwitterLoginButton onClick={signInWithTwitter}>
-              Sign in with Twitter
-            </TwitterLoginButton>
-          </Grid>
-          <Grid item xs={12}>
-            <GithubLoginButton onClick={signInWithGithub}>
-              Sign in with Github
-            </GithubLoginButton>
-          </Grid>
+        <Grid container direction="column" justify="center">
+          <GoogleLoginButton onClick={signInWithGoogle}>
+            Sign up with Google
+          </GoogleLoginButton>
+
+          <FacebookLoginButton
+            className="social-btn"
+            onClick={signInWithFacebook}
+          >
+            Sign up with Facebook
+          </FacebookLoginButton>
+
+          <TwitterLoginButton
+            className="social-btn"
+            onClick={signInWithTwitter}
+          >
+            Sign up with Twitter
+          </TwitterLoginButton>
+
+          <GithubLoginButton onClick={signInWithGithub}>
+            Sign up with Github
+          </GithubLoginButton>
         </Grid>
       </div>
     </>
