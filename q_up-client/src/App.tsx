@@ -22,6 +22,7 @@ import BusinessEditProfilePage from "./pages/businessEditProfile";
 import EmployeeManagementPage from "./pages/employeeManagement";
 import QueueSearchPage from "./pages/queueSearch";
 import TellerPage from "./pages/teller";
+import Booth from './pages/booth';
 import ContactUsPage from "./pages/contactUs";
 
 axios.defaults.baseURL =
@@ -56,6 +57,7 @@ function App() {
             <Route path="/searchQueues" component={QueueSearchPage} exact />
             <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
             <Route path="/teller" component={TellerPage} exact />
+            <Route path="/boothDashBoard" component={Booth} exact />
             <Route path="/contactUs" component={ContactUsPage} exact/>
           </Switch>
         </ThemeProvider>
