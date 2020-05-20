@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
  * Route the customers to the appropriate view according to their type.
  * @param res a server response
  */
-export default function routeUsers(res:any) {
+export default function RouteUsers(res:any) {
     const history = useHistory();
     switch (res.data.userType) {
         case 'manager':
