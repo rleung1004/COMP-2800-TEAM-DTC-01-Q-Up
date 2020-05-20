@@ -11,6 +11,8 @@ import {
    TextField,
    Button,
 } from '@material-ui/core';
+
+// Mui stylings
 const useStyles = makeStyles((theme) => ({
    root: {
       '& .MuiTextField-root': {
@@ -36,12 +38,18 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function ConsumerEditProfilePage() {
    const classes = useStyles();
+
+   // error type definition to be used in input feedback
    interface errors {
       phoneNumber?: string;
       postalCode?: string;
    }
    const errorObject: errors = {};
+
+   //fetch flag
    const [getData, setGetData] = useState(true);
+   
+   // form data
    const [formState, setFormState] = useState({
       phoneNumber: '',
       postalCode: '',
@@ -53,17 +61,28 @@ export default function ConsumerEditProfilePage() {
          Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
       },
    };
+
+   /**
+   * sync input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
    const handleOnFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
       const name = event.target.name;
       const value = event.target.value;
       setFormState((prevState) => ({ ...prevState, [name]: value }));
    };
-   const handleSkipOnClick = () => {
-      const skip = window.confirm('Are you sure?');
-      if (skip) {
+
+   // handle skip button click
+   const handleCancelOnClick = () => {
+      if (window.confirm('Are you sure?')) {
          window.location.href = '/consumerProfile';
       }
    };
+
+   // handle sumbit click
    const handleSubmit = (event: FormEvent) => {
       if (!window.confirm("Are you sure? Can't be undone.")) {
          return;
@@ -91,6 +110,7 @@ export default function ConsumerEditProfilePage() {
          });
    };
 
+   // fetch data to prepopulate form
    useEffect(() => {
       if (!getData) {
          return;
@@ -172,7 +192,7 @@ export default function ConsumerEditProfilePage() {
                      </Button>
                   </Grid>
                </form>
-               <Button variant='contained' onClick={handleSkipOnClick}>
+               <Button variant='contained' onClick={handleCancelOnClick}>
                   Cancel
                </Button>
             </Grid>

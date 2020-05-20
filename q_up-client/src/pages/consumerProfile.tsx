@@ -18,6 +18,8 @@ import axios from "axios";
 import { formatPhone } from "../utils/formatting";
 import '../styles/consumerProfile.scss';
 
+
+// Mui stylings
 const useStyles = makeStyles(() => ({
   button: {
     margin: "20px auto 20px auto",
@@ -33,6 +35,7 @@ const useStyles = makeStyles(() => ({
  * Accessible to: customers
  */
 export default function ConsumerProfilePage() {
+  // error type definition to be used in input feedback for password form
   interface errors {
     // oldPassword?: string,
     newPassword?: string;
@@ -58,24 +61,29 @@ export default function ConsumerProfilePage() {
     },
   };
 
+  // handle edit profile button click 
   const handleEditProfile = () => {
     window.location.href = "/editConsumerProfile";
   };
 
-  const handlePasswordChange = () => {
+  // handle password change button click 
+  const handlePasswordChangeButtonClick = () => {
     setPassDialogOpen(true);
   };
 
+  // handle password form close or cancel click
   const handlePassChangeCancel = () => {
     setPassDialogOpen(false);
   };
 
+  // sync password form inputs with password form data 
   const handlePassFormChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
     setPasswordForm((prevState: any) => ({ ...prevState, [name]: value }));
   };
 
+  // handle profile delete button click
   const handleDeleteProfile = () => {
     if (!window.confirm("Are you sure? This cannot be undone.")) {
       return;
@@ -92,6 +100,7 @@ export default function ConsumerProfilePage() {
       });
   };
 
+  // handle password form submit
   const handlePasswordSubmit = () => {
     if (!window.confirm("Are you sure?")) {
       return;
@@ -115,6 +124,7 @@ export default function ConsumerProfilePage() {
       });
   };
 
+  // fetch customer data 
   useEffect(() => {
     if (!getData) {
       return;
@@ -170,7 +180,7 @@ export default function ConsumerProfilePage() {
                     variant="contained"
                     color="primary"
                     className={classes.button}
-                    onClick={handlePasswordChange}
+                    onClick={handlePasswordChangeButtonClick}
                   >
                     Change password
                   </Button>

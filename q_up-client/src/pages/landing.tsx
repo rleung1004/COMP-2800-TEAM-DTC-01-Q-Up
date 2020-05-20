@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import StaticNav from "../components/staticNav";
 import { makeStyles } from "@material-ui/core/styles";
 
+// Mui Stylings
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {

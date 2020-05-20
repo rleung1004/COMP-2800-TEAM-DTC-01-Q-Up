@@ -21,9 +21,13 @@ import { Paper } from "@material-ui/core";
  * Accessible to: customer.
  */
 export default function QueueSearchPage() {
+  // fetch flag
   const [getData, setGetData] = useState(true);
   const listNames: Array<string> = [];
+  // fav queue names
   const [favQueues, setFavQueues] = useState(listNames);
+
+  // algolia config
   const searchClient = algoliasearch(
     "EU7O4R6VOS",
     "86a00161b4b0e5a68907e099e5962273"
@@ -35,14 +39,26 @@ export default function QueueSearchPage() {
     },
   };
 
+  /**
+   * Return a function that sets the fetch flag to true.
+   * It is passed to each queue result. 
+   */ 
   const triggerGetStatus = () => {
     setGetData(true);
   };
 
+  /**
+   * Evaluate if a given queue is a favorite of the current user.
+   * 
+   */ 
   const isFav = (hitName: string) => {
     return favQueues.includes(hitName);
   };
 
+  /**
+   * Render one row of search results.
+   * @param data an object, represents one row of search results
+   */
   const Hit = (data: any) => {
     const hitData = {
       ...data.hit,

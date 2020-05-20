@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import axios from 'axios';
 
+
+// Mui stylings
 const useStyles = makeStyles((theme) => ({
    root: {
       '& .MuiTextField-root': {
@@ -30,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function ConsumerRegistrationPage() {
    const classes = useStyles();
+   
+   // error type definition to be used in input feedback
    interface errors {
       phoneNumber?: string;
       postalCode?: string;
@@ -37,6 +41,7 @@ export default function ConsumerRegistrationPage() {
 
    const errorObject: errors = {};
 
+   // form data
    const [formState, setFormState] = useState({
       phoneNumber: '',
       postalCode: '',
@@ -44,11 +49,20 @@ export default function ConsumerRegistrationPage() {
       errors: errorObject,
    });
 
+   /**
+   * sync input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
    const handleOnFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
       const name = event.target.name;
       const value = event.target.value;
       setFormState((prevState) => ({ ...prevState, [name]: value }));
    };
+
+   // handle skip button on click
    const handleSkipOnClick = () => {
       const skip = window.confirm(
          'Are you sure? This information be used to provide you better functionality.'
@@ -57,6 +71,8 @@ export default function ConsumerRegistrationPage() {
          window.location.href = '/consumerDashboard';
       }
    };
+
+   // handle form submit
    const handleSubmit = (event: FormEvent) => {
       event.preventDefault();
       setFormState((prevState) => ({ ...prevState, loading: true }));

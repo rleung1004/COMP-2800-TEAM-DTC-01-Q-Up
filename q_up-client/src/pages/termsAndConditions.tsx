@@ -13,14 +13,18 @@ import EasterEgg from "src/components/easterEgg";
 export default function TermsPage() {
   const [eggCount, setEggcount] = useState({ value: 0 });
   const [showEgg, setShowEgg] = useState({ value: false });
-
+  
+  // Clean up the egg, this function is passed to the egg
   const exitEgg = () => {
     setShowEgg({ value: false });
   };
+
+  // trigger the egg
   const startEgg = () => {
     setShowEgg({ value: true });
   };
 
+  // control the triggering of the egg
   const layEggs = () => {
     if (3 < eggCount.value) {
       startEgg();

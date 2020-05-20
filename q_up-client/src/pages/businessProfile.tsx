@@ -18,6 +18,8 @@ import axios from "axios";
 import { formatPhone } from "../utils/formatting";
 import "../styles/businessProfile.scss";
 
+
+//Mui stylings
 const useStyles = makeStyles(() => ({
   button: {
     margin: "20px auto 20px auto",
@@ -33,6 +35,7 @@ const useStyles = makeStyles(() => ({
  * Accessible to: managers
  */
 export default function BusinessProfilePage() {
+  // password form error definition
   interface errors {
     // oldPassword?: string,
     newPassword?: string;
@@ -40,6 +43,8 @@ export default function BusinessProfilePage() {
   }
   const errorObj: errors = {};
   const classes = useStyles();
+
+  // form data
   const [formState, setFormState] = useState({
     name: "",
     category: "",
@@ -69,8 +74,12 @@ export default function BusinessProfilePage() {
     averageWaitTime: "",
     loading: true,
   });
+
+  // show password form flag
   const [passDialogOpen, setPassDialogOpen] = useState(false);
+  // fetch flag
   const [getData, setGetData] = useState(true);
+  // password form data
   const [passwordForm, setPasswordForm] = useState({
     // oldPassword: "",
     newPassword: "",
@@ -84,24 +93,35 @@ export default function BusinessProfilePage() {
     },
   };
 
+  // edit profile button handler
   const handleEditProfile = () => {
     window.location.href = "/editBusinessProfile";
   };
 
+  // password change button handler
   const handlePasswordChange = () => {
     setPassDialogOpen(true);
   };
 
+  // password form close, cancel handler
   const handlePassChangeCancel = () => {
     setPassDialogOpen(false);
+    setPasswordForm({
+      // oldPassword: "",
+      newPassword: "",
+      newPasswordConfirm: "",
+      errors: errorObj,
+    });
   };
 
+  // sync password form inputs with password form data
   const handlePassFormChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
     setPasswordForm((prevState: any) => ({ ...prevState, [name]: value }));
   };
 
+  // delete profile button click handler
   const handleDeleteProfile = () => {
     if (!window.confirm("Are you sure? This cannot be undone.")) {
       return;
@@ -118,6 +138,7 @@ export default function BusinessProfilePage() {
       });
   };
 
+  // passowrd form submit handler
   const handlePasswordSubmit = () => {
     if (!window.confirm("Are you sure?")) {
       return;
@@ -141,6 +162,7 @@ export default function BusinessProfilePage() {
       });
   };
 
+  // Compile address into a format specific to this page
   const compileAddress = () => {
     const {
       unit,
@@ -154,6 +176,7 @@ export default function BusinessProfilePage() {
     } ${streetAddress},\n ${city}, ${province}\n ${postalCode}`;
   };
 
+  // fetch business info
   useEffect(() => {
     if (!getData) {
       return;

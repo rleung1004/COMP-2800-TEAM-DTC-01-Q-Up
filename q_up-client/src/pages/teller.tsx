@@ -14,6 +14,7 @@ interface queueSlot {
   password: string;
 }
 
+// Mui styling
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -47,18 +48,20 @@ export default function TellerPage() {
     },
   };
 
+  // fetch flag
   const [getData, setGetData] = useState(true);
 
   const queueSlots: Array<queueSlot> = [];
 
+  // queue customers data
   const [queueList, setQueueList] = useState(queueSlots);
 
+  // queue state
   const [isActive, setActive] = useState(false);
-
   const [currentWaitTime, setWaitTime] = useState(null);
-
   const [queueLength, setQueueLength] = useState(null);
 
+  // fetch queue data
   useEffect(() => {
     if (!getData) {
       return;
@@ -79,15 +82,23 @@ export default function TellerPage() {
       });
   }, [axiosConfig, getData]);
 
+  // Track the currently selected customer
   const [selected, setSelected] = useState({
     id: -1,
   });
 
+  /**
+   * Get a function that sets the current selected customer.
+   * 
+   * Gets a curried function that is passed to each customer row.
+   * @param selectorID the queue row id
+   */
   const selectHandler = (selectorID: number) => () => {
     setSelected({ id: selectorID });
   };
 
-  const handleCheckIn = (event: MouseEvent) => {
+  // Handle the check in button click
+  const handleCheckInClick = (event: MouseEvent) => {
     event.preventDefault();
     let index = 0;
     if (selected.id === -1) {
@@ -113,7 +124,8 @@ export default function TellerPage() {
       });
   };
 
-  const handleVIP = (event: MouseEvent) => {
+  // Handle the VIP button click
+  const handleVIPClick = (event: MouseEvent) => {
     event.preventDefault();
     axios
       .put("/VIPEnterQueue", {}, axiosConfig)
@@ -213,7 +225,7 @@ export default function TellerPage() {
                 variant="contained"
                 color="primary"
                 className={classes.button}
-                onClick={handleVIP}
+                onClick={handleVIPClick}
               >
                 VIP
               </Button>
@@ -224,7 +236,7 @@ export default function TellerPage() {
                 variant="contained"
                 color="primary"
                 className={classes.button}
-                onClick={handleCheckIn}
+                onClick={handleCheckInClick}
               >
                 Check in
               </Button>

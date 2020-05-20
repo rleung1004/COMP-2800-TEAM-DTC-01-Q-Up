@@ -11,6 +11,7 @@ import Switch from "@material-ui/core/Switch";
 import { makeStyles, Paper, Button } from "@material-ui/core";
 import axios from "axios";
 
+// Mui stylings
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -49,6 +50,7 @@ export default function BusinessDashboardPage() {
   const [getData, setGetData] = useState(true);
   const classes = useStyles();
 
+  // page data
   const [data, setData] = useState({
     queueSize: 0,
     duration: 0,
@@ -64,6 +66,7 @@ export default function BusinessDashboardPage() {
     },
   };
 
+  // handle the queue status switch change.
   const handleSwitchChange = () => {
     axios
       .put("/changeQueueStatus", {}, axiosConfig)
@@ -87,10 +90,16 @@ export default function BusinessDashboardPage() {
       });
   };
 
+  /**
+   * Handle add employees button click.
+   */
   const handleToAddEmployees = () => {
     window.location.href = "/employeeManagement";
   };
 
+  /**
+   * Employee status section to be rendered when business has no employees
+   */
   const noEmployees = (
     <>
       <Grid container justify="center" spacing={6}>
@@ -111,6 +120,9 @@ export default function BusinessDashboardPage() {
     </>
   );
 
+  /**
+   * Employee status section to be rendered when business has employees
+   */
   const withEmployees = (
     <>
       <Grid container justify="center">
@@ -198,6 +210,7 @@ export default function BusinessDashboardPage() {
     </>
   );
 
+  // data fetch
   useEffect(() => {
     if (!getData) {
       return;

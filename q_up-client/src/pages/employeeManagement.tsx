@@ -19,6 +19,7 @@ import axios from "axios";
 import EmployeeListRow from "../components/employeeListRow";
 import "../styles/employeeManagement.scss";
 
+// Mui stylings
 const useStyles = makeStyles(() => ({
   button: {
     margin: "20px auto 20px auto",
@@ -34,6 +35,7 @@ const useStyles = makeStyles(() => ({
  * Accessible to: Managers
  */
 export default function EmployeeManagementPage() {
+  // error type definition to be used in input feedback for new employee form
   interface addErrors {
     email?: string;
     password?: string;
@@ -42,6 +44,7 @@ export default function EmployeeManagementPage() {
   const addErrorObj: addErrors = {};
   const classes = useStyles();
   const array: Array<any> = [];
+
   const [employeeList, setEmployeeList] = useState(array);
   const [selected, setSelected] = useState({ id: -1 });
   const [getData, setGetData] = useState(true);
@@ -52,6 +55,7 @@ export default function EmployeeManagementPage() {
     errors: addErrorObj,
   });
 
+  // custom confirm
   const confirm = () => {
     return window.confirm("Are you sure? it cannot be undone.");
   };
@@ -62,14 +66,23 @@ export default function EmployeeManagementPage() {
     },
   };
 
+  // handle add employee cancel button click
   const handleAddCancel = () => {
     setAddDialogOpen(false);
   };
 
+  // handle add employee button click
   const addClick = () => {
     setAddDialogOpen(true);
   };
-
+  
+ /**
+   * sync input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
   const handleAddFormChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -79,6 +92,7 @@ export default function EmployeeManagementPage() {
     }));
   };
 
+  // handle add employee form submit
   const handleAddSubmit = () => {
     if (!window.confirm("Are you sure?")) {
       return;
@@ -107,6 +121,7 @@ export default function EmployeeManagementPage() {
       });
   };
 
+  // handle delete employee click
   const deleteClick = () => {
     const index = selected.id;
     if (index === -1) {
@@ -132,10 +147,17 @@ export default function EmployeeManagementPage() {
       });
   };
 
+  /**
+   * Suply a curried function to be passed to each employee row.
+   * 
+   * This function allows only one employee to be selected at a time
+   * @param selectorID a unique number
+   */
   const selectHandler = (selectorID: number) => () => {
     setSelected({ id: selectorID });
   };
 
+  // fetch  employees data
   useEffect(() => {
     if (!getData) {
       return;

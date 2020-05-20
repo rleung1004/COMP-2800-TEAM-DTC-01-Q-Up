@@ -17,6 +17,7 @@ import { mockProvinces, mockCategories } from "src/mockData";
 import "../styles/businessDashboard.scss";
 import BusinessNav from "src/components/businessNav";
 
+// Mui stylings
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -53,6 +54,8 @@ export default function EditBusinessProfilePage() {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
+
+  // error type definition to be used in input feedback
   interface errors {
     hours?: {
       startTime?: string;
@@ -75,6 +78,7 @@ export default function EditBusinessProfilePage() {
 
   const errorObject: errors = {};
 
+  // form data
   const [formState, setFormState] = useState({
     category: "",
     description: "",
@@ -105,8 +109,14 @@ export default function EditBusinessProfilePage() {
     loading: false,
     errors: errorObject,
   });
-  //
-
+  
+  /**
+   * sync input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
   const handleOnFieldChange = (event: any) => {
     const fieldNameTokens = event.target.name.split("-");
     const fieldCategory = fieldNameTokens[0];
@@ -123,6 +133,13 @@ export default function EditBusinessProfilePage() {
     }
   };
 
+  /**
+   * sync hour input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
   const handleHourChange = (event: ChangeEvent<HTMLInputElement>) => {
     const fieldNameTokens = event.target.name.split("-");
     const newValue = event.target.value;
@@ -164,7 +181,19 @@ export default function EditBusinessProfilePage() {
     }
   };
 
-  const handleaverageWaitTImeChange = (
+  /**
+   * sync average wait time input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * 
+   * Allowed range: 0 < 59
+   * Only numbers allowed
+   * Allows blank to avoid UX issues
+   * 
+   * @param event an event with target
+   */
+  const handleaverageWaitTimeChange = (
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const newValue = event.target.value;
@@ -196,8 +225,9 @@ export default function EditBusinessProfilePage() {
     }
   };
 
+  // Fetch flag
   const [getData, setGetData] = useState(true);
-
+  // fetch business data to be prepopulated in inputs
   useEffect(() => {
     if (!getData) {
       return;
@@ -227,9 +257,23 @@ export default function EditBusinessProfilePage() {
       });
   }, [axiosConfig, errorObject, getData]);
 
+  // submit handler
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+
+    // validation
+    if (formState.averageWaitTime === ' ') {
+      setFormState((prevState:any) => ({
+        ...prevState, errors: {
+          ...prevState.errors,
+          averageWaitTime: "Must enter a value"
+        }
+      })); 
+      return;     
+    }
     setFormState((prevState) => ({ ...prevState, loading: true }));
+
+    // map package
     const userData = {
       name: formState.name,
       phoneNumber: formState.phoneNumber,
@@ -241,7 +285,8 @@ export default function EditBusinessProfilePage() {
       email: formState.email,
       averageWaitTime: formState.averageWaitTime,
     };
-
+    
+    // request
     axios
       .put("/updateBusiness", userData, axiosConfig)
       .then(() => {
@@ -538,7 +583,7 @@ export default function EditBusinessProfilePage() {
                     name="servingFrequency"
                     color="secondary"
                     size="small"
-                    onChange={handleaverageWaitTImeChange}
+                    onChange={handleaverageWaitTimeChange}
                     value={formState.averageWaitTime}
                   ></TextField>
                 </Grid>
