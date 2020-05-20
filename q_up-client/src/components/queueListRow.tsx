@@ -17,7 +17,7 @@ import Axios from "axios";
 import { formatGoogleMapURL, formatAddress } from "src/utils/formatting";
 import "../styles/queueListRow.scss";
 import { formatTimeInto12h } from "../utils/formatting";
-import { isWeekend } from '../utils/misc';
+import { evaluateOpenTime, evaluateCloseTime } from '../utils/misc';
 
 // Mui stylings
 const useStyles = makeStyles({
@@ -32,38 +32,6 @@ const useStyles = makeStyles({
     backgroundColor: "#F6F6F6",
   },
 });
-
-/**
- * Helper function to evaluate opening time to display in relation to the day of the week
- * @param hours an object such as:
- * {
- * startTime: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"],
- * endTIme: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"]
- * }
- * where time is in 24h format
- */
-function evaluateOpenTime(hours: any) {
-  if (isWeekend()) {
-    return hours.startTime[0];
-  }
-  return hours.startTime[1];
-}
-
-/**
- * Helper function to evaluate closing time to display in relation to the day of the week
- * @param hours an object such as:
- * {
- * startTime: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"],
- * endTIme: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"]
- * }
- * where time is in 24h format
- */
-function evaluateCloseTime(hours: any) {
-  if (isWeekend()) {
-    return hours.endTime[0];
-  }
-  return hours.endTime[1];
-}
 
 /**
  * Render an individual queue list row.

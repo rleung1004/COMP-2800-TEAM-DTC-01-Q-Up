@@ -433,7 +433,6 @@ export const getQueue = async (req: Request, res: Response) => {
                     currentWaitTime: queue.currentWaitTime,
                     queueLength: queue.queueSlots.length,
                 },
-
             });
         })
         .catch(async (err) => {
