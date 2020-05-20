@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import Footer from "../components/static/Footer";
-import Header from "../components/static/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import ConsumerNav from "../components/consumerNav";
 import { Button, Grid, Typography } from "@material-ui/core";
@@ -13,6 +13,7 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
+// Mui stylings
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -29,8 +30,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a customer dashboard page.
+ * 
+ * Accessible to: customers
+ */
 export default function ClientDashboardPage() {
   const classes = useStyles();
+
+  // queue data
   const [currentQueueInfo, setCurrentQueueInfo] = useState({
     businessName: "",
     estimatedWait: 0,
@@ -39,12 +47,15 @@ export default function ClientDashboardPage() {
     password: "",
     inQueue: false,
   });
+
+
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
 
+  // element to render if customer is not queued
   const noQueue = (
     <Grid container justify="center" alignItems="center">
       <Typography variant="h2">Not currently queued</Typography>
@@ -52,17 +63,23 @@ export default function ClientDashboardPage() {
   );
 
   const queueList: Array<object> = [];
+  // favorite queue data
   const [favQueues, setFavQueues] = useState(queueList);
 
+  // handle search queues button click
   const toSearchQueuesHandler = () => {
     window.location.href = "/searchQueues";
   };
 
+  // fetch flag
   const [getData, setGetData] = useState(true);
+
+  // fetch flag setter to pass to children
   const triggerGetStatus = () => {
     setGetData(true);
   };
 
+  // fetch current queue data
   useEffect(() => {
     return () => {
       if (!getData) {
@@ -96,6 +113,7 @@ export default function ClientDashboardPage() {
     };
   }, [axiosConfig, getData]);
 
+  // fetch favorite queues
   useEffect(() => {
     if (!getData) {
       return;

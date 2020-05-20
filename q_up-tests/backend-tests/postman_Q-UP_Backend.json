@@ -1,0 +1,1202 @@
+{
+	"info": {
+		"_postman_id": "279d54b6-30c6-4e1f-af46-452aeb9d877f",
+		"name": "Q-UP Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "authentication routes",
+			"item": [
+				{
+					"name": "customer sign up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"postman@customer02.test\",\n\t\"password\": \"123456\",\n\t\"confirmPassword\": \"123456\",\n\t\"userType\": \"customer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/signup",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "manager sign up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"postman@manager02.test\",\n\t\"password\": \"123456\",\n\t\"confirmPassword\": \"123456\",\n\t\"userType\": \"manager\",\n\t\"businessName\": \"postman@business.test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/signup",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "manager login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"postman@manager.test\",\n\t\"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/login",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"postman@customer.test\",\n\t\"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/login",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "employee login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"postman@employee03.test\",\n\t\"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/login",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "booth login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"postman@booth.business01.test\",\n\t\"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/login",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "C/M/E logout",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NjQyMDQsInVzZXJfaWQiOiJ4eWd6bFlQUzdhZUxnejNRNXRPVHJ3UkQ5WkYzIiwic3ViIjoieHlnemxZUFM3YWVMZ3ozUTV0T1Ryd1JEOVpGMyIsImlhdCI6MTU4OTU2NDIwNCwiZXhwIjoxNTg5NTY3ODA0LCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.Y1OIE8sTD2QmwhNSrddmtbDTPJA8Yh6LYzxx3Lk2Bv5bDLi90JFcOXNh7AC2KBBtNu6PU1RhrMQo172cptk-iQmTgZsZXsEgHZzFvBTZcV8RMNc-yr443R9puHZp19R3EnW6Vbd9Qem1VOmXs5vM4738F5MM8Cdjw3wkIg8SWg59dvurMR6HOALCEiEnvtWk3BUndjqhAK3aENYq1jrRQjm7vW4dRK4Muk7CAKvjxdcN5kah1avZEB5jEEW0-SSS1DktK3i8ArHFUnj8zSCOJaaoUK8Z-AsfZ_Xvs4tM29e_JbDVKbsIcDWthFEIzaaoZNJGRom7_poQBRSiVPP8xA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/logout",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "C/M/E changePassword",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "content",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NjQ4MjUsInVzZXJfaWQiOiJ4eWd6bFlQUzdhZUxnejNRNXRPVHJ3UkQ5WkYzIiwic3ViIjoieHlnemxZUFM3YWVMZ3ozUTV0T1Ryd1JEOVpGMyIsImlhdCI6MTU4OTU2NDgyNSwiZXhwIjoxNTg5NTY4NDI1LCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.uPd39Wvan3u2in6uGW64V6371XsK0yTScv1r3zxs-D8Dj6ozthdpJ8C4Cfor0yjKAC5JE8e0xQ06VUGxb5uR7wOlCdOx3Xw3Qom86qTH67eE7w5-nrI-KFnKrD9ObWojZIvgYHyyzl7Djl_C3rdQNDE6fqe7T5zIPv6N8ft268YUbFtL6-8m8ryw9JjJcviszg7EtViUqVOFVEovFYv_B1OhIcoVthSLW_KrF5fE7lM3gspVZkF6Fo9t5zB0AJn4KLLUGQ9pbMn9gHb9kWmagx4-akXreIKcYnplppHFewZ87uC90lgkhxoghK79Qfyq4ZMMI29LhwYEnjlxB1pMsw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"password\": \"1234567\",\n\t\"confirmPassword\": \"1234567\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/changePassword",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"changePassword"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "business routes",
+			"item": [
+				{
+					"name": "registera new business",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzUxMjEsInVzZXJfaWQiOiIyZ0h4R0J2VHZYZkR4SHROMVc2SVczZ01HQm4xIiwic3ViIjoiMmdIeEdCdlR2WGZEeEh0TjFXNklXM2dNR0JuMSIsImlhdCI6MTU4OTU3NTEyMSwiZXhwIjoxNTg5NTc4NzIxLCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlcjAyLnRlc3QiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsicG9zdG1hbkBtYW5hZ2VyMDIudGVzdCJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.WA5GZ6hdTrGd2XuT05yRf904l6WBHpRXfVpX3kIrdinIDioJZ-TEhsJ5-hPbz2EDMOl3pw5EOZqubY5_i2wLEUHxmv0SAPXao9iKYBZJ7kFeNmUEAI0fpxLWubAHRFqI7LWcJFzwZIxweyzsmbeSoLWtfTe0lvP4GNU-dgQ1ti-TMQpX4y8ruWv1s9arJID_qsvq8IR_3uX2eHwheTW2ky8-JbqPC3pE0OVp_pMIZRdrraOSEwFeCmkBEgG1A94FfuCXpNG46riT3RpElfLZjqsN7zz_f2OMOnUbfRuhD9N8AJBAedd5pHrjkmoVgeWgwxaLJKV3xvngw_1QdKbWKQ\"",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"averageWaitTime\": 10,\n\t\"category\": \"grocery\",\n\t\"description\": \"this is a description of this business\",\n\t\"email\": \"contactus@testBusiness.com\",\n\t\"hours\": {\n\t\t\"startTime\": [\"6:00\", \"7:00\", \"8:00\", \"9:00\", \"10:00\", \"11:00\", \"12:00\"],\n\t\t\"endTime\": [\"18:00\", \"19:00\", \"20:00\", \"21:00\", \"22:00\", \"23:00\", \"00:00\"]\n\t},\n\t\"address\": {\n\t\t\"city\": \"vancouver\", \n\t\t\"postalCode\": \"x1x1x1\",\n\t\t\"province\": \"BC\", \n\t\t\"streetAddress\": \"5000 new street\",\n\t\t\"unit\": \"\"\n\t},\n\t\"website\": \"www.ourwebsite.com\",\n\t\"phoneNumber\": \"6046667788\"\n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/registerBusiness",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"registerBusiness"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register a booth for a business",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1ODE0MTQsInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU4MTQxNCwiZXhwIjoxNTg5NTg1MDE0LCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.D3IIrkyrlF_N5FP5FcvwJIz5Z4AMdO5lB1EI2QCaoTRuGN_gXFBDVTEPVa1B4pkTocqtOjOci-qbgbL7OHW8-nn0R7LruaW5xppxCTghGuubB0vwFQSRvemIlAuyM46heudDo8WG8ERNR-q_4FTqmH9MBKxipJiC_ydb8EiaLIuTi9g92C_RpHH81vR-MS-a_DGHgmkpZZ8op8CCClDrniGK8NqJJEsluNLuTHJ3y-Cs6J8_XcsHkQ70Sf6GYm30yZvysmhl0Jrne0VYWQGKQGYkbvbkwmCQFkKahRTWOP7J01e6uTLWovRpouCzZu42LYDSFZk2hW1qFPUitwEdJQ"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"boothEmail\": \"postman@booth.business01.test\",\n\t\"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/registerBooth",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"registerBooth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update Business infromation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzUyNjAsInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU3NTI2MCwiZXhwIjoxNTg5NTc4ODYwLCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Pa55gFZmqTQgM7eNBA-HznYamKGRTQ7S9RiS5XmedetJcKc-gwMjSgNzBqWuFyStip230da-JMkBAdvbcX17XnGWpeI4nJGIafW9vhw_sBNqdoovDPoBCZueBwE3QhnD214-OBGY0iGsMtsLWF0FiEPS-p7bpwHgPYNJDgWkmc4XFIPhnJ2EDINUXcYpcWZFqAL_T1Dq-8mHELcgAZU2zpWKN8T_lxSfNDYGDFFPjzTexUG_LM5UyO60pswXV0YXYFyUNSy_F07PgxJ1ggzuYdkjP11sg8VM7_TllSRVY2Gh8H4tHzrOtc6FXux34IEn76RSrtJaixKJocgVSHj3HQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"category\": \"gun store\",\n\t\"description\": \"this is a description of this absolutely amazing\",\n\t\"email\": \"contactus@testBusiness.com\",\n\t\"hours\": {\n\t\t\"startTime\": [\"6:00\", \"7:00\", \"8:00\", \"9:00\", \"10:00\", \"11:00\", \"12:00\"],\n\t\t\"endTime\": [\"18:00\", \"19:00\", \"20:00\", \"21:00\", \"22:00\", \"23:00\", \"00:00\"]\n\t},\n\t\"address\": {\n\t\t\"city\": \"vancouver\", \n\t\t\"postalCode\": \"x1x1x1\",\n\t\t\"province\": \"BC\", \n\t\t\"streetAddress\": \"HA street\",\n\t\t\"unit\": \"666\"\n\t},\n\t\"name\": \"postman@Business01.test\",\n\t\"website\": \"www.ourwebsite.com\",\n\t\"phoneNumber\": \"6046667788\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/updateBusiness",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"updateBusiness"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get business infromation",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1Njk5NzUsInVzZXJfaWQiOiIxS0FsS0FWUGljV0FqSzBZb3lwcG9FemJkUDMzIiwic3ViIjoiMUtBbEtBVlBpY1dBakswWW95cHBvRXpiZFAzMyIsImlhdCI6MTU4OTU2OTk3NSwiZXhwIjoxNTg5NTczNTc1LCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.dfmKgX1S5laCMnt9cK-1DrNIdUlkROjkM23OKBLKysoj-RruuCZhKFepWUjzWC1gUHLgBKl4qPgWuN1t-h_t0T6ZTyUXuyrN7AsAyJ2n2hESDd1i2QhypB82W-_PbO0pvrIRVtHEQVKE9BE8QAA-jQ8IRkge_f2UnGN6MlW_SeOWF-DkTR6oJMwdljgfk8A3S1JJKEYXmeHSdEPU1_Kg__WFyxBdnCgSlrUiq7e_iBURh9o6qB_QBXIMNeXrZXojywux5TsjSHAGpBioZ-0pvMZ72gzxPpUIU-oTa0QO4qY12ap-gLMNkf6DXVJ4Tzqg4mlLTGrbgnpF_eksQHtD-A",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/getBusiness",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"getBusiness"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete the business",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1Njk5NzUsInVzZXJfaWQiOiIxS0FsS0FWUGljV0FqSzBZb3lwcG9FemJkUDMzIiwic3ViIjoiMUtBbEtBVlBpY1dBakswWW95cHBvRXpiZFAzMyIsImlhdCI6MTU4OTU2OTk3NSwiZXhwIjoxNTg5NTczNTc1LCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.dfmKgX1S5laCMnt9cK-1DrNIdUlkROjkM23OKBLKysoj-RruuCZhKFepWUjzWC1gUHLgBKl4qPgWuN1t-h_t0T6ZTyUXuyrN7AsAyJ2n2hESDd1i2QhypB82W-_PbO0pvrIRVtHEQVKE9BE8QAA-jQ8IRkge_f2UnGN6MlW_SeOWF-DkTR6oJMwdljgfk8A3S1JJKEYXmeHSdEPU1_Kg__WFyxBdnCgSlrUiq7e_iBURh9o6qB_QBXIMNeXrZXojywux5TsjSHAGpBioZ-0pvMZ72gzxPpUIU-oTa0QO4qY12ap-gLMNkf6DXVJ4Tzqg4mlLTGrbgnpF_eksQHtD-A",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/deleteBusiness",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"deleteBusiness"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "customer routes",
+			"item": [
+				{
+					"name": "get customer information",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzAyMTgsInVzZXJfaWQiOiJ4eWd6bFlQUzdhZUxnejNRNXRPVHJ3UkQ5WkYzIiwic3ViIjoieHlnemxZUFM3YWVMZ3ozUTV0T1Ryd1JEOVpGMyIsImlhdCI6MTU4OTU3MDIxOCwiZXhwIjoxNTg5NTczODE4LCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.BbabOuZnCeD5b_fuW91PXvmuzCn167IGKsKsJHW8FKNOf6-v2R9aV7vy-Ua20nJY2Cp-xOQZaMGBHIBE2NFiIVdx90JOjJOf2QOyOUMwHj-dS4HxGgONevNc8dXnhJfP4w13b3-yb2J0B_FaoakohSI5B3jXvTpx9wlXHe0U-YXFT1syoP_8Goq13HhoA6O_yQWED7x8YDhq9ppJFVkZmxlj-t0uqWiwcdI7fT_bVwGeIKy6JNNy_UE5DTJpPf7CWdlRoVIKij-K7OvT5g27pBCYLy2M9ci5GLLeuO-YPeeXhaoTZapdnK4irS9fgruey1gjaOcffSLyt_iG2zWQgA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/getCustomer",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"getCustomer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register a customer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzAzMTQsInVzZXJfaWQiOiJ4eWd6bFlQUzdhZUxnejNRNXRPVHJ3UkQ5WkYzIiwic3ViIjoieHlnemxZUFM3YWVMZ3ozUTV0T1Ryd1JEOVpGMyIsImlhdCI6MTU4OTU3MDMxNCwiZXhwIjoxNTg5NTczOTE0LCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.WBl27b5fZ_VuXk0O0YAu8zNxar1tOyFORfw_ZzYysjk2SoAUNuUXs8c-DqGbYeM1FonOT6ZDsS8uyLQi21UGGPDIiU4fpoHwDWl7yRlzWU4-J4tUOCskVAnYwWStMmd5fpkQ69J0fTHkidr_AqV2KuL_uUIKKodOmWlE0jZ0mEvVu25n6L3s6dsOZ-P3fI_O5-yJAxt-VNfCFTePmAF9kCV0JNtvyqmUxy21b2fx7IcaeSLwZZsmsEeIY2JqbDPvC-pvG60gEMjWNzKx16-OuyQg0jE8HauXJVQH2H_2ljjOmsWDEkW3ThnRelARD1t8jbKtYVUBzxu1pHh9aNB06Q",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"phoneNumber\": \"5554443221\",\n\t\"postalCode\": \"n7n7n7\"\n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/registerCustomer",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"registerCustomer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update customer information",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzAzMTQsInVzZXJfaWQiOiJ4eWd6bFlQUzdhZUxnejNRNXRPVHJ3UkQ5WkYzIiwic3ViIjoieHlnemxZUFM3YWVMZ3ozUTV0T1Ryd1JEOVpGMyIsImlhdCI6MTU4OTU3MDMxNCwiZXhwIjoxNTg5NTczOTE0LCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.WBl27b5fZ_VuXk0O0YAu8zNxar1tOyFORfw_ZzYysjk2SoAUNuUXs8c-DqGbYeM1FonOT6ZDsS8uyLQi21UGGPDIiU4fpoHwDWl7yRlzWU4-J4tUOCskVAnYwWStMmd5fpkQ69J0fTHkidr_AqV2KuL_uUIKKodOmWlE0jZ0mEvVu25n6L3s6dsOZ-P3fI_O5-yJAxt-VNfCFTePmAF9kCV0JNtvyqmUxy21b2fx7IcaeSLwZZsmsEeIY2JqbDPvC-pvG60gEMjWNzKx16-OuyQg0jE8HauXJVQH2H_2ljjOmsWDEkW3ThnRelARD1t8jbKtYVUBzxu1pHh9aNB06Q"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"phoneNumber\": \"6046665544\",\n\t\"postalCode\": \"z2z2z2\",\n\t\"email\": \"postman@Customer.test\"\n}\n"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/updateCustomer",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"updateCustomer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete a customer",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzAzMTQsInVzZXJfaWQiOiJ4eWd6bFlQUzdhZUxnejNRNXRPVHJ3UkQ5WkYzIiwic3ViIjoieHlnemxZUFM3YWVMZ3ozUTV0T1Ryd1JEOVpGMyIsImlhdCI6MTU4OTU3MDMxNCwiZXhwIjoxNTg5NTczOTE0LCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.WBl27b5fZ_VuXk0O0YAu8zNxar1tOyFORfw_ZzYysjk2SoAUNuUXs8c-DqGbYeM1FonOT6ZDsS8uyLQi21UGGPDIiU4fpoHwDWl7yRlzWU4-J4tUOCskVAnYwWStMmd5fpkQ69J0fTHkidr_AqV2KuL_uUIKKodOmWlE0jZ0mEvVu25n6L3s6dsOZ-P3fI_O5-yJAxt-VNfCFTePmAF9kCV0JNtvyqmUxy21b2fx7IcaeSLwZZsmsEeIY2JqbDPvC-pvG60gEMjWNzKx16-OuyQg0jE8HauXJVQH2H_2ljjOmsWDEkW3ThnRelARD1t8jbKtYVUBzxu1pHh9aNB06Q"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/deleteCustomer",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"deleteCustomer"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "employee routes",
+			"item": [
+				{
+					"name": "register an employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzEwNTIsInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU3MTA1MiwiZXhwIjoxNTg5NTc0NjUyLCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.AOTxHp8-G1XgbwvxhsOszqY-fjvJYt5dzXL91Y-ERlB5v2EqHi7ZXi14hFQ39Ba3cpvpkxJpSV-PIzJNsplZTS-T0g3m2SK7xTRoKBw_GvXOrzbwvT5oy887ZI8WRYbBPGa6fvyfbCMazdjFRR3RIhn3BCbBn7Lw92T9mV0AaoNbRancayv71zPIhVwoxYy6UyM6-qT-rhmJRKp8XYX5I_fl0xsm5VguJ0l_d3mE_ggQn_IaJskJQajRnH5Fkc63zR401ifk5pcGcLjCklscNWxATjaBoXxY_KqsxpQs2-doQVMPBIQ6f7aH6B0Pt1VaxEUAivhwU_LpEnkx3QomCA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"employeeEmail\": \"postman@employee01.test\",\n\t\"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/registerEmployee",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"registerEmployee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update an employee",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzIxMjksInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU3MjEyOSwiZXhwIjoxNTg5NTc1NzI5LCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.l3YppcKG8cQbfUrEy1vKG0uvFNFSdWgrWPDXBWCr9MG4MyXWMh7Qgb-iErdy9Vxt9TR2grTOWhrBfFFSPvn0gGFsi-ovRcAbs-2pS3FW4joIDpRCfl0XPWET4WRjyE-4AaIoxCRXUP43wqdzYwke5CEG0QvQeAtaMd6srzas85hmTquu4p3RH_-9fdDPjqQU1_fMZzmrryDIS9f0Iw3KZO-rVDxCOLShx7hsLilFcvTBjEchQ1zbtvLBN0-auvjYVqB43w6-GRJFo7o2epX5hZFbcOZ2TCMxXobbQdtnxQK04aXPBcvweXenbb8winO1DzkLFp173ftUdgt1rUN5_g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"employeeEmail\": \"postman@updatedemployee02.test\",\n\t\"employeeNewEmail\": \"postman@employee02.test\"\n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/updateEmployee",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"updateEmployee"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete an employee",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzIxMjksInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU3MjEyOSwiZXhwIjoxNTg5NTc1NzI5LCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.l3YppcKG8cQbfUrEy1vKG0uvFNFSdWgrWPDXBWCr9MG4MyXWMh7Qgb-iErdy9Vxt9TR2grTOWhrBfFFSPvn0gGFsi-ovRcAbs-2pS3FW4joIDpRCfl0XPWET4WRjyE-4AaIoxCRXUP43wqdzYwke5CEG0QvQeAtaMd6srzas85hmTquu4p3RH_-9fdDPjqQU1_fMZzmrryDIS9f0Iw3KZO-rVDxCOLShx7hsLilFcvTBjEchQ1zbtvLBN0-auvjYVqB43w6-GRJFo7o2epX5hZFbcOZ2TCMxXobbQdtnxQK04aXPBcvweXenbb8winO1DzkLFp173ftUdgt1rUN5_g"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"employeeEmail\": \"postman@employee01.test\"\n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/deleteEmployee",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"deleteEmployee"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all employees for a business",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzM1NTYsInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU3MzU1NiwiZXhwIjoxNTg5NTc3MTU2LCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.h4R1Rlv1fvvc5SdKpfEP38dvqtRvLouHLedxft4OIqaNPczEn5timmAIB8yp93DCmsYhJ9DkEJ6422uQAiYLjJ857s5QSKk81VP9pZlbtBuPiaQXApu_OD0yWZy2bdSeJirdh5Eeqll2W83DJqCH1IaKWMsyaPlhi1s9fVVECkp3npUMfn4FvHMJcau3EP29RMaENTS-9c8UCz6xN_HR71l4LwYwPIobuIe1IX6wXp8-6fKP5FTnhlLg-vGXKQYhWUg7CZ0v6vc9uQYSsUXn7CdSjBFI5Kd4AsjFsVQlUCiNx1UZhtN9aRAW9xa_ITJqbLW65jhOEM12NcX_aLKQ7A"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/getEmployees",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"getEmployees"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get count of online employees for a  business",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzM5NzQsInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU3Mzk3NCwiZXhwIjoxNTg5NTc3NTc0LCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.UByeLu8nK-XVThK_IhGCuBeVHHDIwWwPN52ENh3KD56grna0ifOxxNKvKOLtXpxOX9DgAwF-heTqqQLGrvGqYVzdAEsASMZ4SfJktwFLDX37bq9OrKPMwnOOx2PezYwWZOl8da8-jUpXivDQ9JehJfNeuKWI8FCKQiQbT6dN96kQ3FMP3aR-c_aIMPzwBBIJLTjoMvqQRFyPZsucllLQEXHJvI76aBLlD2nChcmP44AagXd0876RQFgy4UiYd0iVGlVSm0PqR1A7i5_cj-jwcrcXlqfWO-ePF8pM_-stlxKa8lvg89ZDKLQv1TKceovVndjfKfcAkgwcVv1oiJwurw"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/getOnlineEmployees",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"getOnlineEmployees"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "queues routes",
+			"item": [
+				{
+					"name": "get the queue infromation for manager",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzM5NzQsInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU3Mzk3NCwiZXhwIjoxNTg5NTc3NTc0LCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.UByeLu8nK-XVThK_IhGCuBeVHHDIwWwPN52ENh3KD56grna0ifOxxNKvKOLtXpxOX9DgAwF-heTqqQLGrvGqYVzdAEsASMZ4SfJktwFLDX37bq9OrKPMwnOOx2PezYwWZOl8da8-jUpXivDQ9JehJfNeuKWI8FCKQiQbT6dN96kQ3FMP3aR-c_aIMPzwBBIJLTjoMvqQRFyPZsucllLQEXHJvI76aBLlD2nChcmP44AagXd0876RQFgy4UiYd0iVGlVSm0PqR1A7i5_cj-jwcrcXlqfWO-ePF8pM_-stlxKa8lvg89ZDKLQv1TKceovVndjfKfcAkgwcVv1oiJwurw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/getQueue",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"getQueue"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get the queue infromation for employee",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzQyNDYsInVzZXJfaWQiOiJPWEw4UUlBV3ZkUFdYajk4aVhYWDhDZTNhcGwxIiwic3ViIjoiT1hMOFFJQVd2ZFBXWGo5OGlYWFg4Q2UzYXBsMSIsImlhdCI6MTU4OTU3NDI0NiwiZXhwIjoxNTg5NTc3ODQ2LCJlbWFpbCI6InBvc3RtYW5AZW1wbG95ZWUwMy50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AZW1wbG95ZWUwMy50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Cbd3iXaLFOuuT8vJPJYoa_T8VYMZJmzy9izBB19-fohLTF5g5Kx4hXSK913Z3oFE78y5kISPkwpBVxqVzxhADVme6qDOKqzA47L-xgXCTbFaBksf7cR2Y2KjXwfkYpAehwNk3Qw5hLFLhGJcaTiRJZbNGGTWoS4wz6pY6hgFamTRBAr0FY6gO4g512J9kmlIhwgLHH6b3mG7NUQOCeAZ0IF139FhNjxy0_JKirWEFDtdzxQfQwhONSlUNuP4mhXpuGEO14wGJDvaEkbuINI-Lbdnshdudmu0SBn8yJpbfiFdigrxW4kYEai9Oh1a5J48dudylIXucPlWKN0QntAJbA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/getQueue",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"getQueue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer enters a queue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk2OTc4MTMsInVzZXJfaWQiOiJ1V2JNS25HZWxRZFY2WjJTb0pxRU1PV3pmSHkyIiwic3ViIjoidVdiTUtuR2VsUWRWNloyU29KcUVNT1d6Zkh5MiIsImlhdCI6MTU4OTY5NzgxMywiZXhwIjoxNTg5NzAxNDEzLCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.lD1tY-AL-rj9I4SL8uPY9EQYu4Cn4EIBvAcIOX9xHY-4VrzdlgvXtAaOoo3i0hEXyj0e-mpHPL6BOObaOPTauWR3Vqh933wHKuYT3oMSc3C91Jue54fQj1-jlbQZQnHAibApcmTHRS-HTA4X3TkXRm3BjTo0C7zNw1n_VMErL87TXs8cX6NW7LIuAn-hGOYweCi-hpUQwPdz6-g1uuLQOsABGQXWb8WMIVFCyWbOVSgdd-Ycr-YkNsAlKpLv5VUfei57l4L34WXVjMlNuXlcYKJCgcOCRchMDxzfUQ8TpCL6qFtu8tK3za6-LlA9kDlEb2TWgrx910bg3melSWxzRw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"queueName\": \"postman@Business02.test\" \n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/customerEnterQueue",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"customerEnterQueue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "insert a VPI to a queue",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1ODA0MjksInVzZXJfaWQiOiJPWEw4UUlBV3ZkUFdYajk4aVhYWDhDZTNhcGwxIiwic3ViIjoiT1hMOFFJQVd2ZFBXWGo5OGlYWFg4Q2UzYXBsMSIsImlhdCI6MTU4OTU4MDQyOSwiZXhwIjoxNTg5NTg0MDI5LCJlbWFpbCI6InBvc3RtYW5AZW1wbG95ZWUwMy50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AZW1wbG95ZWUwMy50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.ppi5y57FGfLHYIcRcgljpImPANT27d1_Lc5hbroLpKQ7YqRa_YezQhjD54Paeg6Autdl-kO52iuaaSze7ojw36I4zKr3ozkhTE5P9ySlzCD-uuSH21qH0a0cQVjfheCzDw93qzK1XzhaaUKKfe8J8RuPFzWCz1vCtNSoENL_Qi2YECHeHu80PT55q3IFwryotpU3vLkI-UX7G5bSGWzJHHPsTSeZtYgRmutHYW46d6K7ZXuuLywKHmPo1FZeSJwSWN2B_JzLVeYWXcjoxkxMSz2s3snG4Y9MsG-bdODCsJs9bsTEPgbtJXRb9TSBjh7h_Q4FkmNZVXgdPBHlUN4zgA"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/VIPEnterQueue",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"VIPEnterQueue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "booth walk-in enters a queue",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1ODIxODQsInVzZXJfaWQiOiJLMzQ1UWRmQVFwTUJ3cTVPalNvUDA2VWhBNmEyIiwic3ViIjoiSzM0NVFkZkFRcE1Cd3E1T2pTb1AwNlVoQTZhMiIsImlhdCI6MTU4OTU4MjE4NCwiZXhwIjoxNTg5NTg1Nzg0LCJlbWFpbCI6InBvc3RtYW5AYm9vdGguYnVzaW5lc3MwMS50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AYm9vdGguYnVzaW5lc3MwMS50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.FBCwmnVqH13JTPCmNTp4NvpubOqTZkqW_xz_H7uwCTmzXK5exwe_23A4-RxhtA77ct6KyoZ7SVeyeOZRQAC27Fx23FKvmxG69B4WuY6kGJtYD61ucLKd8f6MtUO8-0F5jesKUwCgDPWRoi04LJl3BuNk-brCWLX9P5_pna7-1KXGkypqc-Urn2958LQtgnxnrYKwMd6imiFZjN6t598W7FuViNFV1YzzdRIStfU5iQ2zLnIcH5fWhk4UmkXDmH3KmCXrX13nS8C_7pYGntyHpXKRStzpafW9Zi38D2GL074rqeKMmMXRbip9cXcxOJgLMjlyJgRhkmBnfWucbEIrzQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userName\": \"Walkin@06.test\"\n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/boothEnterQueue",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"boothEnterQueue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "customer abandons a queue",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzY0NTksInVzZXJfaWQiOiJRU1REcU9KODc3VGV1eGJZZlgyMFJqUkluUVoyIiwic3ViIjoiUVNURHFPSjg3N1RldXhiWWZYMjBSalJJblFaMiIsImlhdCI6MTU4OTU3NjQ1OSwiZXhwIjoxNTg5NTgwMDU5LCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIwMi50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AY3VzdG9tZXIwMi50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.p4Q5aYT2HfFzJPSbPE4_GS2ouyODPl2O3zSJnSrf0iHNgI_EAfI9JEyNpXBr5CaClek88S1-pgh0rgkVxaSnQ35D2mhuoACLTU7Jb1GvGtkQWeeoG949lTILKiuUEYp8zMdY8pC81qYtO9S02Cc_6bONcIqNBkjj4wEtYHwCMV0a2MjsaNU2lqUQyiFGoeq0-XICSey4oDSfeA1OTvYiDVLWpudXeYo9JeOttBlLhSfU4cHk2ZEQdUYKjrzxVwACGKpFPskBDfzE2VaXBziS9Sq5DOr4NjjZDXI9PWAbE2PNO9gwAkWv4xDLuOlHiZoLIT-77y6odTJXZtUrKroAQg"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/abandonQueue",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"abandonQueue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checks in the customer",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImZjMmM4YmIyNmE3OGM0M2JkODYzNzA1YjNkNzkyMWI0ZTY0MjVkNTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1NzY3OTYsInVzZXJfaWQiOiJPWEw4UUlBV3ZkUFdYajk4aVhYWDhDZTNhcGwxIiwic3ViIjoiT1hMOFFJQVd2ZFBXWGo5OGlYWFg4Q2UzYXBsMSIsImlhdCI6MTU4OTU3Njc5NiwiZXhwIjoxNTg5NTgwMzk2LCJlbWFpbCI6InBvc3RtYW5AZW1wbG95ZWUwMy50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AZW1wbG95ZWUwMy50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.nWUfIP5rwwqHozxasA6_Xf0x5ZV_FhaNtiSOlqjRACCvwbCM9u_3ThQl_xan_9k9hZw7ZwPkECqPCzcQam5fDc5_za0GMgLHtJVZrVeE_NcX1KIlVyegLWzD257KW25s0ROap4k0TTp-3ltMpYck3yCKnUetwq4c_yHdX2sgiCUhsHrt27BKxgohsOlJtGszLfMgpC7wzmnocAovvn5zmsyhosTwkILkmy9m7EIrSqHRNfkffZo1EsC8ognMA1HK4XaFvb6Kf9NS7U6HtQQBYWcWgJ5uNZBhAgmZZaYZfzqFtwV2C99Cc60aKG3caE6Pn4mPRg73LxpZs4O2aMGeZg"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"ticketNumber\": 2\n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/checkInQueue",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"checkInQueue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change the queue status of a business",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1ODQwNTAsInVzZXJfaWQiOiJXUllOOVV3T1MyZGdsOTBXdkNMbkhSUFptRmEyIiwic3ViIjoiV1JZTjlVd09TMmRnbDkwV3ZDTG5IUlBabUZhMiIsImlhdCI6MTU4OTU4NDA1MCwiZXhwIjoxNTg5NTg3NjUwLCJlbWFpbCI6InBvc3RtYW5AbWFuYWdlci50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AbWFuYWdlci50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.itRm5wGfnLxiGJ9mGh5wzSS_1B1R9Vzr432UOBNpxfjy93lxv45gEjpsDuH_r1H1kkaNLSOcdDUKBJs8dUpN0yIla-TGfCNZAou7a0kRe-tUvF6uH4O2VfAIbGrTbEvxlGjbXYSPXqWQtKNQduGKAAWh2XUbeNOsMciETX046BlCff6UTaQuHFHq570iqpOLKkk4d4LzzYdRodm07cowNPuWUhfY6fVEqJjKdbyQv62Zdp_9NgCzOhstI0NPk-CeW6RWnEfbyPQifiaA8PKeoarU9BcIRIvnR7oINLVWE6Tlt9uBZvhX36y5r_zV6PoL-Vz3VkGr1JHjF9PC2IWdWA"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/changeQueueStatus",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"changeQueueStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get customers' favourtie queues",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk2OTc4MTMsInVzZXJfaWQiOiJ1V2JNS25HZWxRZFY2WjJTb0pxRU1PV3pmSHkyIiwic3ViIjoidVdiTUtuR2VsUWRWNloyU29KcUVNT1d6Zkh5MiIsImlhdCI6MTU4OTY5NzgxMywiZXhwIjoxNTg5NzAxNDEzLCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.lD1tY-AL-rj9I4SL8uPY9EQYu4Cn4EIBvAcIOX9xHY-4VrzdlgvXtAaOoo3i0hEXyj0e-mpHPL6BOObaOPTauWR3Vqh933wHKuYT3oMSc3C91Jue54fQj1-jlbQZQnHAibApcmTHRS-HTA4X3TkXRm3BjTo0C7zNw1n_VMErL87TXs8cX6NW7LIuAn-hGOYweCi-hpUQwPdz6-g1uuLQOsABGQXWb8WMIVFCyWbOVSgdd-Ycr-YkNsAlKpLv5VUfei57l4L34WXVjMlNuXlcYKJCgcOCRchMDxzfUQ8TpCL6qFtu8tK3za6-LlA9kDlEb2TWgrx910bg3melSWxzRw"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/getFavouriteQueues",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"getFavouriteQueues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change customer's favourtie business status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk1ODY1MTUsInVzZXJfaWQiOiJ1V2JNS25HZWxRZFY2WjJTb0pxRU1PV3pmSHkyIiwic3ViIjoidVdiTUtuR2VsUWRWNloyU29KcUVNT1d6Zkh5MiIsImlhdCI6MTU4OTU4NjUxNSwiZXhwIjoxNTg5NTkwMTE1LCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIwMS50ZXN0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInBvc3RtYW5AY3VzdG9tZXIwMS50ZXN0Il19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.hJJKjoxNyObpfuKKbhMbH3Nc92eU-Nr8D_wxAEBwH2Rm6n-fB4UPXj-8kFlvMuGCOWkvPljq1ZyJxxY-Z5gBPzSgTNubgyHZEhbU-wtFp93iPVOX_QQlSdU4IGcXraDQyGqr_mFa1LMuu7lq9Bx6BFLzyDiXfVpeEZoTOTT_LgVvR-_2NDk9-mRuRJmzvPISmPFkD05ooI7SyRmRT_oQkPqrnxhI-CTrYiqtadjCQnDQOwinjdiqRSNB157fVJ_Pi__bU1rtNttfMlD5qDbqN85J0V5PXg6ou-6Mm5UkJcuTxP-F5eL_SRlay4PfZ9argsHGlkLtRk-lYBw8QcP04A"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"favoriteQueueName\": \"postman@Business01.test\"\n}"
+						},
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/changeFavoriteQueueStatus",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"changeFavoriteQueueStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get customer's current queue information",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1YzlhZWJlMjM0ZGE2MDE2YmQ3Yjk0OTE2OGI4Y2Q1YjRlYzllZWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcS11cC1jMmI3MCIsImF1ZCI6InEtdXAtYzJiNzAiLCJhdXRoX3RpbWUiOjE1ODk2OTc4MTMsInVzZXJfaWQiOiJ1V2JNS25HZWxRZFY2WjJTb0pxRU1PV3pmSHkyIiwic3ViIjoidVdiTUtuR2VsUWRWNloyU29KcUVNT1d6Zkh5MiIsImlhdCI6MTU4OTY5NzgxMywiZXhwIjoxNTg5NzAxNDEzLCJlbWFpbCI6InBvc3RtYW5AY3VzdG9tZXIudGVzdCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJwb3N0bWFuQGN1c3RvbWVyLnRlc3QiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.lD1tY-AL-rj9I4SL8uPY9EQYu4Cn4EIBvAcIOX9xHY-4VrzdlgvXtAaOoo3i0hEXyj0e-mpHPL6BOObaOPTauWR3Vqh933wHKuYT3oMSc3C91Jue54fQj1-jlbQZQnHAibApcmTHRS-HTA4X3TkXRm3BjTo0C7zNw1n_VMErL87TXs8cX6NW7LIuAn-hGOYweCi-hpUQwPdz6-g1uuLQOsABGQXWb8WMIVFCyWbOVSgdd-Ycr-YkNsAlKpLv5VUfei57l4L34WXVjMlNuXlcYKJCgcOCRchMDxzfUQ8TpCL6qFtu8tK3za6-LlA9kDlEb2TWgrx910bg3melSWxzRw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://us-central1-q-up-c2b70.cloudfunctions.net/api/getCustomerQueueInfo",
+							"protocol": "https",
+							"host": [
+								"us-central1-q-up-c2b70",
+								"cloudfunctions",
+								"net"
+							],
+							"path": [
+								"api",
+								"getCustomerQueueInfo"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

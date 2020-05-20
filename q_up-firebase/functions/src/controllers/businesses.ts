@@ -5,7 +5,7 @@ import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
 import {imageObject, validateBusinessData} from "../util/helpers";
-import {internalSingUp} from "./users";
+import {registerNewBooth, registerNewDisplay} from "./boothsAndDisplays";
 
 /**
  * Registers a business.
@@ -536,52 +536,3 @@ export const deleteBusiness = async (req: Request, res: Response) => {
         });
 };
 
-/**
- * Creates a new account for the booth.
- * first Checks if the accessing user has the authority, then signs up a booth
- *
- * @param req:      express Request Object
- * @returns         Boolean true if registered successfully, otherwise false
- */
-const registerNewBooth = async (req: Request) => {
-    const requestData = {
-        businessName: req.body.businessName,
-        userType: req.body.userType,
-        password: req.body.gadgetPassword,
-    };
-    if (requestData.userType !== "manager") {
-        return false;
-    }
-    Object.assign(req.body, {
-        userType: "booth",
-        password: requestData.password,
-        confirmPassword: requestData.password,
-        email: `defaultBooth@${requestData.businessName}.qup`,
-    });
-    return await internalSingUp(req);
-};
-
-/**
- * Creates a new account for the display.
- * first Checks if the accessing user has the authority, then signs up a booth
- *
- * @param req:      express Request Object
- * @returns         Boolean true if registered successfully, otherwise false
- */
-const registerNewDisplay = async (req: Request) => {
-    const requestData = {
-        businessName: req.body.businessName,
-        userType: req.body.userType,
-        password: req.body.gadgetPassword,
-    };
-    if (requestData.userType !== "manager") {
-        return false;
-    }
-    Object.assign(req.body, {
-        userType: "display",
-        password: requestData.password,
-        confirmPassword: requestData.password,
-        email: `defaultDisplay@${requestData.businessName}.qup`,
-    });
-    return await internalSingUp(req);
-};

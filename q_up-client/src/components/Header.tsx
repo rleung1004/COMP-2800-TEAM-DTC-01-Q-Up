@@ -1,6 +1,6 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import "../../styles/staticHeader.scss";
+import "../styles/staticHeader.scss";
 import axios from "axios";
 import { IconButton, makeStyles } from "@material-ui/core";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
@@ -11,10 +11,28 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+/**
+ * Render a header.
+ *
+ * @param props.logout a boolean. If true, will display a logout button
+ * @param props.nav OPTIONAL a React Component. A hamburger menu to be displayed
+ *
+ * Accessible to: all users
+ */
 export default function Header(props: any) {
   const classes = useStyles();
-  
+
+  /**
+   * Handle logging out.
+   *
+   * Redirects to Landing page upon success.
+   * 
+   * Only employees are required to send a request to server. Else, just delete the token.
+   */
   const onLogoutHandler = () => {
+    if (!window.confirm("Are you sure?")) {
+      return;
+    }
     const userType = JSON.parse(sessionStorage.user).type;
     const axiosConfig = {
       headers: {
@@ -22,17 +40,27 @@ export default function Header(props: any) {
       },
     };
     if (userType === "employee") {
-      axios.get("/logout", axiosConfig)
-      .catch((err) => {
-        console.error(err);
-        window.alert("Connection error, please try again");
-        return;
-      })
+      axios
+        .get("/logout", axiosConfig)
+        .then(() => {
+          sessionStorage.removeItem("user");
+          window.location.href = "/";
+        })
+        .catch((err) => {
+          console.error(err);
+          window.alert("Connection error, please try again");
+          return;
+        });
+    } else {
+      sessionStorage.removeItem("user");
+      window.location.href = "/";
     }
-    sessionStorage.removeItem("user");
-    window.location.href = "/";
   };
+
+  // Handle the possiblity not to have a nav element
   const Navbar = props.Nav ? props.Nav : () => <></>;
+
+  // conditionally render a logout button
   const Logout = props.logout ? (
     <IconButton onClick={onLogoutHandler} classes={classes}>
       <PowerSettingsNewIcon />
@@ -49,7 +77,7 @@ export default function Header(props: any) {
             {Logout}
           </Grid>
           <Grid item container xs={8} justify="center">
-            <img src={require("../../img/logo.png")} alt="QUP logo" />
+            <img src={require("../img/logo.png")} alt="QUP logo" />
           </Grid>
           <Grid item xs={2}>
             <Navbar />

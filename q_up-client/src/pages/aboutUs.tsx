@@ -1,6 +1,6 @@
 import React from 'react';
-import Footer from 'src/components/static/Footer';
-import Header from 'src/components/static/Header';
+import Footer from 'src/components/Footer';
+import Header from 'src/components/Header';
 import '../styles/aboutUs.scss';
 import { Grid } from '@material-ui/core';
 import us from '../img/us.png';
@@ -10,6 +10,11 @@ import ourCulture from '../img/our-culture.jpeg';
 import logo from '../img/logo.png';
 import StaticNav from 'src/components/staticNav';
 
+/**
+ * Render an about us page.
+ * 
+ * Accessible to: all users
+ */
 export default function aboutUsPage() {
    return (
       <>

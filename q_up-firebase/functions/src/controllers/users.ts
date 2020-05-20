@@ -76,7 +76,7 @@ export const signUp = async (req: Request, res: Response) => {
                                     .then(() => res.status(201).json({token}));
                             });
                     } else {
-                        return res.status(403).json({general:'invalid user type for registration'})
+                        return res.status(403).json({general: 'invalid user type for registration'})
                     }
                 });
         })
@@ -148,7 +148,7 @@ export const internalSingUp = async (req: Request) => {
                                 console.log(`successfully registered ${newUser.email}`);
                                 return true;
                             });
-                    } else if (newUser.userType === "display"){
+                    } else if (newUser.userType === "display") {
                         return await db
                             .doc(`/users/${newUser.email}`)
                             .set({
@@ -161,8 +161,7 @@ export const internalSingUp = async (req: Request) => {
                                 console.log(`successfully registered ${newUser.email}`);
                                 return true;
                             });
-                    }
-                    else {
+                    } else {
                         return false;
                     }
                 });
@@ -170,6 +169,51 @@ export const internalSingUp = async (req: Request) => {
         .catch((err) => {
             console.error(err);
             return false
+        });
+};
+
+/**
+ * Creates user accounts using oAuth for this web-app.
+ * first checks to determine if the user already exists in the database. If not, creates a new user with the credentials
+ * given
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         the response data with the status code:
+ *
+ *                  - 409 if Email is already in use
+ *                  - 500 if an error occurs in the midst of query
+ *                  - 201 if successful
+ */
+export const oAuthSignUp = async (req: Request, res: Response) => {
+    const requestData = {
+        email: req.body.email,
+        userId: req.body.userId,
+    };
+    return await db
+        .collection('users')
+        .doc(requestData.email)
+        .get()
+        .then(data => {
+            if (data.exists) {
+                return res.status(409).json({general: "the user already exists!"});
+            } else {
+                db.doc(`users/${requestData.email}`).set({
+                    email: requestData.email,
+                    currentQueue: null,
+                    favoriteBusinesses: [],
+                    userId: requestData.userId,
+                    userType: 'customer',
+                });
+                return res.status(201).json({general:"successfully created the customer!"});
+            }
+        })
+        .catch(async (err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "unsuccessful. Please try again!",
+                error: await err.toString(),
+            });
         });
 };
 
@@ -229,7 +273,7 @@ export const login = async (req: Request, res: Response) => {
                         .catch(async err => {
                             console.error(err);
                             return res.status(404).json({
-                                general:"Account does not exist!",
+                                general: "Account does not exist!",
                                 error: await err.toString(),
                             });
                         })
@@ -284,7 +328,7 @@ export const logout = async (req: Request, res: Response) => {
                     .doc(requestData.email)
                     .update({isOnline: false})
             }
-            return  res.status(200).json({general: "logged out successfully"});
+            return res.status(200).json({general: "logged out successfully"});
         })
         .catch(async (err) => {
             console.error(err);

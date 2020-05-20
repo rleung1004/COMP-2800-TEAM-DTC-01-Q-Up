@@ -8,7 +8,7 @@ import SignupPage from "./pages/signup";
 import aboutUsPage from "./pages/aboutUs";
 import themes from "./mui-theming/themes";
 import termsPage from "./pages/termsAndConditions";
-import privacyPage from "./pages/privaryPolicy";
+import privacyPage from "./pages/privacyPolicy";
 import { ThemeProvider } from "@material-ui/core";
 import ConsumerRegistrationPage from "./pages/consumerRegistration";
 import BusinessRegistrationPage from "./pages/businessRegistration";
@@ -22,6 +22,7 @@ import EmployeeManagementPage from "./pages/employeeManagement";
 import QueueSearchPage from "./pages/queueSearch";
 import TellerPage from "./pages/teller";
 import BoothDashBoard from './pages/boothDashBoard';
+import ContactUsPage from "./pages/contactUs";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
@@ -51,6 +52,7 @@ function App() {
             <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
             <Route path="/teller" component={TellerPage} exact />
             <Route path="/boothDashBoard" component={BoothDashBoard} exact />
+            <Route path="/contactUs" component={ContactUsPage} exact/>
           </Switch>
         </ThemeProvider>
       </div>

@@ -28,4 +28,9 @@ export const db = firebaseAdmin.firestore();
 /**
  * References a firestore cloud function trigger in this web-app.
  */
-export const trigger = functions.firestore;
+export const dbTrigger = functions.firestore;
+
+/**
+ * References a authentication cloud function trigger in this web-app.
+ */
+export const authTrigger = functions.auth;

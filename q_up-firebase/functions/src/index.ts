@@ -5,7 +5,7 @@ import {
 } from './controllers/queues';
 import * as express from "express";
 import * as cors from "cors";
-import {signUp, login, changePassword, logout} from "./controllers/users";
+import {signUp, login, changePassword, logout, oAuthSignUp} from "./controllers/users";
 import {updateCustomerInfo, deleteCustomer, getCustomer, registerCustomer} from "./controllers/customers";
 import {
     updateBusiness,
@@ -14,7 +14,7 @@ import {
     registerBusiness,
     deleteBusiness,
 } from "./controllers/businesses";
-import {FirebaseAuthentication} from "./util/firebaseAuthentication";
+import {firebaseAuthentication} from "./util/firebaseAuthentication";
 import algoliasearch from "algoliasearch";
 import {
     registerEmployee,
@@ -25,6 +25,7 @@ import {
 } from "./controllers/employees";
 import {algoliaAddToIndex, algoliaDeleteFromIndex, algoliaUpdateIndex} from "./controllers/algoliaTriggers";
 import {onQueueUpdate} from "./controllers/appTriggers";
+import {getDisplayInfo} from "./controllers/boothsAndDisplays";
 
 // ========================
 // App Configuration
@@ -45,53 +46,54 @@ export const index = client.initIndex("businesses");
 // Authentication Routes
 // ========================
 app.post("/signup", signUp);
+app.post('/oAuthSignup', oAuthSignUp);
 app.post("/login", login);
-app.get('/logout', FirebaseAuthentication, logout);
-app.put("/changePassword", FirebaseAuthentication, changePassword);
+app.get('/logout', firebaseAuthentication, logout);
+app.put("/changePassword", firebaseAuthentication, changePassword);
 
 
 // ========================
 // Business Routes
 // ========================
-app.post('/registerBusiness', FirebaseAuthentication, registerBusiness);
-app.post("/uploadBusinessImage", FirebaseAuthentication, uploadBusinessImage);
-app.get("/getBusiness", FirebaseAuthentication, getBusiness);
-app.put("/updateBusiness", FirebaseAuthentication, updateBusiness);
-app.delete('/deleteBusiness', FirebaseAuthentication, deleteBusiness);
-
+app.post('/registerBusiness', firebaseAuthentication, registerBusiness);
+app.post("/uploadBusinessImage", firebaseAuthentication, uploadBusinessImage);
+app.get("/getBusiness", firebaseAuthentication, getBusiness);
+app.put("/updateBusiness", firebaseAuthentication, updateBusiness);
+app.delete('/deleteBusiness', firebaseAuthentication, deleteBusiness);
+app.get("/getDisplay", firebaseAuthentication, getDisplayInfo);
 
 // ========================
 // Customer Routes
 // ========================
-app.get("/getCustomer", FirebaseAuthentication, getCustomer);
-app.post('/registerCustomer', FirebaseAuthentication, registerCustomer);
-app.put("/updateCustomer", FirebaseAuthentication, updateCustomerInfo);
-app.delete("/deleteCustomer", FirebaseAuthentication, deleteCustomer);
+app.get("/getCustomer", firebaseAuthentication, getCustomer);
+app.post('/registerCustomer', firebaseAuthentication, registerCustomer);
+app.put("/updateCustomer", firebaseAuthentication, updateCustomerInfo);
+app.delete("/deleteCustomer", firebaseAuthentication, deleteCustomer);
 
 
 // ========================
 // Employee Routes
 // ========================
-app.post('/registerEmployee', FirebaseAuthentication, registerEmployee);
-app.put('/updateEmployee', FirebaseAuthentication, updateEmployee);
-app.put('/deleteEmployee', FirebaseAuthentication, deleteEmployee);
-app.get('/getEmployees', FirebaseAuthentication, getEmployees);
-app.get('/getOnlineEmployees', FirebaseAuthentication, getOnlineEmployees);
+app.post('/registerEmployee', firebaseAuthentication, registerEmployee);
+app.put('/updateEmployee', firebaseAuthentication, updateEmployee);
+app.put('/deleteEmployee', firebaseAuthentication, deleteEmployee);
+app.get('/getEmployees', firebaseAuthentication, getEmployees);
+app.get('/getOnlineEmployees', firebaseAuthentication, getOnlineEmployees);
 
 
 // ========================
 // Queue Routes
 // ========================
-app.get("/getQueue", FirebaseAuthentication, getQueue);
-app.get("/getCustomerQueueInfo", FirebaseAuthentication, getQueueSlotInfo);
-app.post("/customerEnterQueue", FirebaseAuthentication, customerEnterQueue);
-app.put("/boothEnterQueue", FirebaseAuthentication, boothEnterQueue);
-app.put("/VIPEnterQueue", FirebaseAuthentication, vipEnterQueue);
-app.put("/abandonQueue", FirebaseAuthentication, abandonQueue);
-app.put("/changeQueueStatus", FirebaseAuthentication, changeQueueStatus);
-app.put('/checkInQueue', FirebaseAuthentication, checkInQueue);
-app.get("/getFavouriteQueues", FirebaseAuthentication, getFavouriteQueuesForCustomer);
-app.put('/changeFavoriteQueueStatus', FirebaseAuthentication, changeStatusOfFavouriteBusiness);
+app.get("/getQueue", firebaseAuthentication, getQueue);
+app.get("/getCustomerQueueInfo", firebaseAuthentication, getQueueSlotInfo);
+app.post("/customerEnterQueue", firebaseAuthentication, customerEnterQueue);
+app.put("/boothEnterQueue", firebaseAuthentication, boothEnterQueue);
+app.put("/VIPEnterQueue", firebaseAuthentication, vipEnterQueue);
+app.put("/abandonQueue", firebaseAuthentication, abandonQueue);
+app.put("/changeQueueStatus", firebaseAuthentication, changeQueueStatus);
+app.put('/checkInQueue', firebaseAuthentication, checkInQueue);
+app.get("/getFavouriteQueues", firebaseAuthentication, getFavouriteQueuesForCustomer);
+app.put('/changeFavoriteQueueStatus', firebaseAuthentication, changeStatusOfFavouriteBusiness);
 
 
 // ========================
