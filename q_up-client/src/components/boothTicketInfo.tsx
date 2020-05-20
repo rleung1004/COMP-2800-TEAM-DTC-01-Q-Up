@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 
 export default function boothEnterName(props: any) {
    return (
@@ -16,6 +16,13 @@ export default function boothEnterName(props: any) {
                <Grid>Password</Grid>
                <Grid>{props.password}</Grid>
             </Grid>
+            <Button
+               color='primary'
+               variant='contained'
+               onClick={props.changeStandBy}
+            >
+               Done
+            </Button>
          </Grid>
       </>
    );

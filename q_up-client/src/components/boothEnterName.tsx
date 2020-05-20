@@ -4,7 +4,7 @@ import { TextField, Button, Box } from '@material-ui/core';
 export default function boothEnterName(props: any) {
    return (
       <>
-         <Box mt={20}>
+         <Box pt={20}>
             <TextField
                color='secondary'
                id='phone'
@@ -13,8 +13,14 @@ export default function boothEnterName(props: any) {
             />
          </Box>
          <br />
-         <Box mb={20}>
-            <Button onlcick={props.enterQueue}>Queue Up</Button>
+         <Box pb={20}>
+            <Button
+               color='primary'
+               variant='contained'
+               onClick={props.enterQueue}
+            >
+               Queue Up
+            </Button>
          </Box>
       </>
    );
