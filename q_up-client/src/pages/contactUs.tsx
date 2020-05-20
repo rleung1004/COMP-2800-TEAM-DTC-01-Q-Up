@@ -4,6 +4,7 @@ import React from "react";
 import Header from "src/components/Header";
 import Typography from "@material-ui/core/Typography";
 import Footer from "src/components/Footer";
+import Paper from "@material-ui/core/Paper";
 
 /**
  * Render a contact us page.
@@ -25,9 +26,11 @@ export default function ContactUsPage() {
         <header>
           <Typography variant="h1">Contact Us</Typography>
         </header>
-        <button onClick={onclick}></button>
+        <button onClick={onclick}>twit</button>
         <section>
-        <div className="fb-comments" data-href="https://www.facebook.com/teamkart.bcit.7" data-numposts="5" data-width=""></div>
+          <Paper>
+             <div className="fb-comments" data-href="https://www.facebook.com/teamkart.bcit.7" data-numposts="5" data-width=""></div>
+          </Paper>
         </section>
       </main>
       <Footer />
