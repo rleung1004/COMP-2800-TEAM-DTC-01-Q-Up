@@ -9,7 +9,7 @@ const keys = {
 /**
  * Gets OAuth token from twitter.
  *
- * @param req:      express Request Object
+ * @param _:      express Request Object
  * @param res:      express Response Object
  * @returns         Response the response data with the status code:
  * 
@@ -17,6 +17,8 @@ const keys = {
  *                  - 200 if successful
  */
 export const getTwitterOAuthToken = async (_:Request, res:Response) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     const client = new Twitter(keys);
     console.log(_);    
     return await client.getRequestToken('http://localhost:3000/contactUs')
@@ -28,7 +30,7 @@ export const getTwitterOAuthToken = async (_:Request, res:Response) => {
         console.error(err);
         return res.status(500).json({general: "Could not get token."});
     });
-}
+};
 
 /**
  * Gets the twitter access.
@@ -41,6 +43,8 @@ export const getTwitterOAuthToken = async (_:Request, res:Response) => {
  *                  - 200 if successful
  */
 export const getTwitterAccessToken = async (req:Request, res:Response) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     const client = new Twitter(keys);
     return await client
     .getAccessToken({oauth_verifier: req.body.oauthVerifier, oauth_token: req.body.oauthToken})
@@ -58,7 +62,7 @@ export const getTwitterAccessToken = async (req:Request, res:Response) => {
         console.error(err);
         return res.status(500).json({general: "Could not get token."});
     });
-}
+};
 
 /**
  * Updates the user's status in twitter.
@@ -72,6 +76,8 @@ export const getTwitterAccessToken = async (req:Request, res:Response) => {
  *                  - 201 if successful
  */
 export const tweet = async (req:Request, res:Response) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     const {access_token_key, access_token_secret} = req.body.tokens;
     const client = new Twitter({
         ...keys,
@@ -90,4 +96,4 @@ export const tweet = async (req:Request, res:Response) => {
               }
               res.status(500).json({general:"Cannot tweet"});
           });
-}
+};
