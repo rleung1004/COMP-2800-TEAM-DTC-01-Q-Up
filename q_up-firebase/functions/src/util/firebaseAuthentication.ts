@@ -13,7 +13,7 @@ import {Request, Response} from "express";
  *                  - 500 if an error occurs in the midst of query
  *                  - the return response of the next function
  */
-export const FirebaseAuthentication = async (req: Request, res: Response, next: Function) => {
+export const firebaseAuthentication = async (req: Request, res: Response, next: Function) => {
     let idToken: string;
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
         idToken = req.headers.authorization.split("Bearer ")[1];

@@ -1,4 +1,4 @@
-import {db, trigger} from "../util/firebaseConfig";
+import { db, dbTrigger} from "../util/firebaseConfig";
 import {getOnlineEmployees} from "./queues";
 import {getCounts, getHighestTicketNumbers} from "../util/helpers";
 
@@ -48,7 +48,7 @@ const changeCurrentWaitTimeOfQueue = async (newBusiness: any) => {
  *
  * @return  null to determine the end of the trigger for the cloud function
  */
-export const onQueueUpdate = trigger
+export const onQueueUpdate = dbTrigger
     .document("businesses/{businessName}")
     .onUpdate(async change => {
         const prevData: any = await change.before.data();
@@ -67,5 +67,6 @@ export const onQueueUpdate = trigger
                 await changeCurrentWaitTimeOfQueue(newData);
             }
         }
+        console.log("successfully updated the queue information by the trigger");
         return null;
     });

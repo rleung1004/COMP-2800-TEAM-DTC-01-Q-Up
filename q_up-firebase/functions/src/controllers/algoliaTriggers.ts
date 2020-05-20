@@ -1,10 +1,10 @@
 import {index} from "../index";
-import {trigger} from "../util/firebaseConfig";
+import {dbTrigger} from "../util/firebaseConfig";
 
 /**
  * Adds the created document on algolia's live database.
  */
-export const algoliaAddToIndex = trigger
+export const algoliaAddToIndex = dbTrigger
     .document("businesses/{businessId}")
     .onCreate((snapshot) => {
         const data = snapshot.data();
@@ -15,7 +15,7 @@ export const algoliaAddToIndex = trigger
 /**
  * Updates the updated document on algolia's live database.
  */
-export const algoliaUpdateIndex = trigger
+export const algoliaUpdateIndex = dbTrigger
     .document("businesses/{businessId}")
     .onUpdate((change) => {
         const newData = change.after.data();
@@ -26,7 +26,7 @@ export const algoliaUpdateIndex = trigger
 /**
  * Deletes the deleted document on algolia's live database.
  */
-export const algoliaDeleteFromIndex = trigger
+export const algoliaDeleteFromIndex = dbTrigger
     .document("businesses/{businessId}")
     .onDelete((snapshot) => {
         index.deleteObject(snapshot.id);
