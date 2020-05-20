@@ -79,7 +79,7 @@ export const onQueueUpdate = dbTrigger
                             && queueSlot.ticketNumber === customerSlot.ticketNumber
                             && queueSlot.customerType === customerSlot.customerType)
                     });
-                    if (customerIndex !== -1 && customerIndex < 5 && customerIndex > 2) {
+                    if (customerIndex !== -1 && customerIndex <= 5 && customerIndex >= 2) {
                         const sentResponse = sendMail(customerSlot.customer);
                         if (!sentResponse) {
                             console.error(`did not send the email to ${customerSlot.customer} successfully!`)

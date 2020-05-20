@@ -7,10 +7,11 @@ const nodeMailer = require('nodemailer');
  * Creates a transport object that is to be used to send emails.
  */
 const transporter = nodeMailer.createTransport({
-    service: 'gmail',
+    host: "smtp.mailtrap.io",
+    port: 2525,
     auth: {
-        user: 'teamkart.bcit@gmail.com',
-        pass: "Y7u8I9o0"
+        user: "80255c694130f0",
+        pass: "960e51e0cacee2"
     }
 });
 
@@ -33,7 +34,6 @@ const message = (destinationEmail: string) => {
         Sincerely,
         Q-UP auto generated notification
         `,
-
     }
 };
 
