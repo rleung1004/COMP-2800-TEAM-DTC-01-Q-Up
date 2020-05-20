@@ -26,6 +26,7 @@ import {
 import {algoliaAddToIndex, algoliaDeleteFromIndex, algoliaUpdateIndex} from "./controllers/algoliaTriggers";
 import {onQueueUpdate} from "./controllers/appTriggers";
 import {getDisplayInfo} from "./controllers/boothsAndDisplays";
+import {getDataEnum} from "./controllers/dataEnumerations";
 
 // ========================
 // App Configuration
@@ -95,6 +96,11 @@ app.put('/checkInQueue', firebaseAuthentication, checkInQueue);
 app.get("/getFavouriteQueues", firebaseAuthentication, getFavouriteQueuesForCustomer);
 app.put('/changeFavoriteQueueStatus', firebaseAuthentication, changeStatusOfFavouriteBusiness);
 
+
+// ========================
+// Util Routes
+// ========================
+app.get("/getBusinessEnums", firebaseAuthentication, getDataEnum);
 
 // ========================
 // Algolia Triggers

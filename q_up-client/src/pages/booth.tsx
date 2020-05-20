@@ -71,17 +71,16 @@ export default function Booth() {
    };
 
    const InfoSection = () => {
-      switch (boothInfo.state) {
-         case boothStates.closed:
-            return <BoothDisabledInfo/>;
-         case boothStates.accepting:
-            return <BoothEnterName setBoothInfo={setBoothInfo} />;
-         case boothStates.serving:
-            return <BoothTicketInfo onDone={onDone} data={boothInfo}/>;
-         case boothStates.loading:
-            return <BoothLoadingInfo />
+      if (boothInfo.state === boothStates.closed) {
+         return <BoothDisabledInfo/>;
+      } else if (boothInfo.state === boothStates.accepting) {
+         return <BoothEnterName setBoothInfo={setBoothInfo}/>;
+      } else if (boothInfo.state === boothStates.serving) {
+         return <BoothTicketInfo onDone={onDone} data={boothInfo}/>;
+      } else if (boothInfo.state === boothStates.loading) {
+         return <BoothLoadingInfo/>
       }
-      return <> </>;
+      return <></>;
    };
 
 

@@ -108,6 +108,16 @@ export const cities: Array<string> = [
 ];
 
 /**
+ * Represents all the possible values for the business categories available in the application.
+ */
+export const businessCategories: Array<string> = ["Clinic", "Restaurant", "Government", "Grocer", "Hairdresser", 'gun store'];
+
+/**
+ * Represents the provinces of canada.
+ */
+export const provinces: Array<string> = ["NL", "PE", "NS", "NB", "QC", "ON", "MB", "SK", "AB", "BC", "YT", "NT", "NU"];
+
+/**
  * Represents a queueSlot.
  */
 export interface queueSlot {
@@ -204,7 +214,7 @@ export const isEmpty = (string: string) => {
  * @see             https://pastebin.com/f33g85pd
  */
 export const isEmail = (email: string) => {
-    const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return !!email.match(regEx);
 };
 
@@ -259,8 +269,7 @@ export const validateSignUpData = (data: signUpData) => {
     }
     if (isEmpty(data.password)) {
         Object.assign(errors, {password: "Must not be empty"});
-    }
-    else if (!isStrongPassword(data.password)) {
+    } else if (!isStrongPassword(data.password)) {
         Object.assign(errors, {password: "must include 1 uppercase, 1 lowercase or 1 number, and be 6 characters"})
     }
     if (data.password !== data.confirmPassword) {
@@ -373,7 +382,7 @@ export const validateBusinessData = (data: businessData) => {
  * @return Object        with three fields of customer of type string, ticketNumber of type number, and password
  *                       of type string.
  */
-export const createVIPSlot = (lastTicketNumber : number) => {
+export const createVIPSlot = (lastTicketNumber: number) => {
     return {
         receivedEmail: false,
         customer: `VIP-${lastTicketNumber + 1}`,

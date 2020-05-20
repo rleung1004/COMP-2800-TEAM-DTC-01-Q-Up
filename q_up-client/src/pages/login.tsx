@@ -131,7 +131,7 @@ export default function LoginPage() {
                 value={formState.email}
                 className={classes.textField}
                 helperText={formState.errors.email}
-                error={formState.errors.email ? true : false}
+                error={!!formState.errors.email}
                 color="secondary"
               />
 
@@ -144,7 +144,7 @@ export default function LoginPage() {
                 onChange={handleOnFieldChange}
                 value={formState.password}
                 helperText={formState.errors.password}
-                error={formState.errors.password ? true : false}
+                error={!!formState.errors.password}
                 color="secondary"
               />
 

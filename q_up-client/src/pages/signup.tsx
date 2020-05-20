@@ -148,7 +148,7 @@ export default function SignupPage() {
                 value={formState.email}
                 className={classes.textField}
                 helperText={formState.errors.email}
-                error={formState.errors.email ? true : false}
+                error={!!formState.errors.email}
               />
               <TextField
                 color="secondary"
@@ -160,7 +160,7 @@ export default function SignupPage() {
                 onChange={handleOnFieldChange}
                 value={formState.password}
                 helperText={formState.errors.password}
-                error={formState.errors.password ? true : false}
+                error={!!formState.errors.password}
               />
               <TextField
                 color="secondary"
@@ -172,7 +172,7 @@ export default function SignupPage() {
                 onChange={handleOnFieldChange}
                 value={formState.confirmPassword}
                 helperText={formState.errors.confirmPassword}
-                error={formState.errors.confirmPassword ? true : false}
+                error={!!formState.errors.confirmPassword}
               />
               {formState.userType === "manager" && (
                 <TextField
@@ -185,11 +185,11 @@ export default function SignupPage() {
                   onChange={handleOnFieldChange}
                   value={formState.businessName}
                   helperText={formState.errors.businessName}
-                  error={formState.errors.businessName ? true : false}
+                  error={!!formState.errors.businessName}
                 />
               )}
               <FormControl component="fieldset">
-                <FormLabel component="legend"></FormLabel>
+                <FormLabel component="legend"/>
                 <RadioGroup
                   name="userType"
                   value={formState.userType}

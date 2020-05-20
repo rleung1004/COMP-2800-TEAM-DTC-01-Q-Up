@@ -74,7 +74,7 @@ export function formatGoogleMapURL(formattedAddress:string) {
         }
     }
     return newString;
-  };
+  }
 
 /**
  * Format 24h time into 12h time.

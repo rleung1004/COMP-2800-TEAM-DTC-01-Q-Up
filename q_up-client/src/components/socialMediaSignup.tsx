@@ -43,7 +43,6 @@ export default function FirebaseSignup() {
     if (result === null) {
       return;
     }
-
     if (!userData.email) {
       await firebase
         .auth()

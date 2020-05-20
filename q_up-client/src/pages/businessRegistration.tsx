@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, ChangeEvent } from "react";
+import React, {useState, FormEvent, ChangeEvent, useEffect} from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,7 +13,6 @@ import {
   Select,
 } from "@material-ui/core";
 import axios from "axios";
-import { mockProvinces, mockCategories } from "src/mockData";
 import "../styles/businessDashboard.scss";
 
 
@@ -49,7 +48,12 @@ const useStyles = makeStyles((theme) => ({
  */
 export default function BusinessRegistrationPage() {
   const classes = useStyles();
-  
+  const array: Array<any> = [];
+  const [dropdownData, setDropDownData] = useState({
+    categories: array,
+    provinces: array,
+  });
+  const [getDropdownData, setGetDropdownData] = useState(true);
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
@@ -277,6 +281,24 @@ export default function BusinessRegistrationPage() {
       });
   };
 
+  useEffect(()=> {
+    if (!getDropdownData) {
+      return;
+    }
+    setGetDropdownData(false);
+    axios
+        .get('/getBusinessEnums', axiosConfig)
+        .then(res => setDropDownData(res.data))
+        .catch((err: any) => {
+          console.log(err);
+          if (err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            window.location.href = '/login';
+            return;
+          }
+          window.alert("Connection error");
+        });
+  }, [axiosConfig, getDropdownData]);
   return (
     <>
       <Header />
@@ -355,7 +377,7 @@ export default function BusinessRegistrationPage() {
                   value={formState.category}
                   onChange={handleOnFieldChange}
                 >
-                  {mockCategories().map((cat, key) => {
+                  {dropdownData.categories.map((cat, key) => {
                     return (
                       <MenuItem key={key} value={cat}>
                         {cat}
@@ -427,7 +449,7 @@ export default function BusinessRegistrationPage() {
                     value={formState.address.province}
                     onChange={handleOnFieldChange}
                   >
-                    {mockProvinces().map((prov, key) => {
+                    {dropdownData.provinces.map((prov, key) => {
                       return (
                         <MenuItem key={key} value={prov}>
                           {prov}

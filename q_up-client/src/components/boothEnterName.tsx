@@ -5,7 +5,6 @@ import axios from 'axios';
 enum boothStates{
    loading,
    closed,
-   accepting,
    serving
 }
 

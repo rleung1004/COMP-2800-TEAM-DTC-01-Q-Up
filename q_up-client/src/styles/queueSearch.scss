@@ -1,9 +1,9 @@
 .MuiPaper-rounded {
-  border-radius: 0px;
+  border-radius: 0;
 }
 
 .searchPaper {
-  padding: 1rem 0rem;
+  padding: 1rem 0;
 }
 
 .ais-SearchBox-form {
@@ -14,7 +14,7 @@
     border-top: thin solid #eef13e;
     border-left: thin solid #eef13e;
     border-bottom: thin solid #eef13e;
-    box-shadow: 0px 0px 4px inset;
+    box-shadow: 0 0 4px inset;
     border-right: none;
   }
 

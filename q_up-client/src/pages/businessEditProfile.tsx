@@ -13,7 +13,6 @@ import {
   Select,
 } from "@material-ui/core";
 import axios from "axios";
-import { mockProvinces, mockCategories } from "src/mockData";
 import "../styles/businessDashboard.scss";
 import BusinessNav from "src/components/businessNav";
 
@@ -48,6 +47,12 @@ const useStyles = makeStyles((theme) => ({
  * Accessible to: managers
  */
 export default function EditBusinessProfilePage() {
+  const array: Array<any> = [];
+  const [dropdownData, setDropDownData] = useState({
+    categories: array,
+    provinces: array,
+  });
+  const [getDropdownData, setGetDropdownData] = useState(true);
   const classes = useStyles();
   const axiosConfig = {
     headers: {
@@ -262,6 +267,25 @@ export default function EditBusinessProfilePage() {
       });
   }, [axiosConfig, errorObject, getData]);
 
+  useEffect(()=> {
+    if (!getDropdownData) {
+      return;
+    }
+    setGetDropdownData(false);
+    axios
+        .get('/getBusinessEnums', axiosConfig)
+        .then(res => setDropDownData(res.data))
+        .catch((err: any) => {
+          console.log(err);
+          if (err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            window.location.href = '/login';
+            return;
+          }
+          window.alert("Connection error");
+        });
+  }, [axiosConfig, getDropdownData]);
+
   // submit handler
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -313,6 +337,8 @@ export default function EditBusinessProfilePage() {
         }));
       });
   };
+
+
 
   return (
     <>
@@ -404,7 +430,7 @@ export default function EditBusinessProfilePage() {
                   value={formState.category}
                   onChange={handleOnFieldChange}
                 >
-                  {mockCategories().map((cat, key) => {
+                  {dropdownData.categories.map((cat, key) => {
                     return (
                       <MenuItem key={key} value={cat}>
                         {cat}
@@ -473,7 +499,7 @@ export default function EditBusinessProfilePage() {
                     value={formState.address.province}
                     onChange={handleOnFieldChange}
                   >
-                    {mockProvinces().map((prov, key) => {
+                    {dropdownData.provinces.map((prov, key) => {
                       return (
                         <MenuItem key={key} value={prov}>
                           {prov}

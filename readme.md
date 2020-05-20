@@ -13,7 +13,7 @@ Q-UP made by Team-KART
   - [Tests](#tests)
     * [Postman](#postman)
     * [Unit tests](#unit-tests)
-    * [Selenium IDE (Chrome Extension)](#selenium-ide--chrome-extension-)
+    * [Selenium IDE Chrome Extension](#selenium-ide-chrome-extension)
   - [Technologies](#technologies)
   - [Code References](#code-references)
     * [TermsFeed](#termsfeed)
@@ -213,7 +213,7 @@ In order to run the unit tests of Q-UP's web=application, follow these instructi
     
  After a short while, you will see a series of 55 unit test results will be displayed on your terminal window.
 
-### Selenium IDE (Chrome Extension)
+### Selenium IDE Chrome Extension
 
 Note: You need to have downloaded and installed 
 <a href="https://www.google.ca/chrome/?brand=CHBD&gclid=CjwKCAjwh472BRAGEiwAvHVfGuD2x9L9a_Sv6dU4JdRTeXjKohRtSS8mAP19PEq2_iDIaYhluDQFZBoCr-kQAvD_BwE&gclsrc=aw.ds">
