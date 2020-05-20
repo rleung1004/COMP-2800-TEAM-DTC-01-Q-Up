@@ -1,15 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Footer from '../components/static/Footer';
 import Header from '../components/static/Header';
 import BoothEnterName from '../components/boothEnterName';
+import BoothTicketInfo from '../components/boothTicketInfo';
 import { Grid, Typography } from '@material-ui/core';
 
 export default function BoothDashBoard() {
+   const [state, setState] = useState({
+      standBy: true,
+      name: '',
+      ticketNumber: '',
+      password: '',
+   });
+
+   const onChangeDisplay = (state: any) => {
+      setState({ standBy: !state.standBy });
+   };
+
    return (
       <>
          <Header />
          <main>
-            <BoothEnterName />
+            <section>
+               {state.standBy ? (
+                  <BoothEnterName enterQueue={onChangeDisplay} />
+               ) : (
+                  <BoothTicketInfo
+                     name={state.name}
+                     ticketNumber={state.ticketNumber}
+                     password={state.password}
+                  />
+               )}
+            </section>
             <Grid container spacing={8} justify='center'>
                <Grid item xs={3}>
                   <Typography>Feature</Typography>
