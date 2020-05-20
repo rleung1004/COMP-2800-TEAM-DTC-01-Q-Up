@@ -26,6 +26,7 @@ export const registerNewBooth = async (req: Request) => {
     });
     return await internalSingUp(req);
 };
+
 /**
  * Creates a new account for the display.
  * first Checks if the accessing user has the authority, then signs up a booth
