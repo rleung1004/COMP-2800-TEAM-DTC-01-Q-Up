@@ -15,38 +15,33 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import MapIcon from "@material-ui/icons/Map";
 import Axios from "axios";
 import { formatGoogleMapURL, formatAddress } from "src/utils/formatting";
-import '../styles/queueListRow.scss';
+import "../styles/queueListRow.scss";
+import { formatTimeInto12h } from "../utils/formatting";
+import { isWeekend } from '../utils/misc';
 
+// Mui stylings
 const useStyles = makeStyles({
   qupButton: {
     minWidth: "auto",
   },
   expansion: {
-    borderBottom: '0.5px solid black' 
+    borderBottom: "0.5px solid black",
   },
-  expansionSummary: {
-   
-  },
+  expansionSummary: {},
   expansionDetails: {
-    backgroundColor: '#F6F6F6',
-  }
+    backgroundColor: "#F6F6F6",
+  },
 });
 
-function formatTime(time24h: string) {
-  const [hours, mins] = time24h.split(":");
-  const intHours = parseInt(hours);
-  return (intHours % 12 || 12) + ":" + mins + (intHours >= 12 ? "PM" : "AM");
-}
-
-function isWeekend() {
-  const date = new Date();
-  const dayOfWeek = date.getDay();
-  if (dayOfWeek === 0 || dayOfWeek === 6) {
-    return true;
-  }
-  return false;
-}
-
+/**
+ * Helper function to evaluate opening time to display in relation to the day of the week
+ * @param hours an object such as:
+ * {
+ * startTime: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"],
+ * endTIme: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"]
+ * }
+ * where time is in 24h format
+ */
 function evaluateOpenTime(hours: any) {
   if (isWeekend()) {
     return hours.startTime[0];
@@ -54,6 +49,15 @@ function evaluateOpenTime(hours: any) {
   return hours.startTime[1];
 }
 
+/**
+ * Helper function to evaluate closing time to display in relation to the day of the week
+ * @param hours an object such as:
+ * {
+ * startTime: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"],
+ * endTIme: ["00:00", "00:00", "00:00", "00:00", "00:00", "00:00", "00:00"]
+ * }
+ * where time is in 24h format
+ */
 function evaluateCloseTime(hours: any) {
   if (isWeekend()) {
     return hours.endTime[0];
@@ -61,6 +65,17 @@ function evaluateCloseTime(hours: any) {
   return hours.endTime[1];
 }
 
+/**
+ * Render an individual queue list row.
+ * 
+ * Queue list rows are displayed as an expansion panel.
+ * The summary section is always shown. The details section is show selectively.
+ * @param props.hit optional parameter, data as provided by algolia
+ * @param props.data optional parameter, data as provided by our server
+ * 
+ * props.hit (+) props.data
+ * Parameters are mutually exclusive.
+ */
 export default function QueueListRow(props: any) {
   const classes = useStyles();
   const axiosConfig = {
@@ -69,6 +84,7 @@ export default function QueueListRow(props: any) {
     },
   };
 
+  // Map the data according to the data provider
   const data = props.data
     ? {
         ...props.data,
@@ -89,6 +105,7 @@ export default function QueueListRow(props: any) {
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
 
+  // Handle click on map button
   const handleToGMap = () => {
     window.open(
       "https://www.google.com/maps/search/?api=1&query=" +
@@ -97,6 +114,18 @@ export default function QueueListRow(props: any) {
     );
   };
 
+  /**
+   * Handle click on Fav button.
+   * 
+   * The Fav button is a curried button.
+   * It remembers whether to call the click handler with true or false
+   * @param fav the previous state
+   * @post will set the fav button such as:
+   * If the previous state was true, will curry false
+   * as the next state
+   * else will curry true
+   * @post will replace the fav button with a new one
+   */
   const handleFavClick = (fav: Boolean) => () => {
     const iconButtonManager = () => {
       if (fav) {
@@ -114,6 +143,7 @@ export default function QueueListRow(props: any) {
       }
     };
 
+    // map the data into server format
     const packet = {
       favoriteQueueName: data.name,
     };
@@ -130,28 +160,40 @@ export default function QueueListRow(props: any) {
       });
   };
 
+  /**
+   * Following are the initial models for the fav button.
+   * The only difference is the color of the icon.
+   */
+
+  // Initial fav button model. True version
   const favButtonModel = (
     <IconButton color="secondary" onClick={handleFavClick(true)}>
       <StarIcon />
     </IconButton>
   );
+
+  // Initial fav button model. False version
   const notFavButtonModel = (
     <IconButton color="secondary" onClick={handleFavClick(false)}>
       <StarBorderIcon color="primary" />
     </IconButton>
   );
+
+  // determin what is the initial fav button depending on the actual queue state
   const [favicon, setFavicon] = useState(
     data.isFav ? favButtonModel : notFavButtonModel
   );
 
+  // section of the expansion panel header to be displayed if the queue is not active
   const closedQueueHeader = (
     <Grid container item xs={12} justify="center" alignItems="center">
       <Typography variant="body2">
-        Closed. Opens at {formatTime(data.startTime)}
+        Closed. Opens at {formatTimeInto12h(data.startTime)}
       </Typography>
     </Grid>
   );
 
+  // section of the expansion panel header to be displayed if the queue is active
   const openQueueHeader = (
     <>
       <Grid container item xs={6} justify="center" alignItems="center">
@@ -163,6 +205,7 @@ export default function QueueListRow(props: any) {
     </>
   );
 
+  // click handler for queueUp button
   const queueUp = () => {
     const packet = {
       queueName: data.name,
@@ -183,7 +226,12 @@ export default function QueueListRow(props: any) {
       });
   };
   return (
-    <ExpansionPanel expanded={expanded} onChange={handleChange} square className={classes.expansion}>
+    <ExpansionPanel
+      expanded={expanded}
+      onChange={handleChange}
+      square
+      className={classes.expansion}
+    >
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         aria-controls="panel1bh-content"
@@ -207,32 +255,31 @@ export default function QueueListRow(props: any) {
         {/* the body */}
         <Grid container>
           <Grid item xs={12}>
-            <Typography variant="body2" align="center">{data.description}</Typography>
+            <Typography variant="body2" align="center">
+              {data.description}
+            </Typography>
           </Grid>
-          <Grid container item xs={12} sm={6} justify="flex-start" >
-          <Grid item xs={12} >
+          <Grid container item xs={12} sm={6} justify="flex-start">
+            <Grid item xs={12}>
               <Typography variant="body2" className="leftText">
                 {data.active
-                  ? "Closes at " + formatTime(data.closeTime)
-                  : "Opens at " + formatTime(data.startTime)}
+                  ? "Closes at " + formatTimeInto12h(data.closeTime)
+                  : "Opens at " + formatTimeInto12h(data.startTime)}
               </Typography>
-            </Grid>
-            {" "}
+            </Grid>{" "}
             {/* address*/}
             <Grid item xs={12}>
-             
-                <Typography variant="body2" className="leftText">
-                  {address.unit +
-                    " " +
-                    address.streetAddress +
-                    ", " +
-                    address.city}{" "}
-                  {address.province + ", " + address.postalCode}
-                  <IconButton size="small" onClick={handleToGMap}>
-                <MapIcon color="primary" />
-              </IconButton>
+              <Typography variant="body2" className="leftText">
+                {address.unit +
+                  " " +
+                  address.streetAddress +
+                  ", " +
+                  address.city}{" "}
+                {address.province + ", " + address.postalCode}
+                <IconButton size="small" onClick={handleToGMap}>
+                  <MapIcon color="primary" />
+                </IconButton>
               </Typography>
-              
             </Grid>
           </Grid>
           <Grid container item xs={12} sm={6}>

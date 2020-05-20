@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import Footer from '../components/static/Footer';
-import Header from '../components/static/Header';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/signupPage.css';
 import { Link, useHistory } from 'react-router-dom';
@@ -11,6 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import routeUsers from 'src/utils/customerLoginRouting';
 
 const useStyles = makeStyles((theme) => ({
    root: {
@@ -34,9 +35,16 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
+/**
+ * Render a login page.
+ * 
+ * Accessible to: All users
+ */
 export default function LoginPage() {
    const history = useHistory();
    const classes = useStyles();
+
+   // error type definition to be used in input feedback for login form
    interface errors {
       email?: string;
       password?: string;
@@ -45,17 +53,29 @@ export default function LoginPage() {
       general?: string;
    }
    let errorObject: errors = {};
+
+   // form data
    const [formState, setFormState] = useState({
       password: '',
       email: '',
       loading: false,
       errors: errorObject,
    });
+
+   /**
+   * sync input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
    const handleOnFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
       const name = event.target.name;
       const value = event.target.value;
       setFormState((prevState) => ({ ...prevState, [name]: value }));
    };
+
+   // handle submit click
    const handleSubmit = (event: FormEvent) => {
       event.preventDefault();
 
@@ -67,59 +87,8 @@ export default function LoginPage() {
       };
       axios
          .post('/login', userData)
-         .then((res) => {
-            switch (res.data.userType) {
-               case 'manager':
-                  sessionStorage.setItem(
-                  'user',
-                  JSON.stringify({
-                     token: res.data.generatedToken,
-                     type: 'manager',
-                  })
-               );
-               history.push('/businessDashBoard');
-                  break;
-               case 'employee':
-                  sessionStorage.setItem(
-                     'user',
-                     JSON.stringify({
-                        token: res.data.generatedToken,
-                        type: 'employee',
-                     })
-                  );
-                  history.push('/teller');
-                  break;
-               case 'display':
-                  sessionStorage.setItem(
-                     'user',
-                     JSON.stringify({
-                        token: res.data.generatedToken,
-                        type: 'display',
-                     })
-                  );
-                  break;
-               case 'booth':
-                  sessionStorage.setItem(
-                     'user',
-                     JSON.stringify({
-                        token: res.data.generatedToken,
-                        type: 'booth',
-                     })
-                  );
-                  history.push('/boothDashBoard');
-                  break;
-               default:
-                  sessionStorage.setItem(
-                     'user',
-                     JSON.stringify({
-                        token: res.data.generatedToken,
-                        type: res.data.userType,
-                        email: res.data.userEmail,
-                     })
-                  );
-                  history.push('/consumerDashboard');
-                  break;
-            }
+         .then((res:any) => {
+            routeUsers(res);            
          })
          .catch((err) => {
             console.log(err);
