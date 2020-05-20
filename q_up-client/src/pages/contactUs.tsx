@@ -19,7 +19,7 @@ export default function ContactUsPage() {
         </header>
         
         <section>
-        <div className="fb-comments" data-href="https://www.facebook.com/teamkart.bcit.7" data-numposts="5" data-width=""></div>
+        <div className="fb-comments" data-href="https://www.facebook.com/teamkart.bcit.7" data-numposts="5" data-width=""/>
         </section>
       </main>
       <Footer />

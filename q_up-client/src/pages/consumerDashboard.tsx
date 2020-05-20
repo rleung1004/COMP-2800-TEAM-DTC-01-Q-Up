@@ -108,6 +108,10 @@ export default function ClientDashboardPage() {
             }));
             return;
           }
+          if (err.response.status === 332) {
+            window.location.href = '/login';
+            return;
+          }
           window.alert(err.response.data.general);
         });
     };
@@ -133,6 +137,11 @@ export default function ClientDashboardPage() {
       .catch((err) => {
         console.log(err);
         if (err.response.status === 404) {
+          return;
+        }
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
           return;
         }
         window.alert("Connection error: Could not load your favourite queues.");

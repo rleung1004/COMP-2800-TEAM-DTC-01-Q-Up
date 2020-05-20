@@ -77,8 +77,13 @@ export default function TellerPage() {
         setQueueLength(queue.queueLength);
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
+        window.alert("Connection error");
       });
   }, [axiosConfig, getData]);
 
@@ -100,7 +105,7 @@ export default function TellerPage() {
   // Handle the check in button click
   const handleCheckInClick = (event: MouseEvent) => {
     event.preventDefault();
-    let index = 0;
+    let index: number;
     if (selected.id === -1) {
       window.alert("No one is selected");
       return;
@@ -120,6 +125,11 @@ export default function TellerPage() {
       })
       .catch((err) => {
         console.error(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
         window.alert("Connection error");
       });
   };
@@ -136,6 +146,11 @@ export default function TellerPage() {
       })
       .catch((err) => {
         console.error(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
         window.alert("Connection error");
       });
   };

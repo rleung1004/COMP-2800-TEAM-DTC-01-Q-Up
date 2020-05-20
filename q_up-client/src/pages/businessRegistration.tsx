@@ -262,7 +262,12 @@ export default function BusinessRegistrationPage() {
         window.location.href = "/businessDashboard";
       })
       .catch((err: any) => {
-        console.log("firebase lets you down, ", err);
+        console.log(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
         window.alert("Connection error");
         setFormState((prevState) => ({
           ...prevState,
@@ -311,7 +316,7 @@ export default function BusinessRegistrationPage() {
               value={formState.phoneNumber}
               className={classes.textField}
               helperText={formState.errors.phoneNumber}
-              error={formState.errors.phoneNumber ? true : false}
+              error={!!formState.errors.phoneNumber}
             />
             <TextField
               required
@@ -323,7 +328,7 @@ export default function BusinessRegistrationPage() {
               value={formState.email}
               className={classes.textField}
               helperText={formState.errors.email}
-              error={formState.errors.email ? true : false}
+              error={!!formState.errors.email}
             />
             <TextField
               required
@@ -335,7 +340,7 @@ export default function BusinessRegistrationPage() {
               value={formState.website}
               className={classes.textField}
               helperText={formState.errors.website}
-              error={formState.errors.website ? true : false}
+              error={!!formState.errors.website}
             />
             <Grid item xs={12}>
               <FormControl className={classes.catSelect}>
@@ -377,7 +382,7 @@ export default function BusinessRegistrationPage() {
                   value={formState.address.unit}
                   className={classes.textField}
                   helperText={formState.errors.address?.unit}
-                  error={formState.errors.address?.unit ? true : false}
+                  error={!!formState.errors.address?.unit}
                   required
                 />
               </Grid>
@@ -391,7 +396,7 @@ export default function BusinessRegistrationPage() {
                   value={formState.address.streetAddress}
                   className={classes.textField}
                   helperText={formState.errors.address?.streetAddress}
-                  error={formState.errors.address?.streetAddress ? true : false}
+                  error={!!formState.errors.address?.streetAddress}
                   required
                 />
               </Grid>
@@ -405,7 +410,7 @@ export default function BusinessRegistrationPage() {
                   value={formState.address.city}
                   className={classes.textField}
                   helperText={formState.errors.address?.city}
-                  error={formState.errors.address?.city ? true : false}
+                  error={!!formState.errors.address?.city}
                   required
                 />
               </Grid>
@@ -441,7 +446,7 @@ export default function BusinessRegistrationPage() {
                     value={formState.address.postalCode}
                     className={classes.textField}
                     helperText={formState.errors.address?.postalCode}
-                    error={formState.errors.address?.postalCode ? true : false}
+                    error={!!formState.errors.address?.postalCode}
                     required
                   />
                 </Grid>
@@ -549,7 +554,7 @@ export default function BusinessRegistrationPage() {
                     onChange={handleaverageWaitTImeChange}
                     value={formState.averageWaitTime}
                     required
-                  ></TextField>
+                  />
                   <Typography variant="body1">minutes</Typography>
                 </Grid>
               </Grid>

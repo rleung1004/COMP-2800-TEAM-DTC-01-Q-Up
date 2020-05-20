@@ -252,8 +252,13 @@ export default function EditBusinessProfilePage() {
         });
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
+        window.alert("Connection error");
       });
   }, [axiosConfig, errorObject, getData]);
 
@@ -295,6 +300,11 @@ export default function EditBusinessProfilePage() {
       })
       .catch((err: any) => {
         console.error(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
         window.alert("Connection error");
         setFormState((prevState) => ({
           ...prevState,
@@ -333,7 +343,7 @@ export default function EditBusinessProfilePage() {
               value={formState.name}
               className={classes.textField}
               helperText={formState.errors.name}
-              error={formState.errors.name ? true : false}
+              error={!!formState.errors.name}
             />
             <TextField
               id="filled-multiline-static"
@@ -355,7 +365,7 @@ export default function EditBusinessProfilePage() {
               value={formState.phoneNumber}
               className={classes.textField}
               helperText={formState.errors.phoneNumber}
-              error={formState.errors.phoneNumber ? true : false}
+              error={!!formState.errors.phoneNumber}
             />
             <TextField
               required
@@ -367,7 +377,7 @@ export default function EditBusinessProfilePage() {
               value={formState.email}
               className={classes.textField}
               helperText={formState.errors.email}
-              error={formState.errors.email ? true : false}
+              error={!!formState.errors.email}
             />
             <TextField
               required
@@ -379,7 +389,7 @@ export default function EditBusinessProfilePage() {
               value={formState.website}
               className={classes.textField}
               helperText={formState.errors.website}
-              error={formState.errors.website ? true : false}
+              error={!!formState.errors.website}
             />
             <Grid item xs={12}>
               <FormControl className={classes.catSelect}>
@@ -421,7 +431,7 @@ export default function EditBusinessProfilePage() {
                   value={formState.address.unit}
                   className={classes.textField}
                   helperText={formState.errors.address?.unit}
-                  error={formState.errors.address?.unit ? true : false}
+                  error={!!formState.errors.address?.unit}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -434,7 +444,7 @@ export default function EditBusinessProfilePage() {
                   value={formState.address.streetAddress}
                   className={classes.textField}
                   helperText={formState.errors.address?.streetAddress}
-                  error={formState.errors.address?.streetAddress ? true : false}
+                  error={!!formState.errors.address?.streetAddress}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -447,7 +457,7 @@ export default function EditBusinessProfilePage() {
                   value={formState.address.city}
                   className={classes.textField}
                   helperText={formState.errors.address?.city}
-                  error={formState.errors.address?.city ? true : false}
+                  error={!!formState.errors.address?.city}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -482,7 +492,7 @@ export default function EditBusinessProfilePage() {
                     value={formState.address.postalCode}
                     className={classes.textField}
                     helperText={formState.errors.address?.postalCode}
-                    error={formState.errors.address?.postalCode ? true : false}
+                    error={!!formState.errors.address?.postalCode}
                   />
                 </Grid>
               </Grid>
@@ -585,7 +595,7 @@ export default function EditBusinessProfilePage() {
                     size="small"
                     onChange={handleaverageWaitTimeChange}
                     value={formState.averageWaitTime}
-                  ></TextField>
+                  />
                 </Grid>
               </Grid>
             </Grid>

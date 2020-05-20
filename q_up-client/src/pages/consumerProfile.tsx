@@ -94,8 +94,13 @@ export default function ConsumerProfilePage() {
         window.alert("Your account has been deleted");
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
+        window.alert("Connection error");
       });
   };
 
@@ -118,8 +123,13 @@ export default function ConsumerProfilePage() {
         setPassDialogOpen(false);
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
+        window.alert("Connection error");
       });
   };
 
@@ -141,8 +151,13 @@ export default function ConsumerProfilePage() {
         setPostalCode(data.postalCode ? data.postalCode : "N/A");
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
+        window.alert("Connection error");
       });
   }, [axiosConfig, errorObj, getData]);
 
@@ -255,7 +270,7 @@ export default function ConsumerProfilePage() {
               value={passwordForm.newPassword}
               className={classes.textField}
               helperText={passwordForm.errors.newPassword}
-              error={passwordForm.errors.newPassword ? true : false}
+              error={!!passwordForm.errors.newPassword}
             />
             <TextField
               type="password"
@@ -267,7 +282,7 @@ export default function ConsumerProfilePage() {
               value={passwordForm.newPasswordConfirm}
               className={classes.textField}
               helperText={passwordForm.errors.newPasswordConfirm}
-              error={passwordForm.errors.newPasswordConfirm ? true : false}
+              error={!!passwordForm.errors.newPasswordConfirm}
             />
           </Grid>
         </DialogContent>

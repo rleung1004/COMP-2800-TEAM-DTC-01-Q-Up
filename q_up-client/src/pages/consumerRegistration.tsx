@@ -93,6 +93,12 @@ export default function ConsumerRegistrationPage() {
             window.location.href = '/consumerDashboard';
          })
          .catch((err: any) => {
+            console.log(err);
+            if (err.response.status === 332) {
+               window.alert("Please login again to continue, your token expired");
+               window.location.href = '/login';
+               return;
+            }
             setFormState((prevState) => ({
                ...prevState,
                errors: err.response.data,
@@ -135,7 +141,7 @@ export default function ConsumerRegistrationPage() {
                         value={formState.phoneNumber}
                         className={classes.textField}
                         helperText={formState.errors.phoneNumber}
-                        error={formState.errors.phoneNumber ? true : false}
+                        error={!!formState.errors.phoneNumber}
                      />
                      <TextField
                         color='secondary'
@@ -146,7 +152,7 @@ export default function ConsumerRegistrationPage() {
                         value={formState.postalCode}
                         className={classes.textField}
                         helperText={formState.errors.postalCode}
-                        error={formState.errors.postalCode ? true : false}
+                        error={!!formState.errors.postalCode}
                      />
                      <Button
                         type='submit'

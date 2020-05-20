@@ -82,7 +82,7 @@ export default function LandingPage() {
           src="https://www.youtube.com/embed/zUbBq3o2b2g"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
-        ></iframe>
+        />
       </section>
       <section className="how-it-works-section">
         <header>

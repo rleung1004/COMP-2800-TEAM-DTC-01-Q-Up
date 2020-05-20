@@ -86,6 +86,11 @@ export default function QueueSearchPage() {
       })
       .catch((err) => {
         console.log(err.response);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
         if (err.response.status === 404) {
           return;
         }

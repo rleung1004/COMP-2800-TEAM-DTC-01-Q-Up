@@ -42,6 +42,11 @@ function CurrentQueueInfo(props:any) {
       })
       .catch((err) => {
         console.error(err.response);
+          if (err.response.status === 332) {
+              window.alert("Please login again to continue, your token expired");
+              window.location.href = '/login';
+              return;
+          }
         window.alert(err.response.data.general);
       });
     };

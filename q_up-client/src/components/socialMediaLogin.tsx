@@ -85,9 +85,12 @@ export default function FirebaseLogin() {
             });
           } else {
             console.error(err);
-            window.alert(
-              "Something went wrong with sign up, please try again."
-            );
+            if (err.response.status === 332) {
+              window.alert("Please login again to continue, your token expired");
+              window.location.href = '/login';
+              return;
+            }
+            window.alert("Something went wrong with sign up, please try again.");
           }
         });
     } else {

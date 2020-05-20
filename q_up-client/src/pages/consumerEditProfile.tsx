@@ -102,6 +102,12 @@ export default function ConsumerEditProfilePage() {
             window.location.href = '/consumerProfile';
          })
          .catch((err: any) => {
+            console.log(err);
+            if (err.response.status === 332) {
+               window.alert("Please login again to continue, your token expired");
+               window.location.href = '/login';
+               return;
+            }
             setFormState((prevState) => ({
                ...prevState,
                errors: err.response.data,
@@ -128,8 +134,13 @@ export default function ConsumerEditProfilePage() {
             });
          })
          .catch((err: any) => {
-            window.alert('Connection error');
             console.log(err);
+            if (err.response.status === 332) {
+               window.alert("Please login again to continue, your token expired");
+               window.location.href = '/login';
+               return;
+            }
+            window.alert('Connection error');
          });
    }, [axiosConfig, errorObject, getData]);
    return (
@@ -166,7 +177,7 @@ export default function ConsumerEditProfilePage() {
                         value={formState.phoneNumber}
                         className={classes.textField}
                         helperText={formState.errors.phoneNumber}
-                        error={formState.errors.phoneNumber ? true : false}
+                        error={!!formState.errors.phoneNumber}
                      />
                      <TextField
                         color='secondary'
@@ -177,7 +188,7 @@ export default function ConsumerEditProfilePage() {
                         value={formState.postalCode}
                         className={classes.textField}
                         helperText={formState.errors.postalCode}
-                        error={formState.errors.postalCode ? true : false}
+                        error={!!formState.errors.postalCode}
                      />
                      <Typography variant='caption'>
                         Email cannot be changed

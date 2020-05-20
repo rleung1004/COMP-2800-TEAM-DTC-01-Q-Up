@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Render a business dashboard.
- * 
+ *
  * Accessible to: managers
  */
 export default function BusinessDashboardPage() {
@@ -86,6 +86,11 @@ export default function BusinessDashboardPage() {
           return;
         }
         console.error(err);
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
+          return;
+        }
         window.alert("Connection error.");
       });
   };
@@ -238,6 +243,11 @@ export default function BusinessDashboardPage() {
             businessName: err.response.data.businessName,
             withEmployees: false,
           }));
+          return;
+        }
+        if (err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          window.location.href = '/login';
           return;
         }
         window.alert("Connection error.");

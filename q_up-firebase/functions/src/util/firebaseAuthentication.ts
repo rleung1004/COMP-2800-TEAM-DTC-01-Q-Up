@@ -45,7 +45,7 @@ export const firebaseAuthentication = async (req: Request, res: Response, next: 
         })
         .catch(async (err) => {
             console.error(err);
-            return res.status(500).json({
+            return res.status(332).json({
                 general: "Error while verifying token",
                 error: await err,
             });
