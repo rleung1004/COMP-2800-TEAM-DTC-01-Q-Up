@@ -48,7 +48,7 @@ export default function FirebaseLogin() {
         .currentUser?.delete()
         .then(() => {
           window.alert(
-            "You must have an email associated on your Twitter account, use another login method or add an email to your Twitter."
+            "You must have an email associated on your Twitter or Facebook account to sign up, please use another login method or add an email to your social media account."
           );
         })
         .catch((err) => {
