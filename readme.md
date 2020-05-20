@@ -1,6 +1,6 @@
 # Q-UP Web-Application
 
-Welcome to the official Q-UP github repository. In this repository you will find the source code used to develop and host
+Welcome to the official Q-UP GitHub repository. In this repository you will find the source  code used to develop and host
 Q-UP made by Team-KART
 
 ## Table of Contents
@@ -24,7 +24,7 @@ Q-UP made by Team-KART
 ## About Q-UP
 
 Q-UP is an online queue management solution that allows users to queue from home. We hope this application will have 
-great impact in the fight against COVID-19 as it will allow for greater social distancing. In addition, we are 
+significant impact in the fight against COVID-19 as it will allow for greater social distancing. In addition, we are 
 tackling a universal problem which is wasting time in queues. 
 
 Our application will allow everyone to use their time more efficiently and thus lead better lives. We also aim to make 
@@ -55,9 +55,9 @@ In order to clone Q-UP's repository using command line interface, follow these i
     
 2. Under the repository name, click Clone or download.
 
-3. To clone the repository using HTTPS, under "Clone with HTTPS",copy the provided link.
+3. To clone the repository using HTTPS, under "Clone with HTTPS”, copy the provided link.
   
-    Note: For conscience, here's link to clone the project 
+    Note: For conveniences, here is the link to clone the project:
     ```html
     https://github.com/rleung1004/COMP_2800_Feature_Branch_Workflow.git
     ```
@@ -144,7 +144,7 @@ In order to run Q-UP's web-application on your local machine, follow these instr
       
 1. Open the cloned project on any IDE of your choice.
 
-    Note: our team used <a href="how to install webstorm themes">WebStorm</a> and 
+    Note: our team used <a href="how to install WebStorm themes">WebStorm</a> and 
     <a href="https://code.visualstudio.com/docs/setup/setup-overview">Visual Studio Code</a>. Please refer to these 
     links if you want an installation tutorial for those IDEs.
 
@@ -177,7 +177,7 @@ In order to have Q-UP's Postman test collections, follow these instructions:
 
 2. Click Import, at the top right corner of Postman.
 
-3. Click ```choose Files``` and locate the ```postman_Q-UP_Backend.json``` located in the ```backend-tests``` folder.
+3. Click ```choose Files``` and find the ```postman_Q-UP_Backend.json``` located in the ```backend-tests``` folder.
 
 An import success message should appear in the application. Now you have access to our API tests.
 
@@ -186,8 +186,8 @@ An import success message should appear in the application. Now you have access 
 In order to run the unit tests of Q-UP's web=application, follow these instructions:
 
 1. Open Terminal.
-
-2. Change the current working directory to the location that Q-UP is located at.
+  
+2. Change the current working directory to the location that Q-UP is found at.
 
 3. Navigate to the ```q-up_tests``` folder.
 
@@ -236,7 +236,7 @@ In order to run the tests using Q-UP's selenium Chrome Extension scripts, follow
 
 6. Click Open.
 
-You should be bale to see all the selenium tests for Q-UP's web-application now.
+You should be able to see all the selenium tests for Q-UP's web-application now.
 
 To run the tests:
 
@@ -250,9 +250,9 @@ The following is a list of all technologies used to develop Q-UP.
 | Technology                  | Official Website                           | Description                                                                                                                                                                                                                 |
 |-----------------------------|--------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | npm                         | https://www.npmjs.com                      | An online repository for the publishing of open-source Node. js projects, and a command-line utility for interacting with said repository that aids in package installation, version management, and dependency management. |
-| React.js                    | https://reactjs.org                        | A declarative, Component-Based, open-source JavaScript library that is used for building user interfaces specifically for single-page applications. It's used for handling the view layer for web and mobile apps.          |
+| React.js                    | https://reactjs.org                        | A declarative, Component-Based, open-source JavaScript library that is used for building user interfaces specifically for single-page applications. It is used for handling the view layer for web and mobile apps.          |
 | Node.js                     | https://nodejs.org/en/                     | A platform built on Chrome's JavaScript runtime for easily building fast and scalable network applications.                                                                                                                 |
-| Express.js                  | https://expressjs.com                      | A minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.                                                                                            |
+| Express.js                  | https://expressjs.com                      | A minimal and flexible Node.js web application framework that supplies a robust set of features for web and mobile applications.                                                                                            |
 | Typescript                  | https://www.typescriptlang.org             | A typed superset of Javascript that compiles to plain JavaScript.                                                                                                                                                           |
 | Material UI                 | https://material-ui.com                    | An open-source project that features React components that implement Google's Material Design.                                                                                                                              |
 | SCSS                        | https://sass-lang.com/guide                | A CSS preprocessor that runs on the server and compiles to CSS code that your browser understands.It contains more features that are not present in CSS which makes it a good choice for developers to use it.              |
@@ -264,7 +264,7 @@ The following is a list of all technologies used to develop Q-UP.
 | Moment.js-TimeZone          | https://momentjs.com/timezone/             | A free and open-source javascript library that removes the need to use the native JavaScript Date object directly.                                                                                                          |
 | Axios                       | https://www.axios.com                      | A library that helps developers make http requests to external resources.                                                                                                                                                   |
 | JSON Web Tokens             | https://jwt.io                             | An open standard that defines a compact and self-contained way for securely transmitting information between parties as a JSON object.                                                                                      |
-| Postman                     | https://www.postman.com                    | A popular API client that makes it easy for developers to create, share, test and document APIs.                                                                                                                            |
+| Postman                     | https://www.postman.com                    | A popular API client that makes it easy for developers to create, share, test, and document APIs.                                                                                                                            |
 | Mocha/Chai                  | https://mochajs.org                        | A feature-rich JavaScript test framework running on Node.js and in the browser.                                                                                                                                             |
 | Selenium (Chrome Extension) | https://www.selenium.dev/                  | A record/run tool that a test case developer uses to develop Selenium Test cases.                                                                                                                                           |
 
@@ -276,7 +276,7 @@ In this section, the code references used in Q-UP's application are listed and d
 
 The content for the two static pages of "Terms and Conditions" and "Privacy Policy" have been generated using 
 <a href="https://www.termsfeed.com/privacy-policy-generator/?gclid=CjwKCAjwwYP2BRBGEiwAkoBpAroNfqrmxN6JbvY3Drc4v2kvodrQ1dmhvyYqmtL-_IIpvSlGzgNyqxoC1JsQAvD_BwE">TermsFeed</a>
-. TermsFeed is an online Terms and conditions generator that provides free generated content depending on the users needs.
+. TermsFeed is an online Terms and conditions generator that provides free generated content depending on the user’s needs.
 
 For more information please visit their website at:  www.termsfeed.com.
 
@@ -299,12 +299,11 @@ left corner, and visiting "Components" and "Components API" options.
 
 For more information please visit their website at: www.material-ui.com.
 
-### tealium IQ Learning Center
+### Tealium IQ Learning Center
 
 The detector that determines if the users of our applications are using a mobile device or not, has been taken from 
 <a href="https://community.tealiumiq.com/t5/Developers/How-do-you-build-a-load-rule-for-mobile-only-devices/td-p/5282">
-community.tealium </a>. tealium is center that has support guides for Tealium iQ Tag Manager, EventStream, 
-AudienceStream and DataAccess.
+community.tealium </a>. Tealium is center that has support guides for Tealium IQ Tag Manager, Event Stream, 
+Audience Stream and Data Access.
 
 For more information please visit their website at: www.community.tealiumiq.com
-
