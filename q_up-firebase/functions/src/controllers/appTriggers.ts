@@ -46,7 +46,7 @@ const changeCurrentWaitTimeOfQueue = async (newBusiness: any) => {
  * Triggers on any queue updates.
  * first checks if the queue of the business that has been updated has been changed, if so, changes the queueSlot counts
  * and the currentWaitTime of the queue fields in the queue for the business.
- * Sends an email to the 5th queue slot of the queue if the person is a signed in customer
+ * Sends an email to the customers in 3rd to 5th position slot of the queue.
  *
  * @return  null to determine the end of the trigger for the cloud function
  */
@@ -55,12 +55,13 @@ export const onQueueUpdate = dbTrigger
     .onUpdate(async change => {
         const prevData: any = await change.before.data();
         const newData: any = change.after.data();
-        const newQueueSlots: any = newData.queue.queueSlots;
         if (prevData.queue.queueSlots.length !== newData.queue.queueSlots.length) {
             const prevCounts = getCounts(prevData.queue.queueSlots);
             const newCounts = getCounts(newData.queue.queueSlots);
             const prevHighestTickets = getHighestTicketNumbers(prevData.queue.queueSlots);
             const newHighestTickets = getHighestTicketNumbers(newData.queue.queueSlots);
+            const newQueueSlots: Array<any> = newData.queue.queueSlots;
+            const prevQueueSlots: Array<any> = prevData.queue.queueSlots;
             if (prevCounts !== newCounts) {
                 if (newHighestTickets.highestNonVIPTicketNumber !== prevHighestTickets.highestNonVIPTicketNumber) {
                     await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestVipTicketNumber, false);
@@ -69,17 +70,28 @@ export const onQueueUpdate = dbTrigger
                 }
                 await changeCurrentWaitTimeOfQueue(newData);
             }
-            if (newCounts.nonVipCounts + newCounts.vipCounts >= 5 && isEmail(newQueueSlots[4].customer) && !newQueueSlots[4].receivedEmail) {
-                const sentResponse = sendMail(newData.queue.queueSlots[4].customer);
-                if (!sentResponse) {
-                    console.error("did not send the mail successfully!")
-                } else {
-                    newQueueSlots[4].receivedEmail = true;
-                    db.collection('businesses').doc(newData.name).update({'queue.queueSlots': newQueueSlots});
-                    console.log(`email sent successfully, the response is: ${sentResponse}`);
-                }
+            if (newQueueSlots.length < prevQueueSlots.length && newQueueSlots.length >= 3) {
+                let customerSlots = newQueueSlots.filter((queueSlot: any) => isEmail(queueSlot.customer));
+                customerSlots = customerSlots.splice(0, 3);
+                customerSlots.forEach((customerSlot: any) => {
+                    const customerIndex: number = newQueueSlots.findIndex((queueSlot: any) => {
+                        return (queueSlot.customer === customerSlot.customer
+                            && queueSlot.ticketNumber === customerSlot.ticketNumber
+                            && queueSlot.customerType === customerSlot.customerType)
+                    });
+                    if (customerIndex !== -1 && customerIndex < 5 && customerIndex > 2) {
+                        const sentResponse = sendMail(customerSlot.customer);
+                        if (!sentResponse) {
+                            console.error(`did not send the email to ${customerSlot.customer} successfully!`)
+                        } else {
+                            customerSlot.receivedEmail = true;
+                            newQueueSlots[customerIndex] = customerSlot;
+                            console.log(`email sent successfully to ${customerSlot.customer}, the response is: ${sentResponse}`);
+                        }
+                    }
+                });
+                db.collection('businesses').doc(newData.name).update({'queue.queueSlots': newQueueSlots});
             }
-            console.log("successfully updated the queue information by the trigger");
         }
         return null;
     });
