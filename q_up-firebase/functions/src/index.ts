@@ -26,6 +26,7 @@ import {
 import {algoliaAddToIndex, algoliaDeleteFromIndex, algoliaUpdateIndex} from "./controllers/algoliaTriggers";
 import {onQueueUpdate} from "./controllers/appTriggers";
 import {getDisplayInfo} from "./controllers/boothsAndDisplays";
+import { getTwitterOAuthToken, getTwitterAccessToken, tweet } from "./controllers/twitterController";
 
 // ========================
 // App Configuration
@@ -109,3 +110,10 @@ exports.algoliaDeleteFromIndex = algoliaDeleteFromIndex;
 // ========================
 exports.onQueueUpdate = onQueueUpdate;
 exports.api = functions.https.onRequest(app);
+
+// ========================
+// Twitter
+// ========================
+app.get("/getOAuthToken", getTwitterOAuthToken);
+app.get("/getAccessKeys", getTwitterAccessToken);
+app.post("/tweet", tweet);
