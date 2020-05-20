@@ -1,8 +1,9 @@
-import * as React from "react";
-import Header from "src/components/Header";
-import Footer from "src/components/Footer";
 import StaticNav from "src/components/staticNav";
-import { Typography } from "@material-ui/core";
+import Axios from "axios";
+import React from "react";
+import Header from "src/components/Header";
+import Typography from "@material-ui/core/Typography";
+import Footer from "src/components/Footer";
 
 /**
  * Render a contact us page.
@@ -10,6 +11,13 @@ import { Typography } from "@material-ui/core";
  * Accessible to: all users.
  */
 export default function ContactUsPage() {
+  const onclick = () => {
+    Axios.get('/getOAuthToken')
+    .then((res:any) => {
+      window.location.href = 'https://api.twitter.com/oauth/authenticate?oauth_token=' + res.data.oauthToken;
+    })
+    .catch(console.log);
+  };
   return (
     <>
       <Header Nav={StaticNav} />
@@ -17,7 +25,7 @@ export default function ContactUsPage() {
         <header>
           <Typography variant="h1">Contact Us</Typography>
         </header>
-        
+        <button onClick={onclick}></button>
         <section>
         <div className="fb-comments" data-href="https://www.facebook.com/teamkart.bcit.7" data-numposts="5" data-width=""></div>
         </section>
