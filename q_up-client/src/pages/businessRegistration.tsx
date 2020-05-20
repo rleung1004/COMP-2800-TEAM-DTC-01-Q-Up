@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
-import Footer from "../components/static/Footer";
-import Header from "../components/static/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -16,6 +16,8 @@ import axios from "axios";
 import { mockProvinces, mockCategories } from "src/mockData";
 import "../styles/businessDashboard.scss";
 
+
+//Mui stylings
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -40,13 +42,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a business registration page.
+ * 
+ * Accessible to: managers
+ */
 export default function BusinessRegistrationPage() {
   const classes = useStyles();
+  
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
+
+  // error type definition to be used in input feedback
   interface errors {
     hours?: {
       startTime?: string;
@@ -68,6 +78,7 @@ export default function BusinessRegistrationPage() {
 
   const errorObject: errors = {};
 
+  // form data
   const [formState, setFormState] = useState({
     category: "",
     description: "",
@@ -97,8 +108,14 @@ export default function BusinessRegistrationPage() {
     loading: false,
     errors: errorObject,
   });
-  //
 
+  /**
+   * sync input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
   const handleOnFieldChange = (event: any) => {
     const fieldNameTokens = event.target.name.split("-");
     const fieldCategory = fieldNameTokens[0];
@@ -115,6 +132,13 @@ export default function BusinessRegistrationPage() {
     }
   };
 
+  /**
+   * sync hour input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
   const handleHourChange = (event: ChangeEvent<HTMLInputElement>) => {
     const fieldNameTokens = event.target.name.split("-");
     const newValue = event.target.value;
@@ -156,6 +180,18 @@ export default function BusinessRegistrationPage() {
     }
   };
 
+  /**
+   * sync average wait time input data with form data
+   * 
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * 
+   * Allowed range: 0 < 59
+   * Only numbers allowed
+   * Allows blank to avoid UX issues
+   * 
+   * @param event an event with target
+   */
   const handleaverageWaitTImeChange = (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -188,9 +224,24 @@ export default function BusinessRegistrationPage() {
     }
   };
 
+  // submit handler
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+
+    // validation
+    if (formState.averageWaitTime === ' ') {
+      setFormState((prevState:any) => ({
+        ...prevState, errors: {
+          ...prevState.errors,
+          averageWaitTime: "Must enter a value"
+        }
+      })); 
+      return;     
+    }
+
     setFormState((prevState) => ({ ...prevState, loading: true }));
+
+    // map package
     const userData = {
       phoneNumber: formState.phoneNumber,
       address: formState.address,
@@ -202,6 +253,7 @@ export default function BusinessRegistrationPage() {
       averageWaitTime: formState.averageWaitTime,
     };
 
+    // request
     axios
       .post("/registerBusiness", userData, axiosConfig)
       .then(() => {

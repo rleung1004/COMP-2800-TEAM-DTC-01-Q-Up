@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
       flexShrink: 0,
     },
     drawerPaper: {
-      //  background: '#242323',
       background: "#2C2B2B",
       width: drawerWidth,
     },
@@ -75,6 +74,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+/**
+ * Render a hamburger menu with navigation oriented for static pages.
+ */
 export default function StaticNav() {
   const classes = useStyles();
   const theme = useTheme();
@@ -131,6 +134,11 @@ export default function StaticNav() {
                 className={classes.white}
                 primary={"About us"}
               />
+            </Link>
+          </ListItem>
+          <ListItem button key={"contactUs"}>
+            <Link className={classes.nodecor} to="/contactUs">
+              <ListItemText className={classes.white} primary={"Contact us"} />
             </Link>
           </ListItem>
         </List>
