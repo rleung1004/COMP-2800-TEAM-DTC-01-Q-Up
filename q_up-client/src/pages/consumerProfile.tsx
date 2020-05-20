@@ -16,8 +16,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { formatPhone } from "../utils/formatting";
-import '../styles/consumerProfile.scss';
-
+import "../styles/consumerProfile.scss";
 
 // Mui stylings
 const useStyles = makeStyles(() => ({
@@ -31,7 +30,7 @@ const useStyles = makeStyles(() => ({
 
 /**
  * Render a customer profile page.
- * 
+ *
  * Accessible to: customers
  */
 export default function ConsumerProfilePage() {
@@ -61,12 +60,12 @@ export default function ConsumerProfilePage() {
     },
   };
 
-  // handle edit profile button click 
+  // handle edit profile button click
   const handleEditProfile = () => {
     window.location.href = "/editConsumerProfile";
   };
 
-  // handle password change button click 
+  // handle password change button click
   const handlePasswordChangeButtonClick = () => {
     setPassDialogOpen(true);
   };
@@ -76,7 +75,7 @@ export default function ConsumerProfilePage() {
     setPassDialogOpen(false);
   };
 
-  // sync password form inputs with password form data 
+  // sync password form inputs with password form data
   const handlePassFormChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -124,7 +123,7 @@ export default function ConsumerProfilePage() {
       });
   };
 
-  // fetch customer data 
+  // fetch customer data
   useEffect(() => {
     if (!getData) {
       return;
@@ -191,28 +190,38 @@ export default function ConsumerProfilePage() {
         </section>
         <section>
           <Grid container justify="center">
-              
-                <Grid container item justify="center" xs={12} sm={8} md={6} lg={4}>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="body1" className="profileTextLeft" >Email</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="body2" className="profileTextRight">{email}</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="body1" className="profileTextLeft">Phone number</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="body2" className="profileTextRight">{phoneNumber}</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="body1" className="profileTextLeft">Postal code</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="body2" className="profileTextRight">{postalCode}</Typography>
-                  </Grid>
-                </Grid>
-              
+            <Grid container item justify="center" xs={12} sm={8} md={6} lg={4}>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body1" className="profileTextLeft">
+                  Email
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body2" className="profileTextRight">
+                  {email}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body1" className="profileTextLeft">
+                  Phone number
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body2" className="profileTextRight">
+                  {phoneNumber}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body1" className="profileTextLeft">
+                  Postal code
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Typography variant="body2" className="profileTextRight">
+                  {postalCode}
+                </Typography>
+              </Grid>
+            </Grid>
           </Grid>
         </section>
       </main>
@@ -263,22 +272,28 @@ export default function ConsumerProfilePage() {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={handlePassChangeCancel}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            onClick={handlePasswordSubmit}
-          >
-            Ok
-          </Button>
+          <Grid container justify="center" spacing={1}>
+            <Grid container item xs={12} sm={6}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handlePassChangeCancel}
+              >
+                Cancel
+              </Button>
+            </Grid>
+            <Grid container item xs={12} sm={6}>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={handlePasswordSubmit}
+              >
+                Ok
+              </Button>
+            </Grid>
+          </Grid>
         </DialogActions>
       </Dialog>
       <Footer />

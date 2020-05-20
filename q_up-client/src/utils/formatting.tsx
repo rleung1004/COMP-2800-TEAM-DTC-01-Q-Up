@@ -8,7 +8,7 @@ export function formatPhone(number:string) {
     if (number.length !== 10) {
         console.error("Phone number does not have 10 digits");        
     }
-    return `(${number.slice(0, 4)})${number.slice(4, 7)}-${number.slice(7)}`;
+    return `(${number.slice(0, 3)}) ${number.slice(3, 6)}-${number.slice(6)}`;
 }
 
 /**
