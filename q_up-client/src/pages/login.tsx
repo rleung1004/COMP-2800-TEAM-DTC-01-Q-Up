@@ -3,6 +3,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/signupPage.css';
+import FirebaseLogin from "../components/socialMediaLogin";
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 // material-ui components
@@ -169,6 +170,8 @@ export default function LoginPage() {
                      >
                         Login
                      </Button>
+                     
+                     <FirebaseLogin/>
                   </Grid>
                </form>
 

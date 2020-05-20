@@ -13,6 +13,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { makeStyles } from "@material-ui/core/styles";
+import FirebaseLogin from "../components/socialMediaLogin";
 
 // Mui styling
 const useStyles = makeStyles((theme) => ({
@@ -215,7 +216,12 @@ export default function SignupPage() {
               </Button>
             </Grid>
           </form>
-
+          {formState.userType === "customer" && (
+            <Grid container direction="column" justify="center">
+              <Typography variant="body1">Or</Typography>
+              <FirebaseLogin />
+            </Grid>
+          )}
           <Button
             type="button"
             variant="contained"
