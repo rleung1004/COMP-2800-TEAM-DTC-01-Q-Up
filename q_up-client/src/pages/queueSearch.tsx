@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import app from "../firebase";
 import algoliasearch from "algoliasearch/lite";
 import {
   InstantSearch,
@@ -91,6 +91,7 @@ const QueueSearchPage = ({ history }: any) => {
         console.log(err.response);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         if (err.response.status === 404) {

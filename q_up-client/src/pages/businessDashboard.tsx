@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-// import { Link } from 'react-router-dom';
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import BusinessNav from "../components/businessNav";
-// import axios from "axios";
 // material-ui components
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -11,6 +9,7 @@ import Switch from "@material-ui/core/Switch";
 import { makeStyles, Paper, Button } from "@material-ui/core";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
+import app from "src/firebase";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -89,6 +88,7 @@ const BusinessDashboardPage = ({ history }: any) => {
         console.error(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error.");
@@ -220,6 +220,7 @@ const BusinessDashboardPage = ({ history }: any) => {
     if (!getData) {
       return;
     }
+
     setGetData(false);
     axios
       .get("/getQueue", axiosConfig)
@@ -247,6 +248,7 @@ const BusinessDashboardPage = ({ history }: any) => {
         }
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error.");

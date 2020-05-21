@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
+import app from "../firebase";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
@@ -262,6 +263,7 @@ const EditBusinessProfilePage = ({ history }: any) => {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -310,6 +312,7 @@ const EditBusinessProfilePage = ({ history }: any) => {
           console.error(err);
           if (err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
+            app.auth().signOut();
             return;
           }
           window.alert("Connection error");

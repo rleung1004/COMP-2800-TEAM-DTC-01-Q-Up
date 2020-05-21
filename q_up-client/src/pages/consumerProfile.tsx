@@ -99,6 +99,7 @@ const ConsumerProfilePage = ({ history }: any) => {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -127,6 +128,7 @@ const ConsumerProfilePage = ({ history }: any) => {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -154,6 +156,7 @@ const ConsumerProfilePage = ({ history }: any) => {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");

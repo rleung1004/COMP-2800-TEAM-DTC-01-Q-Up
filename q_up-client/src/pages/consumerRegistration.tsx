@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent, useCallback } from "react";
+import app from "../firebase";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
@@ -73,38 +74,42 @@ const ConsumerRegistrationPage = ({ history }: any) => {
   }, [history]);
 
   // handle form submit
-  const handleSubmit = useCallback((event: FormEvent) => {
-    event.preventDefault();
-    setFormState((prevState) => ({ ...prevState, loading: true }));
-    const userData = {
-      phoneNumber: formState.phoneNumber,
-      postalCode: formState.postalCode,
-    };
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
+      setFormState((prevState) => ({ ...prevState, loading: true }));
+      const userData = {
+        phoneNumber: formState.phoneNumber,
+        postalCode: formState.postalCode,
+      };
 
-    const axiosConfig = {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
-      },
-    };
+      const axiosConfig = {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+        },
+      };
 
-    axios
-      .post("/registerCustomer", userData, axiosConfig)
-      .then(() => {
-        history.push("/consumerDashboard");
-      })
-      .catch((err: any) => {
-        console.log(err);
-        if (err.response.status === 332) {
-          window.alert("Please login again to continue, your token expired");
-          return;
-        }
-        setFormState((prevState) => ({
-          ...prevState,
-          errors: err.response.data,
-          loading: false,
-        }));
-      });
-  }, [history, formState]);
+      axios
+        .post("/registerCustomer", userData, axiosConfig)
+        .then(() => {
+          history.push("/consumerDashboard");
+        })
+        .catch((err: any) => {
+          console.log(err);
+          if (err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            app.auth().signOut();
+            return;
+          }
+          setFormState((prevState) => ({
+            ...prevState,
+            errors: err.response.data,
+            loading: false,
+          }));
+        });
+    },
+    [history, formState]
+  );
 
   return (
     <>

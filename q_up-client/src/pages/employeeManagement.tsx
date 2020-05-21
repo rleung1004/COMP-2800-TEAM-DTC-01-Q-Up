@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ChangeEvent } from "react";
-// import { Link } from 'react-router-dom';
+import app from "../firebase";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import BusinessNav from "../components/businessNav";
@@ -119,6 +119,7 @@ export default function EmployeeManagementPage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error. Could not register employee.");
@@ -149,6 +150,7 @@ export default function EmployeeManagementPage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -194,6 +196,7 @@ export default function EmployeeManagementPage() {
           window.alert("You are unauthorized, please login as a manager.");
         } else if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         } else {
           window.alert("Connection error. Please try again.");

@@ -1,4 +1,5 @@
 import React, { MouseEvent } from "react";
+import app from "../firebase";
 import QueueSlot from "../components/tellerQueueSlot";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -80,6 +81,7 @@ export default function TellerPage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -126,6 +128,7 @@ export default function TellerPage() {
         console.error(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -146,6 +149,7 @@ export default function TellerPage() {
         console.error(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");

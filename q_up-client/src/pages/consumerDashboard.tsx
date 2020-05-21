@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import app from "../firebase";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Footer from "../components/Footer";
@@ -109,6 +110,8 @@ const ClientDashboardPage = ({ history }: any) => {
             return;
           }
           if (err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            app.auth().signOut();
             return;
           }
           window.alert(err.response.data.general);
@@ -140,6 +143,7 @@ const ClientDashboardPage = ({ history }: any) => {
         }
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error: Could not load your favourite queues.");

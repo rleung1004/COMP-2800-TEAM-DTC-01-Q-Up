@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-// import { Link } from 'react-router-dom';
+import app from "../firebase";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ConsumerNav from "../components/consumerNav";
@@ -90,63 +90,70 @@ const ConsumerEditProfilePage = ({ history }: any) => {
   }, [history]);
 
   // handle sumbit click
-  const handleSubmit = useCallback((event: FormEvent) => {
-    if (!window.confirm("Are you sure? Can't be undone.")) {
-      return;
-    }
-    event.preventDefault();
-    setFormState((prevState) => ({ ...prevState, loading: true }));
-    const userData = {
-      phoneNumber: formState.phoneNumber,
-      postalCode: formState.postalCode,
-      email: sessionStorage.user.email,
-    };
-    console.log(userData);
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      if (!window.confirm("Are you sure? Can't be undone.")) {
+        return;
+      }
+      event.preventDefault();
+      setFormState((prevState) => ({ ...prevState, loading: true }));
+      const userData = {
+        phoneNumber: formState.phoneNumber,
+        postalCode: formState.postalCode,
+        email: sessionStorage.user.email,
+      };
+      console.log(userData);
 
-    axios
-      .put("/updateCustomer", userData, axiosConfig)
-      .then(() => {
-        history.push("/consumerProfile");
-      })
-      .catch((err: any) => {
-        console.log(err);
-        if (err.response.status === 332) {
-          window.alert("Please login again to continue, your token expired");
-          return;
-        }
-        setFormState((prevState) => ({
-          ...prevState,
-          errors: err.response.data,
-          loading: false,
-        }));
-      });
-  }, [history, axiosConfig, formState]);
+      axios
+        .put("/updateCustomer", userData, axiosConfig)
+        .then(() => {
+          history.push("/consumerProfile");
+        })
+        .catch((err: any) => {
+          console.log(err);
+          if (err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            app.auth().signOut();
+            return;
+          }
+          setFormState((prevState) => ({
+            ...prevState,
+            errors: err.response.data,
+            loading: false,
+          }));
+        });
+    },
+    [history, axiosConfig, formState]
+  );
 
   // fetch data to prepopulate form
   useEffect(() => {
     if (!getData) {
       return;
     }
-    setGetData(false);
-    axios
-      .get("/getCustomer", axiosConfig)
-      .then((res: any) => {
-        const data = res.data.customerData;
-        setFormState({
-          phoneNumber: data.phoneNumber ? data.phoneNumber : "",
-          postalCode: data.postalCode ? data.postalCode : "",
-          loading: false,
-          errors: errorObject,
+    return () => {
+      setGetData(false);
+      axios
+        .get("/getCustomer", axiosConfig)
+        .then((res: any) => {
+          const data = res.data.customerData;
+          setFormState({
+            phoneNumber: data.phoneNumber ? data.phoneNumber : "",
+            postalCode: data.postalCode ? data.postalCode : "",
+            loading: false,
+            errors: errorObject,
+          });
+        })
+        .catch((err: any) => {
+          console.log(err);
+          if (err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            app.auth().signOut();
+            return;
+          }
+          window.alert("Connection error");
         });
-      })
-      .catch((err: any) => {
-        console.log(err);
-        if (err.response.status === 332) {
-          window.alert("Please login again to continue, your token expired");
-          return;
-        }
-        window.alert("Connection error");
-      });
+    };
   }, [axiosConfig, errorObject, getData]);
   return (
     <>

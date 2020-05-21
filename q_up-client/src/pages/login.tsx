@@ -99,46 +99,46 @@ const LoginPage = ({ history }: any) => {
         .then(async (res: any) => {
           switch (res.data.userType) {
             case "manager":
-              await sessionStorage.setItem(
+              sessionStorage.setItem(
                 "user",
                 JSON.stringify({
-                  token: res.data.token,
+                  token: res.data.generatedToken,
                   type: "manager",
                 })
               );
               break;
             case "employee":
-              await sessionStorage.setItem(
+              sessionStorage.setItem(
                 "user",
                 JSON.stringify({
-                  token: res.data.token,
+                  token: res.data.generatedToken,
                   type: "employee",
                 })
               );
               break;
             case "display":
-              await sessionStorage.setItem(
+              sessionStorage.setItem(
                 "user",
                 JSON.stringify({
-                  token: res.data.token,
+                  token: res.data.generatedToken,
                   type: "display",
                 })
               );
               break;
             case "booth":
-              await sessionStorage.setItem(
+              sessionStorage.setItem(
                 "user",
                 JSON.stringify({
-                  token: res.data.token,
+                  token: res.data.generatedToken,
                   type: "booth",
                 })
               );
               break;
             default:
-              await sessionStorage.setItem(
+              sessionStorage.setItem(
                 "user",
                 JSON.stringify({
-                  token: res.data.token,
+                  token: res.data.generatedToken,
                   type: res.data.userType,
                   email: res.data.userEmail,
                 })
@@ -169,7 +169,14 @@ const LoginPage = ({ history }: any) => {
   // if user is authenticated redirect them to their home route (does not save current route into history)
 
   if (currentUser) {
-    switch (JSON.parse(sessionStorage.user).type) {
+    let userType: string = "";
+    try {
+      userType = JSON.parse(sessionStorage.user).type;
+    } catch (err) {
+      console.error(err);
+      app.auth().signOut();
+    }
+    switch (userType) {
       case "manager":
         return <Redirect to="/businessDashboard" />;
       case "employee":
