@@ -51,8 +51,8 @@ const BusinessRegistrationPage = ({ history }: any) => {
   const classes = useStyles();
   const array: Array<any> = [];
   const [dropdownData, setDropDownData] = useState({
-    categories: array,
-    provinces: array,
+      businessCategories: array,
+      provinces: array,
   });
   const [getDropdownData, setGetDropdownData] = useState(true);
   const axiosConfig = {
@@ -396,7 +396,7 @@ const BusinessRegistrationPage = ({ history }: any) => {
                   value={formState.category}
                   onChange={handleOnFieldChange}
                 >
-                  {dropdownData.categories.map((cat, key) => {
+                  {dropdownData.businessCategories.map((cat, key) => {
                     return (
                       <MenuItem key={key} value={cat}>
                         {cat}
