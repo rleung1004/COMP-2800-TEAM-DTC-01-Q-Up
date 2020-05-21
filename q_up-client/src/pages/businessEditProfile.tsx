@@ -23,6 +23,7 @@ import axios from "axios";
 import "../styles/businessDashboard.scss";
 import BusinessNav from "src/components/businessNav";
 import { withRouter, Redirect } from "react-router-dom";
+import PhoneMaskedInput, { unMaskPhone } from '../components/PhoneMaskedInput';
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -116,7 +117,7 @@ const EditBusinessProfilePage = ({ history }: any) => {
       postalCode: "",
     },
     name: "",
-    phoneNumber: "",
+    phoneNumber: "(1  )    -    ",
     website: "",
     averageWaitTime: "",
     loading: false,
@@ -324,7 +325,7 @@ const EditBusinessProfilePage = ({ history }: any) => {
       // map package
       const userData = {
         name: formState.name.charAt(0).toUpperCase() + formState.name.substr(1).toLowerCase(),
-        phoneNumber: formState.phoneNumber,
+        phoneNumber: unMaskPhone(formState.phoneNumber),
         address: formState.address,
         category: formState.category,
         website: formState.website.toLowerCase(),
@@ -417,6 +418,7 @@ const EditBusinessProfilePage = ({ history }: any) => {
               className={classes.textField}
               helperText={formState.errors.phoneNumber}
               error={!!formState.errors.phoneNumber}
+              InputProps={{inputComponent: PhoneMaskedInput as any} }
             />
             <TextField
               required

@@ -48,6 +48,8 @@ const homePage = "https://q-up-c2b70.web.app/";
  * Render a contact us page.
  *
  * Accessible to: all users.
+ * 
+ * This file must be JS as there is no TS implementation of react-twitter-embed
  */
 export default function ContactUsPage() {
   const classes = useStyles();
