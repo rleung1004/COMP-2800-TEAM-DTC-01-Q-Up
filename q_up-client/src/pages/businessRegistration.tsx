@@ -286,10 +286,6 @@ const BusinessRegistrationPage = ({ history }: any) => {
     [formState, axiosConfig, history]
   );
 
-  if (JSON.parse(sessionStorage.user).type !== "manager") {
-    return <Redirect to="/login" />;
-  }
-
   useEffect(()=> {
     if (!getDropdownData) {
       return;
@@ -308,6 +304,11 @@ const BusinessRegistrationPage = ({ history }: any) => {
           window.alert("Connection error");
         });
   }, [axiosConfig, getDropdownData]);
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
+  
   return (
     <>
       <Header />

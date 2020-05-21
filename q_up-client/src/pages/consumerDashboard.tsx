@@ -121,33 +121,41 @@ const ClientDashboardPage = ({ history }: any) => {
 
   // fetch favorite queues
   useEffect(() => {
-    if (!getData) {
-      return;
-    }
-    setGetData(false);
-    axios
-      .get("/getFavouriteQueues", axiosConfig)
-      .then((res) => {
-        const businesses = res.data.favoriteBusinesses;
-        const data: Array<object> = [];
-        for (const business in businesses) {
-          data.push({ ...businesses[business], triggerGetStatus, isFav: true });
-        }
-        setFavQueues(data);
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.response.status === 404) {
-          return;
-        }
-        if (err.response.status === 332) {
-          window.alert("Please login again to continue, your token expired");
-          app.auth().signOut();
-          return;
-        }
-        window.alert("Connection error: Could not load your favourite queues.");
-      });
+    return () => {
+      if (!getData) {
+        return;
+      }
+      setGetData(false);
+      axios
+        .get("/getFavouriteQueues", axiosConfig)
+        .then((res) => {
+          const businesses = res.data.favoriteBusinesses;
+          const data: Array<object> = [];
+          for (const business in businesses) {
+            data.push({
+              ...businesses[business],
+              triggerGetStatus,
+              isFav: true,
+            });
+          }
+          setFavQueues(data);
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.response.status === 404) {
+            return;
+          }
+          if (err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            app.auth().signOut();
+            return;
+          }
+          window.alert(
+            "Connection error: Could not load your favourite queues."
+          );
+        });
+    };
   }, [axiosConfig, getData]);
 
   if (JSON.parse(sessionStorage.user).type !== "customer") {

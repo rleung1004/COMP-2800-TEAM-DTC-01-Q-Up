@@ -57,7 +57,7 @@ export default function LandingPage() {
                            color='primary'
                            className={classes.button}
                         >
-                           Signin
+                           Sign in
                         </Button>
                      </Link>
                   </Grid>
@@ -69,7 +69,7 @@ export default function LandingPage() {
                            color='primary'
                            className={classes.button}
                         >
-                           Signup
+                           Sign up
                         </Button>
                      </Link>
                   </Grid>
@@ -157,7 +157,7 @@ export default function LandingPage() {
                   <img
                      style={{ width: '100%' }}
                      src={require('../img/product image.png')}
-                     alt='Product image'
+                     alt='Product'
                   />
                </Grid>
                <Grid container justify='center' alignItems='center'>
