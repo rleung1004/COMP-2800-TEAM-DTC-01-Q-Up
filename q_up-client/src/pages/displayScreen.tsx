@@ -111,11 +111,6 @@ export default function BoothDashBoard() {
                      </Typography>
                   </Box>
                </Grid>
-               {/* <Grid className='right-column' item xs={5} container>
-                  <Grid xs={6}>
-                     <Box pt={5}>Ticket #</Box>
-                  </Grid>
-               </Grid> */}
             </Grid>
          </main>
          <footer className='displayScreenFooter'>
