@@ -14,7 +14,7 @@ import StarIcon from "@material-ui/icons/Star";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
 import MapIcon from "@material-ui/icons/Map";
 import Axios from "axios";
-import { formatGoogleMapURL, formatAddress } from "src/utils/formatting";
+import { formatURL, formatAddress } from "src/utils/formatting";
 import "../styles/queueListRow.scss";
 import { formatTimeInto12h } from "../utils/formatting";
 import { isWeekend } from '../utils/misc';
@@ -109,7 +109,7 @@ export default function QueueListRow(props: any) {
   const handleToGMap = () => {
     window.open(
       "https://www.google.com/maps/search/?api=1&query=" +
-        formatGoogleMapURL(formatAddress(address)),
+        formatURL(formatAddress(address)),
       "_blank"
     );
   };

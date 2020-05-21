@@ -21,7 +21,7 @@ import BusinessEditProfilePage from "./pages/businessEditProfile";
 import EmployeeManagementPage from "./pages/employeeManagement";
 import QueueSearchPage from "./pages/queueSearch";
 import TellerPage from "./pages/teller";
-import ContactUsPage from "./pages/contactUs";
+import ContactUsPage from "./pages/contactUs.js";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
