@@ -10,8 +10,8 @@ import {
 import { Grid } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 
-const FirebaseSignup = () => {
-  const oAuthSignup = async (provider: firebase.auth.AuthProvider) => {
+const FirebaseLogin = ({ history }: any) => {
+  const oAuthLogin = async (provider: firebase.auth.AuthProvider) => {
     await firebase
       .auth()
       .signInWithPopup(provider)
@@ -34,6 +34,7 @@ const FirebaseSignup = () => {
               window.alert(
                 "Please go to our sign up page to sign up the first time you login."
               );
+              history.push("/signup");
             })
             .catch((err) => {
               console.error(err);
@@ -60,23 +61,23 @@ const FirebaseSignup = () => {
   const signInWithGoogle = async () => {
     let provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/userinfo.email");
-    await oAuthSignup(provider);
+    await oAuthLogin(provider);
   };
 
   const signInWithFacebook = async () => {
     let provider = new firebase.auth.FacebookAuthProvider();
     provider.addScope("email");
-    await oAuthSignup(provider);
+    await oAuthLogin(provider);
   };
 
   const signInWithTwitter = async () => {
     let provider = new firebase.auth.TwitterAuthProvider();
-    await oAuthSignup(provider);
+    await oAuthLogin(provider);
   };
 
   const signInWithGithub = async () => {
     let provider = new firebase.auth.GithubAuthProvider();
-    await oAuthSignup(provider);
+    await oAuthLogin(provider);
   };
 
   return (
@@ -109,4 +110,4 @@ const FirebaseSignup = () => {
   );
 };
 
-export default withRouter(FirebaseSignup);
+export default withRouter(FirebaseLogin);
