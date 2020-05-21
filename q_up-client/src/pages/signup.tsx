@@ -221,7 +221,7 @@ const SignupPage = ({ history }: any) => {
             <Typography variant="body1">Or</Typography>
           )}
           {formState.userType === "customer" && (
-            <FirebaseSignup />
+            <FirebaseSignup isLogin={false} />
           )}
           
           <Button
