@@ -17,7 +17,7 @@ import {
 import axios from "axios";
 import { formatPhone } from "../utils/formatting";
 import "../styles/consumerProfile.scss";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import app from "../firebase";
 
 // Mui stylings
@@ -162,6 +162,10 @@ const ConsumerProfilePage = ({ history }: any) => {
         window.alert("Connection error");
       });
   }, [axiosConfig, errorObj, getData]);
+
+  if (JSON.parse(sessionStorage.user).type !== "customer") {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>

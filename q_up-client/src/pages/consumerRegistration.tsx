@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import axios from "axios";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -110,6 +110,10 @@ const ConsumerRegistrationPage = ({ history }: any) => {
     },
     [history, formState]
   );
+
+  if (JSON.parse(sessionStorage.user).type !== "customer") {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>

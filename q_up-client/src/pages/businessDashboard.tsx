@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Switch from "@material-ui/core/Switch";
 import { makeStyles, Paper, Button } from "@material-ui/core";
 import axios from "axios";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import app from "src/firebase";
 
 // Mui stylings
@@ -254,6 +254,11 @@ const BusinessDashboardPage = ({ history }: any) => {
         window.alert("Connection error.");
       });
   }, [axiosConfig, data, getData]);
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <>
       <Header Nav={BusinessNav} logout />

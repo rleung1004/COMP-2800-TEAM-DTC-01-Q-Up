@@ -18,7 +18,7 @@ import app from "../firebase"
 import axios from "axios";
 import { formatPhone } from "../utils/formatting";
 import "../styles/businessProfile.scss";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 
 //Mui stylings
 const useStyles = makeStyles(() => ({
@@ -222,6 +222,11 @@ const BusinessProfilePage = ({ history }: any) => {
   }, [axiosConfig, errorObj, getData]);
 
   const sectionSpacing = 3;
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
+  
   return (
     <>
       <Header Nav={BusinessNav} logout />

@@ -13,7 +13,7 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -149,6 +149,10 @@ const ClientDashboardPage = ({ history }: any) => {
         window.alert("Connection error: Could not load your favourite queues.");
       });
   }, [axiosConfig, getData]);
+
+  if (JSON.parse(sessionStorage.user).type !== "customer") {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>

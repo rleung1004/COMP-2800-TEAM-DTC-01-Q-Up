@@ -18,6 +18,7 @@ import {
 import axios from "axios";
 import EmployeeListRow from "../components/employeeListRow";
 import "../styles/employeeManagement.scss";
+import { Redirect } from "react-router-dom";
 
 // Mui stylings
 const useStyles = makeStyles(() => ({
@@ -203,6 +204,10 @@ export default function EmployeeManagementPage() {
         }
       });
   }, [axiosConfig, getData]);
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>

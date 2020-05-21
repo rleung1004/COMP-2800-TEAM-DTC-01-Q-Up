@@ -17,7 +17,7 @@ import {
   TextField,
   Button,
 } from "@material-ui/core";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -155,6 +155,11 @@ const ConsumerEditProfilePage = ({ history }: any) => {
         });
     };
   }, [axiosConfig, errorObject, getData]);
+
+  if (JSON.parse(sessionStorage.user).type !== "customer") {
+    return <Redirect to="/login" />;
+  }
+  
   return (
     <>
       <Header Nav={ConsumerNav} logout />

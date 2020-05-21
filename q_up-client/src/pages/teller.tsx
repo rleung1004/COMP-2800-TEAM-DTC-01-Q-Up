@@ -8,6 +8,7 @@ import Header from "../components/Header";
 import { Grid, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import "../styles/teller.scss";
+import { Redirect } from "react-router-dom";
 
 interface queueSlot {
   customer: string;
@@ -155,6 +156,10 @@ export default function TellerPage() {
         window.alert("Connection error");
       });
   };
+
+  if (JSON.parse(sessionStorage.user).type !== "employee") {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>

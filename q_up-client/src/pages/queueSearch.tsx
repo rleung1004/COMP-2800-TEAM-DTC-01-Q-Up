@@ -14,7 +14,7 @@ import "../styles/queueSearch.scss";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid/Grid";
 import { Paper, Button } from "@material-ui/core";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 
 /**
  * Render a queue search page.
@@ -100,6 +100,11 @@ const QueueSearchPage = ({ history }: any) => {
         window.alert("Connection error: Could not load your favourite queues.");
       });
   }, [axiosConfig, getData]);
+
+  if (JSON.parse(sessionStorage.user).type !== "customer") {
+    return <Redirect to="/login" />;
+  }
+  
   return (
     <>
       <Header Nav={ConsumerNav} logout />

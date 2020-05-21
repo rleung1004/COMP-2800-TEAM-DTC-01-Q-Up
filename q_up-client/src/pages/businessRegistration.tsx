@@ -16,7 +16,7 @@ import {
 import axios from "axios";
 import { mockProvinces, mockCategories } from "src/mockData";
 import "../styles/businessDashboard.scss";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 
 //Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -281,6 +281,10 @@ const BusinessRegistrationPage = ({ history }: any) => {
     },
     [formState, axiosConfig, history]
   );
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>

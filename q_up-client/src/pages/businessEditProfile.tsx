@@ -23,7 +23,7 @@ import axios from "axios";
 import { mockProvinces, mockCategories } from "src/mockData";
 import "../styles/businessDashboard.scss";
 import BusinessNav from "src/components/businessNav";
-import { withRouter } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -325,6 +325,10 @@ const EditBusinessProfilePage = ({ history }: any) => {
     },
     [history, formState, axiosConfig]
   );
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>
