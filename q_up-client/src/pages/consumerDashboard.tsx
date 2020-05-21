@@ -109,9 +109,9 @@ const ClientDashboardPage = ({ history }: any) => {
             }));
             return;
           }
-          if (err.response.status === 332) {
+          if (err.response.status && err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            app.auth().signOut();
+            app.auth().signOut().catch(console.error);
             return;
           }
           window.alert(err.response.data.general);
@@ -146,9 +146,9 @@ const ClientDashboardPage = ({ history }: any) => {
           if (err.response.status === 404) {
             return;
           }
-          if (err.response.status === 332) {
+          if (err.response.status && err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            app.auth().signOut();
+            app.auth().signOut().catch(console.error);
             return;
           }
           window.alert(

@@ -160,7 +160,6 @@ const LoginPage = ({ history }: any) => {
         })
         .catch((err) => {
           console.log(err);
-
           setFormState((prevState) => ({
             ...prevState,
             errors: err.response.data,
@@ -179,7 +178,7 @@ const LoginPage = ({ history }: any) => {
       userType = JSON.parse(sessionStorage.user).type;
     } catch (err) {
       console.error(err);
-      app.auth().signOut();
+      app.auth().signOut().catch(console.error);
     }
     switch (userType) {
       case "manager":

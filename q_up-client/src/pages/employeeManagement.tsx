@@ -100,7 +100,7 @@ export default function EmployeeManagementPage() {
     }
 
     const packet = {
-      employeeEmail: addForm.email,
+      employeeEmail: addForm.email.toLowerCase(),
       password: addForm.password,
     };
 
@@ -118,9 +118,9 @@ export default function EmployeeManagementPage() {
       })
       .catch((err: any) => {
         console.log(err);
-        if (err.response.status === 332) {
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          app.auth().signOut();
+          app.auth().signOut().catch(console.error);
           return;
         }
         window.alert("Connection error. Could not register employee.");
@@ -139,7 +139,7 @@ export default function EmployeeManagementPage() {
     }
 
     const data = {
-      employeeEmail: employeeList[index].email,
+      employeeEmail: employeeList[index].email.toLowerCase(),
     };
 
     axios
@@ -149,9 +149,9 @@ export default function EmployeeManagementPage() {
       })
       .catch((err: any) => {
         console.log(err);
-        if (err.response.status === 332) {
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          app.auth().signOut();
+          app.auth().signOut().catch(console.error);
           return;
         }
         window.alert("Connection error");
@@ -195,9 +195,9 @@ export default function EmployeeManagementPage() {
           );
         } else if (err.response.status === 401) {
           window.alert("You are unauthorized, please login as a manager.");
-        } else if (err.response.status === 332) {
+        } else if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          app.auth().signOut();
+          app.auth().signOut().catch(console.error);
           return;
         } else {
           window.alert("Connection error. Please try again.");

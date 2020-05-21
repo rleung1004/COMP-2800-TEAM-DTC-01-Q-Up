@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Box, Typography } from '@material-ui/core';
 import '../styles/displayScreen.scss';
 import axios from 'axios';
+import app from "../firebase";
 
 export default function BoothDashBoard() {
    // Current time display
@@ -52,6 +53,12 @@ export default function BoothDashBoard() {
          })
          .catch((err) => {
             console.error(err);
+            if (err.response.status && err.response.status === 332) {
+               window.alert("Please login again to continue, your token expired");
+               app.auth().signOut().catch(console.error);
+               return;
+            }
+            window.alert('connection error. Please wait...')
          });
    },[getData, axiosConfig]);
 
@@ -65,7 +72,7 @@ export default function BoothDashBoard() {
                   <Grid item xs={2}>
                      <img src={require('../img/logo.png')} alt='QUP logo' />
                   </Grid>
-                  <Grid item xs={2}></Grid>
+                  <Grid item xs={2}/>
                   {/* Display customers in line */}
                   <Grid item xs={2}>
                      <Grid>
@@ -87,7 +94,7 @@ export default function BoothDashBoard() {
                         </Typography>
                      </Grid>
                   </Grid>
-                  <Grid item xs={2}></Grid>
+                  <Grid item xs={2}/>
                   {/* End display est wait time */}
                   {/* Display current time */}
                   <Grid item xs={2}>

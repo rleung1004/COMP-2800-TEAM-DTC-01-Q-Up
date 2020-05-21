@@ -99,8 +99,8 @@ const ConsumerEditProfilePage = ({ history }: any) => {
       setFormState((prevState) => ({ ...prevState, loading: true }));
       const userData = {
         phoneNumber: formState.phoneNumber,
-        postalCode: formState.postalCode,
-        email: sessionStorage.user.email,
+        postalCode: formState.postalCode.toUpperCase(),
+        email: sessionStorage.user.email.toLowerCase(),
       };
       console.log(userData);
 
@@ -111,9 +111,9 @@ const ConsumerEditProfilePage = ({ history }: any) => {
         })
         .catch((err: any) => {
           console.log(err);
-          if (err.response.status === 332) {
+          if (err.response.status && err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            app.auth().signOut();
+            app.auth().signOut().catch(console.error);
             return;
           }
           setFormState((prevState) => ({
@@ -146,9 +146,9 @@ const ConsumerEditProfilePage = ({ history }: any) => {
         })
         .catch((err: any) => {
           console.log(err);
-          if (err.response.status === 332) {
+          if (err.response.status && err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            app.auth().signOut();
+            app.auth().signOut().catch(console.error);
             return;
           }
           window.alert("Connection error");

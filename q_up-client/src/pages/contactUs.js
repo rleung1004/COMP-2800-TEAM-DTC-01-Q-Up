@@ -15,7 +15,7 @@ import { formatURL } from "../utils/formatting";
 import "../styles/contactUs.scss";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
-//Mui stylings
+//Mui styling
 const useStyles = makeStyles({
   darkPaper: {
     backgroundColor: "rgba(29,161,242, 0.7)",

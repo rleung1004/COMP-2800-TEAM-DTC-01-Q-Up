@@ -80,7 +80,7 @@ const ConsumerRegistrationPage = ({ history }: any) => {
       setFormState((prevState) => ({ ...prevState, loading: true }));
       const userData = {
         phoneNumber: formState.phoneNumber,
-        postalCode: formState.postalCode,
+        postalCode: formState.postalCode.toUpperCase(),
       };
 
       const axiosConfig = {
@@ -96,9 +96,9 @@ const ConsumerRegistrationPage = ({ history }: any) => {
         })
         .catch((err: any) => {
           console.log(err);
-          if (err.response.status === 332) {
+          if (err.response.status && err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            app.auth().signOut();
+            app.auth().signOut().catch(console.error);
             return;
           }
           setFormState((prevState) => ({
