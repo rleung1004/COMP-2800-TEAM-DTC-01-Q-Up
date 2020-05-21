@@ -1,15 +1,16 @@
 import React from "react";
 import "./App.scss";
 import axios from "axios";
-import firebase from "firebase";
+import { AuthProvider } from "./Auth";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute"
 import LandingPage from "./pages/landing";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
 import aboutUsPage from "./pages/aboutUs";
 import themes from "./mui-theming/themes";
-import termsPage from "./pages/termsAndConditions";
-import privacyPage from "./pages/privacyPolicy";
+import TermsPage from "./pages/termsAndConditions";
+import PrivacyPage from "./pages/privacyPolicy";
 import { ThemeProvider } from "@material-ui/core";
 import ConsumerRegistrationPage from "./pages/consumerRegistration";
 import BusinessRegistrationPage from "./pages/businessRegistration";
@@ -29,42 +30,39 @@ import ContactUsPage from "./pages/contactUs.js";
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
 
-  firebase.initializeApp({
-    apiKey: "AIzaSyCd2O4kN23xnVMtzVKm_fzt4iBQ7VH7T_8",
-    authDomain: "q-up-c2b70.firebaseapp.com",
-  });
-
 function App() {
   const theme = themes();
   return (
-    <Router>
-      <div className="App">
-        <ThemeProvider theme={theme}>
-          <Switch>
-            <Route path="/" component={LandingPage} exact />
-            <Route path="/login" component={LoginPage} exact />
-            <Route path="/signup" component={SignupPage} exact />
-            <Route path="/aboutUs" component={aboutUsPage} exact />
-            <Route path="/consumerRegistration" component={ConsumerRegistrationPage} exact />
-            <Route path="/businessRegistration" component={BusinessRegistrationPage} exact />
-            <Route path="/termsAndConditions" component={termsPage} exact />
-            <Route path="/PrivacyPolicy" component={privacyPage} exact />
-            <Route path="/businessDashboard" component={BusinessDashboardPage} exact />
-            <Route path="/consumerDashboard" component={ConsumerDashboard} exact />
-            <Route path="/consumerProfile" component={ConsumerProfilePage} exact />
-            <Route path="/editConsumerProfile" component={ConsumerEditProfilePage} exact />
-            <Route path="/businessProfile" component={BusinessProfilePage} exact />
-            <Route path="/editBusinessProfile" component={BusinessEditProfilePage} exact />
-            <Route path="/searchQueues" component={QueueSearchPage} exact />
-            <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
-            <Route path="/teller" component={TellerPage} exact />
-            <Route path="/boothDashBoard" component={Booth} exact />
-            <Route path="/contactUs" component={ContactUsPage} exact/>
-            <Route path="/display" component={DisplayScreen} exact/>
-          </Switch>
-        </ThemeProvider>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <ThemeProvider theme={theme}>
+            <Switch>
+              <Route path="/" component={LandingPage} exact />
+              <Route path="/login" component={LoginPage} exact />
+              <Route path="/signup" component={SignupPage} exact />
+              <Route path="/aboutUs" component={aboutUsPage} exact />
+              <Route path="/contactUs" component={ContactUsPage} exact />
+              <Route path="/termsAndConditions" component={TermsPage} exact />
+              <Route path="/privacyPolicy" component={PrivacyPage} exact />
+              <PrivateRoute path="/consumerRegistration" component={ConsumerRegistrationPage} exact />
+              <PrivateRoute path="/businessRegistration" component={BusinessRegistrationPage} exact />
+              <PrivateRoute path="/businessDashboard" component={BusinessDashboardPage} exact />
+              <PrivateRoute path="/consumerDashboard" component={ConsumerDashboard} exact />
+              <PrivateRoute path="/consumerProfile" component={ConsumerProfilePage} exact />
+              <PrivateRoute path="/editConsumerProfile" component={ConsumerEditProfilePage} exact />
+              <PrivateRoute path="/businessProfile" component={BusinessProfilePage} exact />
+              <PrivateRoute path="/editBusinessProfile" component={BusinessEditProfilePage} exact />
+              <PrivateRoute path="/searchQueues" component={QueueSearchPage} exact />
+              <PrivateRoute path="/employeeManagement" component={EmployeeManagementPage} exact />
+              <PrivateRoute path="/teller" component={TellerPage} exact />
+              <PrivateRoute path="/boothDashBoard" component={Booth} exact />
+              <PrivateRoute path="/display" component={DisplayScreen} exact />
+            </Switch>
+          </ThemeProvider>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

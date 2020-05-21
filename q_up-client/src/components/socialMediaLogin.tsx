@@ -1,6 +1,5 @@
 import React from "react";
 import firebase from "firebase";
-import axios from "axios";
 import "../styles/loginPage.scss";
 import {
   GoogleLoginButton,
@@ -9,22 +8,40 @@ import {
   GithubLoginButton,
 } from "react-social-login-buttons";
 import { Grid } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 
-export default function FirebaseLogin() {
-  const oAuthSignup = async (provider: firebase.auth.AuthProvider) => {
-    let token: string = "";
-    let userData: any;
-    let isNewUser: any;
-    const result = await firebase
+const FirebaseLogin = ({ history }: any) => {
+  const oAuthLogin = async (provider: firebase.auth.AuthProvider) => {
+    await firebase
       .auth()
       .signInWithPopup(provider)
-      .then((result) => {
-        result.user?.getIdToken().then((generatedToken) => {
-          token = generatedToken;
-          return token;
+      .then(async (result) => {
+        await result.user?.getIdToken().then((generatedToken) => {
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify({
+              token: generatedToken,
+              type: "customer",
+            })
+          );
         });
-        userData = result.user;
-        isNewUser = result.additionalUserInfo?.isNewUser;
+        let isNewUser = result.additionalUserInfo?.isNewUser;
+        if (isNewUser) {
+          await firebase
+            .auth()
+            .currentUser?.delete()
+            .then(() => {
+              window.alert(
+                "Please go to our sign up page to sign up the first time you login."
+              );
+              history.push("/signup");
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+          window.alert("Please use sign up before using login!");
+        }
+        return;
       })
       .catch((err) => {
         console.error(err);
@@ -39,91 +56,28 @@ export default function FirebaseLogin() {
         }
         return null;
       });
-
-    if (result === null) {
-      return;
-    }
-
-    if (!userData.email) {
-      await firebase
-        .auth()
-        .currentUser?.delete()
-        .then(() => {
-          window.alert(
-            "You must have an email associated on your Twitter or Facebook account to sign up, please use another login method or add an email to your social media account."
-          );
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-      return;
-    }
-
-    sessionStorage.setItem(
-      "user",
-      JSON.stringify({
-        token,
-        type: "customer",
-      })
-    );
-    if (isNewUser) {
-      let requestData = {
-        email: userData.email,
-        userId: userData.uid,
-      };
-      axios
-        .post("/oAuthSignup", requestData)
-        .then(() => {
-          window.location.href = "/consumerRegistration";
-        })
-        .catch(async (err) => {
-          if (err.response.status === 409) {
-            await firebase
-              .auth()
-              .currentUser?.delete()
-              .then(() => {
-                window.alert(
-                  "This account already exists! Please login with the right method."
-                );
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          } else {
-            console.error(err);
-            if (err.response.status === 332) {
-              window.alert("Please login again to continue, your token expired");
-              window.location.href = '/login';
-              return;
-            }
-            window.alert("Something went wrong with sign up, please try again.");
-          }
-        });
-    } else {
-      window.location.href = "/consumerDashBoard";
-    }
   };
 
-  const signInWithGoogle = () => {
+  const signInWithGoogle = async () => {
     let provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("https://www.googleapis.com/auth/userinfo.email");
-    oAuthSignup(provider);
+    await oAuthLogin(provider);
   };
 
-  const signInWithFacebook = () => {
+  const signInWithFacebook = async () => {
     let provider = new firebase.auth.FacebookAuthProvider();
     provider.addScope("email");
-    oAuthSignup(provider);
+    await oAuthLogin(provider);
   };
 
-  const signInWithTwitter = () => {
+  const signInWithTwitter = async () => {
     let provider = new firebase.auth.TwitterAuthProvider();
-    oAuthSignup(provider);
+    await oAuthLogin(provider);
   };
 
-  const signInWithGithub = () => {
+  const signInWithGithub = async () => {
     let provider = new firebase.auth.GithubAuthProvider();
-    oAuthSignup(provider);
+    await oAuthLogin(provider);
   };
 
   return (
@@ -154,4 +108,6 @@ export default function FirebaseLogin() {
       </div>
     </>
   );
-}
+};
+
+export default withRouter(FirebaseLogin);

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect, useCallback } from "react";
 // import { Link } from 'react-router-dom';
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -14,10 +14,11 @@ import {
   TextField,
   DialogActions,
 } from "@material-ui/core";
+import app from "../firebase"
 import axios from "axios";
 import { formatPhone } from "../utils/formatting";
 import "../styles/businessProfile.scss";
-
+import { withRouter, Redirect } from "react-router-dom";
 
 //Mui stylings
 const useStyles = makeStyles(() => ({
@@ -31,10 +32,10 @@ const useStyles = makeStyles(() => ({
 
 /**
  * Render a business profile page.
- * 
+ *
  * Accessible to: managers
  */
-export default function BusinessProfilePage() {
+const BusinessProfilePage = ({ history }: any) => {
   // password form error definition
   interface errors {
     // oldPassword?: string,
@@ -94,9 +95,9 @@ export default function BusinessProfilePage() {
   };
 
   // edit profile button handler
-  const handleEditProfile = () => {
-    window.location.href = "/editBusinessProfile";
-  };
+  const handleEditProfile = useCallback(() => {
+    history.push("/editBusinessProfile");
+  }, [history]);
 
   // password change button handler
   const handlePasswordChange = () => {
@@ -128,15 +129,15 @@ export default function BusinessProfilePage() {
     }
     axios
       .delete("/deleteBusiness", axiosConfig)
-      .then(() => {
-        window.location.href = "/";
+      .then(async () => {
         window.alert("Your business has been deleted");
+        await app.auth().signOut();
       })
       .catch((err: any) => {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -165,7 +166,6 @@ export default function BusinessProfilePage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         window.alert("Connection error");
@@ -214,7 +214,7 @@ export default function BusinessProfilePage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -222,6 +222,11 @@ export default function BusinessProfilePage() {
   }, [axiosConfig, errorObj, getData]);
 
   const sectionSpacing = 3;
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
+  
   return (
     <>
       <Header Nav={BusinessNav} logout />
@@ -502,4 +507,6 @@ export default function BusinessProfilePage() {
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(BusinessProfilePage);

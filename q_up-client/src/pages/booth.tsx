@@ -1,62 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Header from '../components/Header';
-import BoothEnterName from '../components/boothEnterName';
-import BoothTicketInfo from '../components/boothTicketInfo';
-import { Grid, Typography } from '@material-ui/core';
-import '../styles/booth.scss';
-import BoothDisabledInfo from 'src/components/boothDisabledInfo';
-import BoothLoadingInfo from 'src/components/boothLoading';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Header from "../components/Header";
+import BoothEnterName from "../components/boothEnterName";
+import BoothTicketInfo from "../components/boothTicketInfo";
+import { Grid, Typography } from "@material-ui/core";
+import "../styles/booth.scss";
+import BoothDisabledInfo from "src/components/boothDisabledInfo";
+import BoothLoadingInfo from "src/components/boothLoading";
 
-enum boothStates{
-   loading,
-   closed,
-   accepting,
-   serving
+enum boothStates {
+  loading,
+  closed,
+  accepting,
+  serving,
 }
 /**
  * Renders a booth page.
  */
 export default function Booth() {
-   const axiosConfig = {
-      headers: {
-         Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
-      },
-   };
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+    },
+  };
 
-   const [boothInfo, setBoothInfo] = useState({
-      state: boothStates.loading, 
-      name: '',
-      ticketNumber: '',
-      password: '',
-   });
+  const [boothInfo, setBoothInfo] = useState({
+    state: boothStates.loading,
+    name: "",
+    ticketNumber: "",
+    password: "",
+  });
 
-   // fetch flag
-   const [getData, setGetData] = useState(true);
+  // fetch flag
+  const [getData, setGetData] = useState(true);
 
-   useEffect(() => {
+  useEffect(() => {
+    return () => {
       if (!getData) {
-         return;
+        return;
       }
       setGetData(false);
-
       axios
-      .get('/getQueue', axiosConfig)
-      .then((res:any) => {
-         const data = res.data.queue;
-         setBoothInfo((prevState:any) => ({
+        .get("/getQueue", axiosConfig)
+        .then((res: any) => {
+          const data = res.data.queue;
+          setBoothInfo((prevState: any) => ({
             ...prevState,
             state: data.isActive ? boothStates.accepting : boothStates.closed,
-         }));
-      })
-      .catch((err:any) => {
-         if (err.response.status === 332) {
-            window.location.href = '/login';
-         }
-         console.error(err);
-      });
-
-   }, [getData, axiosConfig]);
+          }));
+        })
+        .catch((err: any) => {
+          console.error(err);
+        });
+    };
+  }, [getData, axiosConfig]);
 
    // handle done button click, to be passed to child BoothTicketInfo
    const onDone = () => {
@@ -83,7 +80,6 @@ export default function Booth() {
       return <></>;
    };
 
-
    return (
       <>
          <Header/>
@@ -107,7 +103,7 @@ export default function Booth() {
                   </Grid>
                </Grid>
             </Grid>
-         </main>
-      </>
-   );
+      </main>
+    </>
+  );
 }

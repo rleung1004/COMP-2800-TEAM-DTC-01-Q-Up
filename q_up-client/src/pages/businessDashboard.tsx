@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-// import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import BusinessNav from "../components/businessNav";
-// import axios from "axios";
 // material-ui components
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Switch from "@material-ui/core/Switch";
 import { makeStyles, Paper, Button } from "@material-ui/core";
 import axios from "axios";
+import { withRouter, Redirect } from "react-router-dom";
+import app from "src/firebase";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
  *
  * Accessible to: managers
  */
-export default function BusinessDashboardPage() {
+const BusinessDashboardPage = ({ history }: any) => {
   const [getData, setGetData] = useState(true);
   const classes = useStyles();
 
@@ -88,7 +88,7 @@ export default function BusinessDashboardPage() {
         console.error(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error.");
@@ -98,9 +98,9 @@ export default function BusinessDashboardPage() {
   /**
    * Handle add employees button click.
    */
-  const handleToAddEmployees = () => {
-    window.location.href = "/employeeManagement";
-  };
+  const handleToAddEmployees = useCallback(() => {
+    history.push("/employeeManagement");
+  }, [history]);
 
   /**
    * Employee status section to be rendered when business has no employees
@@ -220,6 +220,7 @@ export default function BusinessDashboardPage() {
     if (!getData) {
       return;
     }
+
     setGetData(false);
     axios
       .get("/getQueue", axiosConfig)
@@ -247,32 +248,39 @@ export default function BusinessDashboardPage() {
         }
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error.");
       });
   }, [axiosConfig, data, getData]);
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <>
       <Header Nav={BusinessNav} logout />
       <main>
-      <header className={classes.pageTitleContainer}>
-        <Grid container justify="center">
-          <Grid item xs={10}>
-            <Typography
-              variant="h3"
-              className={classes.pageTitle}
-              align="center"
-            >
-              {data.businessName}
-            </Typography>
+        <header className={classes.pageTitleContainer}>
+          <Grid container justify="center">
+            <Grid item xs={10}>
+              <Typography
+                variant="h3"
+                className={classes.pageTitle}
+                align="center"
+              >
+                {data.businessName}
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
-      </header>
-      <section>{data.withEmployees ? withEmployees : noEmployees}</section>
+        </header>
+        <section>{data.withEmployees ? withEmployees : noEmployees}</section>
       </main>
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(BusinessDashboardPage);

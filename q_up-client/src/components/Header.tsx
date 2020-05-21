@@ -2,6 +2,7 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import "../styles/staticHeader.scss";
 import axios from "axios";
+import app from "../firebase";
 import { IconButton, makeStyles } from "@material-ui/core";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 
@@ -26,10 +27,10 @@ export default function Header(props: any) {
    * Handle logging out.
    *
    * Redirects to Landing page upon success.
-   * 
+   *
    * Only employees are required to send a request to server. Else, just delete the token.
    */
-  const onLogoutHandler = () => {
+  const onLogoutHandler = async () => {
     if (!window.confirm("Are you sure?")) {
       return;
     }
@@ -39,18 +40,19 @@ export default function Header(props: any) {
         Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
       },
     };
+    await app.auth().signOut();
     if (userType === "employee") {
       axios
         .get("/logout", axiosConfig)
         .then(() => {
           sessionStorage.removeItem("user");
-          window.location.href = "/";
+          return;
         })
         .catch((err) => {
           console.error(err);
           if (err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            window.location.href = '/login';
+            window.location.href = "/login";
             return;
           }
           window.alert("Connection error, please try again");
@@ -58,7 +60,6 @@ export default function Header(props: any) {
         });
     } else {
       sessionStorage.removeItem("user");
-      window.location.href = "/";
     }
   };
 

@@ -57,7 +57,7 @@ export default function LandingPage() {
                            color='primary'
                            className={classes.button}
                         >
-                           Login
+                           Signin
                         </Button>
                      </Link>
                   </Grid>

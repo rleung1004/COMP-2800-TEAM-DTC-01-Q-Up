@@ -1,18 +1,28 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, {
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useContext,
+} from "react";
+import { Redirect, withRouter } from "react-router-dom";
+import { AuthContext } from "../Auth";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "bootstrap/dist/css/bootstrap.css";
 import "../styles/loginPage.scss";
+import app from "../firebase";
 import FirebaseLogin from "../components/socialMediaLogin";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-// material-ui components
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
-import routeUsers from "src/utils/customerLoginRouting";
+import {
+  Grid,
+  TextField,
+  Typography,
+  Button,
+  CircularProgress,
+  makeStyles,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,10 +39,14 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: "20px auto 20px auto",
+    position: "relative",
   },
   customError: {
     color: "red",
     fontSize: "0.8em",
+  },
+  progress: {
+    position: "absolute",
   },
 }));
 
@@ -41,10 +55,8 @@ const useStyles = makeStyles((theme) => ({
  *
  * Accessible to: All users
  */
-export default function LoginPage() {
-  const history = useHistory();
+const LoginPage = ({ history }: any) => {
   const classes = useStyles();
-
   // error type definition to be used in input feedback for login form
   interface errors {
     email?: string;
@@ -77,30 +89,110 @@ export default function LoginPage() {
   };
 
   // handle submit click
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
 
-    setFormState((prevState) => ({ ...prevState, loading: true }));
+      setFormState((prevState) => ({ ...prevState, loading: true }));
 
-    const userData = {
-      email: formState.email,
-      password: formState.password,
-    };
-    axios
-      .post("/login", userData)
-      .then((res: any) => {
-        routeUsers(res);
-      })
-      .catch((err) => {
-        console.log(err);
+      const userData = {
+        email: formState.email,
+        password: formState.password,
+      };
+      axios
+        .post("/login", userData)
+        .then(async (res: any) => {
+          switch (res.data.userType) {
+            case "manager":
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: "manager",
+                })
+              );
+              break;
+            case "employee":
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: "employee",
+                })
+              );
+              break;
+            case "display":
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: "display",
+                })
+              );
+              break;
+            case "booth":
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: "booth",
+                })
+              );
+              break;
+            default:
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: res.data.userType,
+                  email: res.data.userEmail,
+                })
+              );
+              break;
+          }
+          try {
+            await app
+              .auth()
+              .signInWithEmailAndPassword(userData.email, userData.password);
+          } catch (err) {
+            alert(err);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
 
-        setFormState((prevState) => ({
-          ...prevState,
-          errors: err.response.data,
-          loading: false,
-        }));
-      });
-  };
+          setFormState((prevState) => ({
+            ...prevState,
+            errors: err.response.data,
+            loading: false,
+          }));
+        });
+    },
+    [formState]
+  );
+  const currentUser = useContext(AuthContext);
+  // if user is authenticated redirect them to their home route (does not save current route into history)
+
+  if (currentUser) {
+    let userType: string = "";
+    try {
+      userType = JSON.parse(sessionStorage.user).type;
+    } catch (err) {
+      console.error(err);
+      app.auth().signOut();
+    }
+    switch (userType) {
+      case "manager":
+        return <Redirect to="/businessDashboard" />;
+      case "employee":
+        return <Redirect to="/teller" />;
+      case "booth":
+        return <Redirect to="/boothDashboard" />;
+      default:
+        return <Redirect to="/consumerDashboard" />;
+    }
+  }
+
   return (
     <>
       <Header />
@@ -120,7 +212,7 @@ export default function LoginPage() {
               alignItems="center"
             >
               <Typography variant="h2" className={classes.pageTitle}>
-                Login
+                Sign In
               </Typography>
               <TextField
                 required
@@ -159,8 +251,10 @@ export default function LoginPage() {
                 variant="contained"
                 color="primary"
                 className={classes.button}
+                disabled={formState.loading}
               >
-                Login
+                Sign In
+                {formState.loading && <CircularProgress className={classes.progress} size={30} />}
               </Button>
             </Grid>
           </form>
@@ -183,4 +277,6 @@ export default function LoginPage() {
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(LoginPage);

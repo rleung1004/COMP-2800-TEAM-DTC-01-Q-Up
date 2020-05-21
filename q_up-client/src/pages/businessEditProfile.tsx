@@ -1,4 +1,11 @@
-import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
+import React, {
+  useState,
+  FormEvent,
+  ChangeEvent,
+  useEffect,
+  useCallback,
+} from "react";
+import app from "../firebase";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,6 +22,7 @@ import {
 import axios from "axios";
 import "../styles/businessDashboard.scss";
 import BusinessNav from "src/components/businessNav";
+import { withRouter, Redirect } from "react-router-dom";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -43,10 +51,10 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Render a business edit profile page.
- * 
+ *
  * Accessible to: managers
  */
-export default function EditBusinessProfilePage() {
+const EditBusinessProfilePage = ({ history }: any) => {
   const array: Array<any> = [];
   const [dropdownData, setDropDownData] = useState({
     categories: array,
@@ -114,10 +122,10 @@ export default function EditBusinessProfilePage() {
     loading: false,
     errors: errorObject,
   });
-  
+
   /**
    * sync input data with form data
-   * 
+   *
    * Each input is assigned a name analog to the form data it represents.
    * On change the proper property in form data is access by using the name of the event emitter.
    * @param event an event with target
@@ -140,7 +148,7 @@ export default function EditBusinessProfilePage() {
 
   /**
    * sync hour input data with form data
-   * 
+   *
    * Each input is assigned a name analog to the form data it represents.
    * On change the proper property in form data is access by using the name of the event emitter.
    * @param event an event with target
@@ -188,14 +196,14 @@ export default function EditBusinessProfilePage() {
 
   /**
    * sync average wait time input data with form data
-   * 
+   *
    * Each input is assigned a name analog to the form data it represents.
    * On change the proper property in form data is access by using the name of the event emitter.
-   * 
+   *
    * Allowed range: 0 < 59
    * Only numbers allowed
    * Allows blank to avoid UX issues
-   * 
+   *
    * @param event an event with target
    */
   const handleaverageWaitTimeChange = (
@@ -260,7 +268,7 @@ export default function EditBusinessProfilePage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -287,62 +295,70 @@ export default function EditBusinessProfilePage() {
   }, [axiosConfig, getDropdownData]);
 
   // submit handler
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
 
-    // validation
-    if (formState.averageWaitTime === ' ') {
-      setFormState((prevState:any) => ({
-        ...prevState, errors: {
-          ...prevState.errors,
-          averageWaitTime: "Must enter a value"
-        }
-      })); 
-      return;     
-    }
-    setFormState((prevState) => ({ ...prevState, loading: true }));
-
-    // map package
-    const userData = {
-      name: formState.name,
-      phoneNumber: formState.phoneNumber,
-      address: formState.address,
-      category: formState.category,
-      website: formState.website,
-      hours: formState.hours,
-      description: formState.description,
-      email: formState.email,
-      averageWaitTime: formState.averageWaitTime,
-    };
-    
-    // request
-    axios
-      .put("/updateBusiness", userData, axiosConfig)
-      .then(() => {
-        console.log("success updating business");
-        window.location.href = "/businessProfile";
-      })
-      .catch((err: any) => {
-        console.error(err);
-        if (err.response.status === 332) {
-          window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
-          return;
-        }
-        window.alert("Connection error");
-        setFormState((prevState) => ({
+      // validation
+      if (formState.averageWaitTime === " ") {
+        setFormState((prevState: any) => ({
           ...prevState,
-          errors: err.response.data,
-          loading: false,
+          errors: {
+            ...prevState.errors,
+            averageWaitTime: "Must enter a value",
+          },
         }));
-      });
-  };
+        return;
+      }
+      setFormState((prevState) => ({ ...prevState, loading: true }));
+
+      // map package
+      const userData = {
+        name: formState.name,
+        phoneNumber: formState.phoneNumber,
+        address: formState.address,
+        category: formState.category,
+        website: formState.website,
+        hours: formState.hours,
+        description: formState.description,
+        email: formState.email,
+        averageWaitTime: formState.averageWaitTime,
+      };
+
+      // request
+      axios
+        .put("/updateBusiness", userData, axiosConfig)
+        .then(() => {
+          console.log("success updating business");
+          history.push("/businessProfile");
+        })
+        .catch((err: any) => {
+          console.error(err);
+          if (err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            app.auth().signOut();
+            return;
+          }
+          window.alert("Connection error");
+          setFormState((prevState) => ({
+            ...prevState,
+            errors: err.response.data,
+            loading: false,
+          }));
+        });
+    },
+    [history, formState, axiosConfig]
+  );
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
 
 
 
   return (
     <>
-      <Header Nav={BusinessNav} logout/>
+      <Header Nav={BusinessNav} logout />
       <main>
         <form
           className={classes.root}
@@ -602,10 +618,10 @@ export default function EditBusinessProfilePage() {
                   </Grid>
                 </Grid>
               </Grid>
-              
+
               <Grid container item direction="column">
-              <Typography variant="h3">
-                <br/>
+                <Typography variant="h3">
+                  <br />
                   Estimated Serving Frequency(SF)
                 </Typography>
                 <Typography variant="caption">
@@ -640,4 +656,6 @@ export default function EditBusinessProfilePage() {
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(EditBusinessProfilePage);

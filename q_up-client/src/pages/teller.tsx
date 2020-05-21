@@ -1,4 +1,5 @@
 import React, { MouseEvent } from "react";
+import app from "../firebase";
 import QueueSlot from "../components/tellerQueueSlot";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -7,6 +8,7 @@ import Header from "../components/Header";
 import { Grid, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import "../styles/teller.scss";
+import { Redirect } from "react-router-dom";
 
 interface queueSlot {
   customer: string;
@@ -36,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Render a teller page.
- * 
+ *
  * Accessible to: employees
  */
 export default function TellerPage() {
@@ -80,7 +82,7 @@ export default function TellerPage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -94,7 +96,7 @@ export default function TellerPage() {
 
   /**
    * Get a function that sets the current selected customer.
-   * 
+   *
    * Gets a curried function that is passed to each customer row.
    * @param selectorID the queue row id
    */
@@ -127,7 +129,7 @@ export default function TellerPage() {
         console.error(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
@@ -148,12 +150,16 @@ export default function TellerPage() {
         console.error(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut();
           return;
         }
         window.alert("Connection error");
       });
   };
+
+  if (JSON.parse(sessionStorage.user).type !== "employee") {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <>
