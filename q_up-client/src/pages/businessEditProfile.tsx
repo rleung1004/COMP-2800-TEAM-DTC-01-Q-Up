@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import "../styles/businessDashboard.scss";
 import BusinessNav from "src/components/businessNav";
+import PhoneMaskedInput, { unMaskPhone } from '../components/PhoneMaskedInput';
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -249,7 +250,7 @@ export default function EditBusinessProfilePage() {
           email: data.email,
           hours: data.hours,
           address: data.address,
-          phoneNumber: data.phoneNumber,
+          phoneNumber: unMaskPhone(data.phoneNumber),
           website: data.website,
           averageWaitTime: data.averageWaitTime,
           errors: {},
@@ -329,7 +330,7 @@ export default function EditBusinessProfilePage() {
           window.location.href = '/login';
           return;
         }
-        window.alert("Connection error");
+        window.alert("Form error");
         setFormState((prevState) => ({
           ...prevState,
           errors: err.response.data,
@@ -392,6 +393,7 @@ export default function EditBusinessProfilePage() {
               className={classes.textField}
               helperText={formState.errors.phoneNumber}
               error={!!formState.errors.phoneNumber}
+              InputProps={{inputComponent: PhoneMaskedInput as any} }
             />
             <TextField
               required

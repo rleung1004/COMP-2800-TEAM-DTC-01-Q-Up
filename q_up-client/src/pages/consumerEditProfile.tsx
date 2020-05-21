@@ -11,6 +11,7 @@ import {
    TextField,
    Button,
 } from '@material-ui/core';
+import PhoneMaskedInput, { unMaskPhone } from "src/components/PhoneMaskedInput";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -90,7 +91,7 @@ export default function ConsumerEditProfilePage() {
       event.preventDefault();
       setFormState((prevState) => ({ ...prevState, loading: true }));
       const userData = {
-         phoneNumber: formState.phoneNumber,
+         phoneNumber: unMaskPhone(formState.phoneNumber),
          postalCode: formState.postalCode,
          email: sessionStorage.user.email,
       };
@@ -178,6 +179,7 @@ export default function ConsumerEditProfilePage() {
                         className={classes.textField}
                         helperText={formState.errors.phoneNumber}
                         error={!!formState.errors.phoneNumber}
+                        InputProps={{inputComponent: PhoneMaskedInput as any} }
                      />
                      <TextField
                         color='secondary'

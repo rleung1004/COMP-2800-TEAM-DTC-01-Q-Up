@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import "../styles/businessDashboard.scss";
-import PhoneMaskedInput from '../components/PhoneMaskedInput';
+import PhoneMaskedInput, { unMaskPhone } from "src/components/PhoneMaskedInput";
 
 
 //Mui stylings
@@ -248,14 +248,14 @@ export default function BusinessRegistrationPage() {
 
     // map package
     const userData = {
-      phoneNumber: formState.phoneNumber,
+      phoneNumber: unMaskPhone(formState.phoneNumber),
       address: formState.address,
       category: formState.category,
       website: formState.website,
       hours: formState.hours,
       description: formState.description,
       email: formState.email,
-      averageWaitTime: formState.averageWaitTime,
+      averageWaitTime: parseInt(formState.averageWaitTime),
     };
 
     // request
@@ -273,7 +273,7 @@ export default function BusinessRegistrationPage() {
           window.location.href = '/login';
           return;
         }
-        window.alert("Connection error");
+        window.alert("Form error");
         setFormState((prevState) => ({
           ...prevState,
           errors: err.response.data,
@@ -407,7 +407,6 @@ export default function BusinessRegistrationPage() {
                   className={classes.textField}
                   helperText={formState.errors.address?.unit}
                   error={!!formState.errors.address?.unit}
-                  required
                 />
               </Grid>
               <Grid item xs={12}>

@@ -20,3 +20,7 @@ export default function PhoneMaskedInput(props: TextMaskCustomProps) {
         />
     );
 }
+
+export function unMaskPhone(phoneNumber:string) {
+    return phoneNumber.slice(1, 4) + phoneNumber.slice(6, 9) + phoneNumber.slice(10)
+}

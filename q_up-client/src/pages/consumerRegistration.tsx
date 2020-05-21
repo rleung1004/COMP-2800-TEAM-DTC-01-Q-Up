@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import axios from 'axios';
+import PhoneMaskedInput, { unMaskPhone } from "src/components/PhoneMaskedInput";
 
 
 // Mui stylings
@@ -77,7 +78,7 @@ export default function ConsumerRegistrationPage() {
       event.preventDefault();
       setFormState((prevState) => ({ ...prevState, loading: true }));
       const userData = {
-         phoneNumber: formState.phoneNumber,
+         phoneNumber: unMaskPhone(formState.phoneNumber),
          postalCode: formState.postalCode,
       };
 
@@ -142,6 +143,7 @@ export default function ConsumerRegistrationPage() {
                         className={classes.textField}
                         helperText={formState.errors.phoneNumber}
                         error={!!formState.errors.phoneNumber}
+                        InputProps={{inputComponent: PhoneMaskedInput as any} }
                      />
                      <TextField
                         color='secondary'
