@@ -24,6 +24,7 @@ import QueueSearchPage from "./pages/queueSearch";
 import TellerPage from "./pages/teller";
 import Booth from './pages/booth';
 import ContactUsPage from "./pages/contactUs";
+import DisplayScreen from './pages/displayScreen'
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
@@ -59,6 +60,7 @@ function App() {
             <Route path="/teller" component={TellerPage} exact />
             <Route path="/boothDashBoard" component={Booth} exact />
             <Route path="/contactUs" component={ContactUsPage} exact/>
+            <Route path="/display" component={DisplayScreen} exact/>
           </Switch>
         </ThemeProvider>
       </div>
