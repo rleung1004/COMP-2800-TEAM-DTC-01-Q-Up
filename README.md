@@ -15,6 +15,7 @@ Q-UP made by Team-KART
     * [Unit tests](#unit-tests)
     * [Selenium IDE Chrome Extension](#selenium-ide-chrome-extension)
   - [Technologies](#technologies)
+  - [Server-side Admin Keys](#server-side-admin-keys)
   - [Code References](#code-references)
     * [TermsFeed](#termsfeed)
     * [Pastebin](#pastebin)
@@ -270,6 +271,19 @@ The following is a list of all technologies used to develop Q-UP.
 | NodeMailer                  | https://nodemailer.com/about/                            | An easy to use module to send e-mails with Node.JS (using SMTP or sendmail or Amazon SES) and is unicode friendly.                                                                                                          |
 | React-twitter-embed         | https://www.npmjs.com/package/react-twitter-embed        | A React Twitter Embed Component. The simplest way to add Twitter Widgets to react projects.                                                                                                                                 |
 | React-social-login-buttons  | https://www.npmjs.com/package/react-social-login-buttons | A simple package to display social login buttons using React. Buttons do not provide any social logic. They are only visual components listening to some events triggered by the user.                                      |
+
+## Server-side Admin Keys
+
+If you would like to access the following: 
+
+* Firebase console
+* Google could platform console
+* Algolia console
+* Twitter account
+* Google account 
+* Facebook account
+
+please contact our server administrator by email at: `rleung1004@gmail.com`. Thanks.
 
 ## Code References
 

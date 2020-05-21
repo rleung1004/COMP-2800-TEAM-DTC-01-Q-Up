@@ -197,7 +197,7 @@ const BusinessRegistrationPage = ({ history }: any) => {
    *
    * @param event an event with target
    */
-  const handleaverageWaitTImeChange = (
+  const handleAverageWaitTImeChange = (
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const newValue = event.target.value;
@@ -592,7 +592,7 @@ const BusinessRegistrationPage = ({ history }: any) => {
                     name="servingFrequency"
                     color="secondary"
                     size="small"
-                    onChange={handleaverageWaitTImeChange}
+                    onChange={handleAverageWaitTImeChange}
                     value={formState.averageWaitTime}
                     required
                   />
