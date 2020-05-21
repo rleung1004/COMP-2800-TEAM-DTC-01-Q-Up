@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import "../styles/businessDashboard.scss";
+import PhoneMaskedInput from '../components/PhoneMaskedInput';
 
 
 //Mui stylings
@@ -50,7 +51,7 @@ export default function BusinessRegistrationPage() {
   const classes = useStyles();
   const array: Array<any> = [];
   const [dropdownData, setDropDownData] = useState({
-    categories: array,
+    businessCategories: array,
     provinces: array,
   });
   const [getDropdownData, setGetDropdownData] = useState(true);
@@ -106,7 +107,7 @@ export default function BusinessRegistrationPage() {
       province: "",
       postalCode: "",
     },
-    phoneNumber: "",
+    phoneNumber: "(1  )    -    ",
     website: "",
     averageWaitTime: "",
     loading: false,
@@ -339,6 +340,7 @@ export default function BusinessRegistrationPage() {
               className={classes.textField}
               helperText={formState.errors.phoneNumber}
               error={!!formState.errors.phoneNumber}
+              InputProps={{inputComponent: PhoneMaskedInput as any} }
             />
             <TextField
               required
@@ -377,7 +379,7 @@ export default function BusinessRegistrationPage() {
                   value={formState.category}
                   onChange={handleOnFieldChange}
                 >
-                  {dropdownData.categories.map((cat, key) => {
+                  {dropdownData.businessCategories.map((cat, key) => {
                     return (
                       <MenuItem key={key} value={cat}>
                         {cat}
