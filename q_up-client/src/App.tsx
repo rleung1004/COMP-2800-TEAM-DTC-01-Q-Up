@@ -23,8 +23,8 @@ import EmployeeManagementPage from "./pages/employeeManagement";
 import QueueSearchPage from "./pages/queueSearch";
 import TellerPage from "./pages/teller";
 import Booth from './pages/booth';
-import ContactUsPage from "./pages/contactUs";
 import DisplayScreen from './pages/displayScreen'
+import ContactUsPage from "./pages/contactUs.js";
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";

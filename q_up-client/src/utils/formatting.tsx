@@ -44,7 +44,7 @@ export function formatAddress(address:any) {
  * @param formattedAddress a string, an address literal
  * @returns a string, a URI compliant parameter
  */
-export function formatGoogleMapURL(formattedAddress:string) {
+export function formatURL(formattedAddress:string) {
     let newString = "";
     for (const char of formattedAddress) {
         switch (char) {
@@ -68,6 +68,9 @@ export function formatGoogleMapURL(formattedAddress:string) {
                 break;
             case '|':
                 newString += '%7C';
+                break;
+            case ',':
+                newString += '%2C';
                 break;
             default:    
                 newString += char;  
