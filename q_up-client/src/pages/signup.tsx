@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent, useCallback } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { withRouter, Redirect } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import "../styles/signupPage.scss";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid";
@@ -117,9 +117,6 @@ const SignupPage = ({ history }: any) => {
       });
   }, [history, formState]);
 
-  const redirectToLogin = () => {
-    return <Redirect to="/login" />
-  }
   return (
     <>
       <Header />
@@ -238,7 +235,7 @@ const SignupPage = ({ history }: any) => {
           </Button>
 
           <div className="text-center last-element">
-            Already have an account? <div onClick={redirectToLogin}>Log in</div>
+            Already have an account? <Link to="/login">Log in</Link>
           </div>
         </Grid>
       </main>

@@ -13,7 +13,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../styles/loginPage.scss";
 import app from "../firebase";
 import FirebaseLogin from "../components/socialMediaLogin";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
 // material-ui components
 import Grid from "@material-ui/core/Grid";
@@ -169,26 +169,21 @@ const LoginPage = ({ history }: any) => {
     },
     [formState.email, formState.password, history]
   );
-  // if user is authenticated redirect them to their home route
+  // if user is authenticated redirect them to their home route (does not save current route into history) 
   const currentUser = useContext(AuthContext);
 
-  console.log(currentUser);
-
-  // if (currentUser) {
-  //   switch (JSON.parse(sessionStorage.user).type) {
-  //     case "manager":
-  //       return <Redirect to="/businessDashboard" />;
-  //     case "employee":
-  //       return <Redirect to="/teller" />;
-  //     case "booth":
-  //       return <Redirect to="/boothDashboard" />;
-  //     default:
-  //       return <Redirect to="/consumerDashboard" />;
-  //   }
-  // }
-  // if (currentUser) {
-  //   return <Redirect to="/consumerDashboard" />;
-  // }
+  if (currentUser) {
+    switch (JSON.parse(sessionStorage.user).type) {
+      case "manager":
+        return <Redirect to="/businessDashboard" />;
+      case "employee":
+        return <Redirect to="/teller" />;
+      case "booth":
+        return <Redirect to="/boothDashboard" />;
+      default:
+        return <Redirect to="/consumerDashboard" />;
+    }
+  }
 
   return (
     <>
