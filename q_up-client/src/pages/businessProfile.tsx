@@ -135,7 +135,7 @@ const BusinessProfilePage = ({ history }: any) => {
       })
       .catch((err: any) => {
         console.log(err);
-        if (err.response.status === 332) {
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
           app.auth().signOut().catch(console.error);
           return;
@@ -164,8 +164,9 @@ const BusinessProfilePage = ({ history }: any) => {
       })
       .catch((err: any) => {
         console.log(err);
-        if (err.response.status === 332) {
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
+          app.auth().signOut().catch(console.error);
           return;
         }
         window.alert("Connection error");
@@ -212,7 +213,7 @@ const BusinessProfilePage = ({ history }: any) => {
       })
       .catch((err: any) => {
         console.log(err);
-        if (err.response.status === 332) {
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
           app.auth().signOut().catch(console.error);
           return;
