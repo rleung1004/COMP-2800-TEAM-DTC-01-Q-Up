@@ -22,6 +22,7 @@ import EmployeeManagementPage from "./pages/employeeManagement";
 import QueueSearchPage from "./pages/queueSearch";
 import TellerPage from "./pages/teller";
 import ContactUsPage from "./pages/contactUs";
+import DisplayScreen from './pages/displayScreen'
 
 axios.defaults.baseURL =
   "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
@@ -51,6 +52,7 @@ function App() {
             <Route path="/employeeManagement" component={EmployeeManagementPage} exact />
             <Route path="/teller" component={TellerPage} exact />
             <Route path="/contactUs" component={ContactUsPage} exact/>
+            <Route path="/display" component={DisplayScreen} exact/>
           </Switch>
         </ThemeProvider>
       </div>
