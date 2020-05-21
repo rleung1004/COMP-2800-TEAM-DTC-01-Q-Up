@@ -129,7 +129,7 @@ export default function LandingPage() {
                   </Grid>
                </Grid>
                <Grid>
-                  <Grid xs={12}>
+                  <Grid item xs={12}>
                      <img
                         style={{ width: '100%' }}
                         src={require('../img/hugeasslineup.jpeg')}
@@ -153,7 +153,7 @@ export default function LandingPage() {
                      </Typography>
                   </Box>
                </Grid>
-               <Grid xs={12}>
+               <Grid item xs={12}>
                   <img
                      style={{ width: '100%' }}
                      src={require('../img/product image.png')}
