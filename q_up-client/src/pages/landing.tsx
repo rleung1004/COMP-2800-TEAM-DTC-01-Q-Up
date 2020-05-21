@@ -55,7 +55,7 @@ export default function LandingPage() {
                   color="primary"
                   className={classes.button}
                 >
-                  Login
+                  Returning User
                 </Button>
               </Link>
             </Grid>
@@ -67,7 +67,7 @@ export default function LandingPage() {
                   color="primary"
                   className={classes.button}
                 >
-                  Signup
+                  New User
                 </Button>
               </Link>
             </Grid>

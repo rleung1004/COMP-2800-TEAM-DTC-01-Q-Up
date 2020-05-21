@@ -146,7 +146,7 @@ const SignupPage = ({ history }: any) => {
               alignItems="center"
             >
               <Typography variant="h2" className={classes.pageTitle}>
-                Sign Up
+                Create An Account
               </Typography>
               <TextField
                 color="secondary"

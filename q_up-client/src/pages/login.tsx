@@ -212,7 +212,7 @@ const LoginPage = ({ history }: any) => {
               alignItems="center"
             >
               <Typography variant="h2" className={classes.pageTitle}>
-                Login
+                Sign In
               </Typography>
               <TextField
                 required
@@ -253,7 +253,7 @@ const LoginPage = ({ history }: any) => {
                 className={classes.button}
                 disabled={formState.loading}
               >
-                Login
+                Sign In
                 {formState.loading && <CircularProgress className={classes.progress} size={30} />}
               </Button>
             </Grid>
