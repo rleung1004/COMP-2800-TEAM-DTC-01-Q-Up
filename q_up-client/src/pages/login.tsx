@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useContext,
 } from "react";
-import { withRouter } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
 import { AuthContext } from "../Auth";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -13,14 +13,15 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../styles/loginPage.scss";
 import app from "../firebase";
 import FirebaseLogin from "../components/socialMediaLogin";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
-// material-ui components
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  Grid,
+  TextField,
+  Typography,
+  Button,
+  makeStyles,
+} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
  */
 const LoginPage = ({ history }: any) => {
   const classes = useStyles();
-
   // error type definition to be used in input feedback for login form
   interface errors {
     email?: string;
@@ -97,64 +97,60 @@ const LoginPage = ({ history }: any) => {
       axios
         .post("/login", userData)
         .then(async (res: any) => {
+          switch (res.data.userType) {
+            case "manager":
+              await sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.token,
+                  type: "manager",
+                })
+              );
+              break;
+            case "employee":
+              await sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.token,
+                  type: "employee",
+                })
+              );
+              break;
+            case "display":
+              await sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.token,
+                  type: "display",
+                })
+              );
+              break;
+            case "booth":
+              await sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.token,
+                  type: "booth",
+                })
+              );
+              break;
+            default:
+              await sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.token,
+                  type: res.data.userType,
+                  email: res.data.userEmail,
+                })
+              );
+              break;
+          }
           try {
             await app
               .auth()
               .signInWithEmailAndPassword(userData.email, userData.password);
           } catch (err) {
             alert(err);
-          }
-          switch (res.data.userType) {
-            case "manager":
-              sessionStorage.setItem(
-                "user",
-                JSON.stringify({
-                  token: res.data.generatedToken,
-                  type: "manager",
-                })
-              );
-              history.push("/businessDashBoard");
-              break;
-            case "employee":
-              sessionStorage.setItem(
-                "user",
-                JSON.stringify({
-                  token: res.data.generatedToken,
-                  type: "employee",
-                })
-              );
-              history.push("/teller");
-              break;
-            case "display":
-              sessionStorage.setItem(
-                "user",
-                JSON.stringify({
-                  token: res.data.generatedToken,
-                  type: "display",
-                })
-              );
-              break;
-            case "booth":
-              sessionStorage.setItem(
-                "user",
-                JSON.stringify({
-                  token: res.data.generatedToken,
-                  type: "booth",
-                })
-              );
-              history.push("/boothDashBoard");
-              break;
-            default:
-              sessionStorage.setItem(
-                "user",
-                JSON.stringify({
-                  token: res.data.generatedToken,
-                  type: res.data.userType,
-                  email: res.data.userEmail,
-                })
-              );
-              history.push("/consumerDashboard");
-              break;
           }
         })
         .catch((err) => {
@@ -167,10 +163,10 @@ const LoginPage = ({ history }: any) => {
           }));
         });
     },
-    [formState.email, formState.password, history]
+    [formState]
   );
-  // if user is authenticated redirect them to their home route (does not save current route into history) 
   const currentUser = useContext(AuthContext);
+  // if user is authenticated redirect them to their home route (does not save current route into history)
 
   if (currentUser) {
     switch (JSON.parse(sessionStorage.user).type) {

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect, useCallback } from "react";
 // import { Link } from 'react-router-dom';
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -17,6 +17,8 @@ import {
 import axios from "axios";
 import { formatPhone } from "../utils/formatting";
 import "../styles/consumerProfile.scss";
+import { withRouter } from "react-router-dom";
+import app from "../firebase";
 
 // Mui stylings
 const useStyles = makeStyles(() => ({
@@ -33,7 +35,7 @@ const useStyles = makeStyles(() => ({
  *
  * Accessible to: customers
  */
-export default function ConsumerProfilePage() {
+const ConsumerProfilePage = ({ history }: any) => {
   // error type definition to be used in input feedback for password form
   interface errors {
     // oldPassword?: string,
@@ -61,9 +63,9 @@ export default function ConsumerProfilePage() {
   };
 
   // handle edit profile button click
-  const handleEditProfile = () => {
-    window.location.href = "/editConsumerProfile";
-  };
+  const handleEditProfile = useCallback(() => {
+    history.push("/editConsumerProfile");
+  }, [history]);
 
   // handle password change button click
   const handlePasswordChangeButtonClick = () => {
@@ -89,15 +91,14 @@ export default function ConsumerProfilePage() {
     }
     axios
       .delete("/deleteCustomer", axiosConfig)
-      .then(() => {
-        window.location.href = "/";
+      .then(async () => {
+        await app.auth().signOut();
         window.alert("Your account has been deleted");
       })
       .catch((err: any) => {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         window.alert("Connection error");
@@ -126,7 +127,6 @@ export default function ConsumerProfilePage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         window.alert("Connection error");
@@ -154,7 +154,6 @@ export default function ConsumerProfilePage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         window.alert("Connection error");
@@ -314,4 +313,6 @@ export default function ConsumerProfilePage() {
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(ConsumerProfilePage);

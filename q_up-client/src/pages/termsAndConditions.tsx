@@ -4,13 +4,15 @@ import Footer from "../components/Footer";
 import "../styles/termsAndPrivacy.scss";
 import StaticNav from "src/components/staticNav";
 import EasterEgg from "src/components/easterEgg";
+import { Button } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 
 /**
  * Render a terms and conditions page.
  * 
  * Accessible to: All users
  */
-export default function TermsPage() {
+const TermsPage = ({ history }: any) => {
   const [eggCount, setEggcount] = useState({ value: 0 });
   const [showEgg, setShowEgg] = useState({ value: false });
   
@@ -324,9 +326,19 @@ export default function TermsPage() {
             </li>
           </ul>
         </section>
+        <Button
+          type="button"
+          variant="contained"
+          color="primary"
+          onClick={() => history.goBack()}
+        >
+          Back
+        </Button>
         {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : <> </>}
       </main>
       <Footer />
     </>
   );
 }
+
+export default withRouter(TermsPage);

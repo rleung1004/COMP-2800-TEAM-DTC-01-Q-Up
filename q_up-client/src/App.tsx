@@ -8,8 +8,8 @@ import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
 import aboutUsPage from "./pages/aboutUs";
 import themes from "./mui-theming/themes";
-import termsPage from "./pages/termsAndConditions";
-import privacyPage from "./pages/privacyPolicy";
+import TermsPage from "./pages/termsAndConditions";
+import PrivacyPage from "./pages/privacyPolicy";
 import { ThemeProvider } from "@material-ui/core";
 import ConsumerRegistrationPage from "./pages/consumerRegistration";
 import BusinessRegistrationPage from "./pages/businessRegistration";
@@ -46,8 +46,8 @@ function App() {
                 component={ConsumerRegistrationPage}
                 exact
               />
-              <Route path="/termsAndConditions" component={termsPage} exact />
-              <Route path="/PrivacyPolicy" component={privacyPage} exact />
+              <Route path="/termsAndConditions" component={TermsPage} exact />
+              <Route path="/PrivacyPolicy" component={PrivacyPage} exact />
               <Route
                 path="/businessDashboard"
                 component={BusinessDashboardPage}

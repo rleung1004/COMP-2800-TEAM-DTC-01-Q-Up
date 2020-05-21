@@ -77,7 +77,7 @@ const SignupPage = ({ history }: any) => {
   };
 
   // handle the form submit
-  const handleSubmit = useCallback((event: FormEvent) => {
+  const handleSubmit = useCallback(async (event: FormEvent) => {
     event.preventDefault();
 
     setFormState((prevState) => ({ ...prevState, loading: true }));
@@ -90,7 +90,7 @@ const SignupPage = ({ history }: any) => {
       businessName: formState.businessName,
     };
 
-    axios
+    await axios
       .post("/signup", userData)
       .then((res) => {
         if (formState.userType === "customer") {

@@ -50,9 +50,6 @@ export default function Booth() {
          }));
       })
       .catch((err:any) => {
-         if (err.response.status === 332) {
-            window.location.href = '/login';
-         }
          console.error(err);
       });
 

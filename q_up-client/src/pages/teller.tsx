@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Render a teller page.
- * 
+ *
  * Accessible to: employees
  */
 export default function TellerPage() {
@@ -80,7 +80,6 @@ export default function TellerPage() {
         console.log(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         window.alert("Connection error");
@@ -94,7 +93,7 @@ export default function TellerPage() {
 
   /**
    * Get a function that sets the current selected customer.
-   * 
+   *
    * Gets a curried function that is passed to each customer row.
    * @param selectorID the queue row id
    */
@@ -127,7 +126,6 @@ export default function TellerPage() {
         console.error(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         window.alert("Connection error");
@@ -148,7 +146,6 @@ export default function TellerPage() {
         console.error(err);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         window.alert("Connection error");

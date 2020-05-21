@@ -7,15 +7,18 @@ export const AuthProvider = ({ children }: any) => {
   const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
 
   useEffect(() => {
-    app.auth().onAuthStateChanged((user) => {
+    const unlisten = app.auth().onAuthStateChanged((user) => {
       if (user) {
         setCurrentUser(user);
       } else {
         setCurrentUser(null);
       }
     });
+    return () => {
+      unlisten();
+    };
   }, []);
-  console.log(currentUser);
+  
   return (
     <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>
   );

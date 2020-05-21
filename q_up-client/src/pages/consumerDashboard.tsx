@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Footer from "../components/Footer";
@@ -12,6 +12,7 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { withRouter } from "react-router-dom";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -32,10 +33,10 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Render a customer dashboard page.
- * 
+ *
  * Accessible to: customers
  */
-export default function ClientDashboardPage() {
+const ClientDashboardPage = ({ history }: any) => {
   const classes = useStyles();
 
   // queue data
@@ -47,7 +48,6 @@ export default function ClientDashboardPage() {
     password: "",
     inQueue: false,
   });
-
 
   const axiosConfig = {
     headers: {
@@ -67,9 +67,9 @@ export default function ClientDashboardPage() {
   const [favQueues, setFavQueues] = useState(queueList);
 
   // handle search queues button click
-  const toSearchQueuesHandler = () => {
-    window.location.href = "/searchQueues";
-  };
+  const toSearchQueuesHandler = useCallback(() => {
+    history.push("/searchQueues");
+  }, [history]);
 
   // fetch flag
   const [getData, setGetData] = useState(true);
@@ -109,7 +109,6 @@ export default function ClientDashboardPage() {
             return;
           }
           if (err.response.status === 332) {
-            window.location.href = '/login';
             return;
           }
           window.alert(err.response.data.general);
@@ -141,7 +140,6 @@ export default function ClientDashboardPage() {
         }
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         window.alert("Connection error: Could not load your favourite queues.");
@@ -207,4 +205,6 @@ export default function ClientDashboardPage() {
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(ClientDashboardPage);

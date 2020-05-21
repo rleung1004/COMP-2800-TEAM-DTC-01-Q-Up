@@ -13,14 +13,15 @@ import QueueListRow from "src/components/queueListRow";
 import "../styles/queueSearch.scss";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid/Grid";
-import { Paper } from "@material-ui/core";
+import { Paper, Button } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 
 /**
  * Render a queue search page.
- * 
+ *
  * Accessible to: customer.
  */
-export default function QueueSearchPage() {
+const QueueSearchPage = ({ history }: any) => {
   // fetch flag
   const [getData, setGetData] = useState(true);
   const listNames: Array<string> = [];
@@ -41,16 +42,18 @@ export default function QueueSearchPage() {
 
   /**
    * Return a function that sets the fetch flag to true.
-   * It is passed to each queue result. 
-   */ 
+   * It is passed to each queue result.
+   */
+
   const triggerGetStatus = () => {
     setGetData(true);
   };
 
   /**
    * Evaluate if a given queue is a favorite of the current user.
-   * 
-   */ 
+   *
+   */
+
   const isFav = (hitName: string) => {
     return favQueues.includes(hitName);
   };
@@ -88,7 +91,6 @@ export default function QueueSearchPage() {
         console.log(err.response);
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
           return;
         }
         if (err.response.status === 404) {
@@ -107,21 +109,32 @@ export default function QueueSearchPage() {
               translations={{
                 placeholder: "Search for a queue",
               }}
-              
             />
             <section id="results">
               <Grid container justify="center">
                 <Grid container item xs={12} md={10} lg={8} justify="center">
                   <Paper className="searchPaper">
-                      <InfiniteHits hitComponent={Hit} transformItems={isFav} />
+                    <InfiniteHits hitComponent={Hit} transformItems={isFav} />
                   </Paper>
                 </Grid>
               </Grid>
             </section>
           </InstantSearch>
         </div>
+        <div className="back-btn">
+          <Button
+            type="button"
+            variant="contained"
+            color="primary"
+            onClick={() => history.goBack()}
+          >
+            Back
+          </Button>
+        </div>
       </main>
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(QueueSearchPage);
