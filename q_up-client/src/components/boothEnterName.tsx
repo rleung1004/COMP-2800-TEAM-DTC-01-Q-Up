@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from "react";
 import { TextField, Button, Box } from "@material-ui/core";
 import axios from 'axios';
+import app from "../firebase";
 
 enum boothStates{
    loading,
@@ -22,7 +23,7 @@ export default function BoothEnterName(props: any) {
    // handle enter queue button click, to be passed to child BoothEnterName
    const onEnterQueue = (state: any) => {
       const packet = {
-       userName : name  
+       userName : name.charAt(0).toUpperCase() + name.substr(1).toLowerCase(),
       };
       axios
          .put('/boothEnterQueue', packet, axiosConfig)
@@ -38,6 +39,11 @@ export default function BoothEnterName(props: any) {
          })
          .catch((err) => {
             console.error(err);
+             if (err.response.status && err.response.status === 332) {
+                 window.alert("Please login again to continue, your token expired");
+                 app.auth().signOut().catch(console.error);
+                 return;
+             }
             window.alert('Connection error. Could not add you in the queue.');
          });
          props.setBoothInfo((prevState:any) => ({ ...prevState, standBy: !state.standBy }));

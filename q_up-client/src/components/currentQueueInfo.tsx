@@ -1,8 +1,9 @@
 import React from 'react';
 import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
 import axios from 'axios';
+import app from "../firebase";
 
-// Mui stylings
+// Mui styling
 const useStyles = makeStyles(() => ({
    button: {
      margin: "20px auto 20px auto",
@@ -41,10 +42,10 @@ function CurrentQueueInfo(props:any) {
         props.triggerGetStatus()
       })
       .catch((err) => {
-        console.error(err.response);
-          if (err.response.status === 332) {
+          console.error(err);
+          if (err.response.status && err.response.status === 332) {
               window.alert("Please login again to continue, your token expired");
-              window.location.href = '/login';
+              app.auth().signOut().catch(console.error);
               return;
           }
         window.alert(err.response.data.general);

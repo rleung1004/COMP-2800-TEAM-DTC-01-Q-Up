@@ -18,6 +18,7 @@ import { formatURL, formatAddress } from "src/utils/formatting";
 import "../styles/queueListRow.scss";
 import { formatTimeInto12h } from "../utils/formatting";
 import { evaluateOpenTime, evaluateCloseTime } from '../utils/misc';
+import app from "../firebase";
 
 // Mui stylings
 const useStyles = makeStyles({
@@ -113,7 +114,7 @@ export default function QueueListRow(props: any) {
 
     // map the data into server format
     const packet = {
-      favoriteQueueName: data.name,
+      favoriteQueueName: data.name.charAt(0).toUpperCase() +  data.name.substr(1).toLowerCase(),
     };
 
     Axios.put("/changeFavoriteQueueStatus", packet, axiosConfig)
@@ -124,9 +125,10 @@ export default function QueueListRow(props: any) {
       })
       .catch((err) => {
         console.error(err);
-        if (err.response.status === 332) {
+        console.error(err);
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut().catch(console.error);
           return;
         }
         window.alert("Connection failed. Please try again");
@@ -181,7 +183,7 @@ export default function QueueListRow(props: any) {
   // click handler for queueUp button
   const queueUp = () => {
     const packet = {
-      queueName: data.name,
+      queueName: data.name.charAt(0).toUpperCase() +  data.name.substr(1).toLowerCase(),
     };
     Axios.post("/customerEnterQueue", packet, axiosConfig)
       .then((res) => {
@@ -195,9 +197,10 @@ export default function QueueListRow(props: any) {
       })
       .catch((err) => {
         console.error(err);
-        if (err.response.status === 332) {
+        console.error(err);
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          window.location.href = '/login';
+          app.auth().signOut().catch(console.error);
           return;
         }
         window.alert(err.response.general);

@@ -50,9 +50,10 @@ export default function Header(props: any) {
         })
         .catch((err) => {
           console.error(err);
-          if (err.response.status === 332) {
+          console.error(err);
+          if (err.response.status && err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            window.location.href = "/login";
+            app.auth().signOut().catch(console.error);
             return;
           }
           window.alert("Connection error, please try again");

@@ -266,9 +266,9 @@ const EditBusinessProfilePage = ({ history }: any) => {
       })
       .catch((err: any) => {
         console.log(err);
-        if (err.response.status === 332) {
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          app.auth().signOut();
+          app.auth().signOut().catch(console.error);
           return;
         }
         window.alert("Connection error");
@@ -285,9 +285,9 @@ const EditBusinessProfilePage = ({ history }: any) => {
         .then(res => setDropDownData(res.data))
         .catch((err: any) => {
           console.log(err);
-          if (err.response.status === 332) {
+          if (err.response.status && err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            window.location.href = '/login';
+            app.auth().signOut().catch(console.error);
             return;
           }
           window.alert("Connection error");
@@ -312,17 +312,26 @@ const EditBusinessProfilePage = ({ history }: any) => {
       }
       setFormState((prevState) => ({ ...prevState, loading: true }));
 
+      // format the description before sending to the server
+      const formatDescription = (description: String) => {
+        let sentences: Array<string> = description.split('.');
+        sentences = sentences.map((sentence: string) => sentence.charAt(0).toUpperCase() + sentence.substr(1).toLowerCase());
+        let result: string = '';
+        sentences.forEach(sentence => result += sentence);
+        return result;
+      };
+
       // map package
       const userData = {
-        name: formState.name,
+        name: formState.name.charAt(0).toUpperCase() + formState.name.substr(1).toLowerCase(),
         phoneNumber: formState.phoneNumber,
         address: formState.address,
         category: formState.category,
-        website: formState.website,
+        website: formState.website.toLowerCase(),
         hours: formState.hours,
-        description: formState.description,
-        email: formState.email,
-        averageWaitTime: formState.averageWaitTime,
+        description: formatDescription(formState.description),
+        email: formState.email.toLowerCase(),
+        averageWaitTime: parseInt(formState.averageWaitTime),
       };
 
       // request
@@ -334,9 +343,9 @@ const EditBusinessProfilePage = ({ history }: any) => {
         })
         .catch((err: any) => {
           console.error(err);
-          if (err.response.status === 332) {
+          if (err.response.status && err.response.status === 332) {
             window.alert("Please login again to continue, your token expired");
-            app.auth().signOut();
+            app.auth().signOut().catch(console.error);
             return;
           }
           window.alert("Connection error");

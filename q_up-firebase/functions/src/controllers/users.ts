@@ -108,6 +108,7 @@ export const internalSingUp = async (req: Request) => {
         userType: req.body.userType,
         businessName: req.body.businessName,
     };
+    console.log(newUser);
     const {valid, errors} = validateSignUpData(newUser);
     console.error(errors);
     if (!valid) {

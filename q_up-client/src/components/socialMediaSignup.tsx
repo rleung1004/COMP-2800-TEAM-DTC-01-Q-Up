@@ -34,7 +34,7 @@ const FirebaseSignup = ({ history }: any) => {
 
           if (isNewUser) {
             let requestData = {
-              email: userData.email,
+              email: userData.email.toLowerCase(),
               userId: userData.uid,
             };
             await axios

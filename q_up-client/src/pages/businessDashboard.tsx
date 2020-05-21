@@ -86,9 +86,9 @@ const BusinessDashboardPage = ({ history }: any) => {
           return;
         }
         console.error(err);
-        if (err.response.status === 332) {
+        if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          app.auth().signOut();
+          app.auth().signOut().catch(console.error);
           return;
         }
         window.alert("Connection error.");
@@ -248,7 +248,7 @@ const BusinessDashboardPage = ({ history }: any) => {
         }
         if (err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
-          app.auth().signOut();
+          app.auth().signOut().catch(console.error);
           return;
         }
         window.alert("Connection error.");
