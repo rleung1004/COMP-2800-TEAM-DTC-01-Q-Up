@@ -1,15 +1,46 @@
-import React from "react";
-import Header from "../components/static/Header";
-import Footer from "../components/static/Footer";
+import React, { useState } from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import "../styles/termsAndPrivacy.scss";
+import StaticNav from "src/components/staticNav";
+import EasterEgg from "src/components/easterEgg";
 
-export default function termsPage() {
+/**
+ * Render a terms and conditions page.
+ * 
+ * Accessible to: All users
+ */
+export default function TermsPage() {
+  const [eggCount, setEggcount] = useState({ value: 0 });
+  const [showEgg, setShowEgg] = useState({ value: false });
+  
+  // Clean up the egg, this function is passed to the egg
+  const exitEgg = () => {
+    setShowEgg({ value: false });
+  };
+
+  // trigger the egg
+  const startEgg = () => {
+    setShowEgg({ value: true });
+  };
+
+  // control the triggering of the egg
+  const layEggs = () => {
+    if (3 < eggCount.value) {
+      startEgg();
+      setEggcount({ value: -1 });
+    } else {
+      setEggcount({ value: eggCount.value + 1 });
+    }
+  };
+
   return (
     <>
-      <Header />
+      <Header Nav={StaticNav} />
+      {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : <> </>}
       <main className="term-and-conditions">
         <div>
-          <h1>Terms and Conditions</h1>
+          <h1 onClick={layEggs}>Terms and Conditions</h1>
           <p>Last updated: May 05, 2020</p>
         </div>
 
@@ -293,6 +324,7 @@ export default function termsPage() {
             </li>
           </ul>
         </section>
+        {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : <> </>}
       </main>
       <Footer />
     </>

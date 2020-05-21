@@ -1,9 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import Footer from "../components/static/Footer";
-import Header from "../components/static/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import { Link, useHistory } from "react-router-dom";
+import "../styles/signupPage.scss";
 import axios from "axios";
-// material-ui components
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Radio from "@material-ui/core/Radio";
@@ -14,7 +14,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { makeStyles } from "@material-ui/core/styles";
+import FirebaseSignup from "../components/socialMediaSignup";
 
+// Mui styling
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -33,9 +35,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Render a signup page.
+ *
+ * Accessible to: All users
+ */
 export default function SignupPage() {
   const history = useHistory();
   const classes = useStyles();
+  // error type definition to be used in input feedback
   interface errors {
     email?: string;
     password?: string;
@@ -44,6 +52,8 @@ export default function SignupPage() {
     businessName?: string;
   }
   let errorObject: errors = {};
+
+  // form data
   const [formState, setFormState] = useState({
     password: "",
     email: "",
@@ -53,11 +63,21 @@ export default function SignupPage() {
     loading: false,
     errors: errorObject,
   });
+
+  /**
+   * sync input data with form data
+   *
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
   const handleOnFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
     setFormState((prevState) => ({ ...prevState, [name]: value }));
   };
+
+  // handle the form submit
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
@@ -128,7 +148,7 @@ export default function SignupPage() {
                 value={formState.email}
                 className={classes.textField}
                 helperText={formState.errors.email}
-                error={formState.errors.email ? true : false}
+                error={!!formState.errors.email}
               />
               <TextField
                 color="secondary"
@@ -140,7 +160,7 @@ export default function SignupPage() {
                 onChange={handleOnFieldChange}
                 value={formState.password}
                 helperText={formState.errors.password}
-                error={formState.errors.password ? true : false}
+                error={!!formState.errors.password}
               />
               <TextField
                 color="secondary"
@@ -152,7 +172,7 @@ export default function SignupPage() {
                 onChange={handleOnFieldChange}
                 value={formState.confirmPassword}
                 helperText={formState.errors.confirmPassword}
-                error={formState.errors.confirmPassword ? true : false}
+                error={!!formState.errors.confirmPassword}
               />
               {formState.userType === "manager" && (
                 <TextField
@@ -165,11 +185,11 @@ export default function SignupPage() {
                   onChange={handleOnFieldChange}
                   value={formState.businessName}
                   helperText={formState.errors.businessName}
-                  error={formState.errors.businessName ? true : false}
+                  error={!!formState.errors.businessName}
                 />
               )}
               <FormControl component="fieldset">
-                <FormLabel component="legend"></FormLabel>
+                <FormLabel component="legend"/>
                 <RadioGroup
                   name="userType"
                   value={formState.userType}
@@ -197,7 +217,13 @@ export default function SignupPage() {
               </Button>
             </Grid>
           </form>
-
+          {formState.userType === "customer" && (
+            <Typography variant="body1">Or</Typography>
+          )}
+          {formState.userType === "customer" && (
+            <FirebaseSignup />
+          )}
+          
           <Button
             type="button"
             variant="contained"

@@ -1,0 +1,20 @@
+header {
+    border-bottom: none;
+}
+
+li {
+    list-style: none;
+    border-radius: 0;
+    width: 100%;
+}
+
+ul {
+    padding: 0;
+}
+
+.employeePaper{
+    padding: 0.15rem 0;
+    &>section:last-child>div{
+        border-bottom: none;
+    }
+}

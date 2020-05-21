@@ -17,9 +17,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link } from 'react-router-dom';
 
-//  Hamburger menu stuff
-const drawerWidth = 300;
 
+// Mui stylings
+const drawerWidth = 300;
 const useStyles = makeStyles((theme: Theme) =>
    createStyles({
       root: {
@@ -76,22 +76,24 @@ const useStyles = makeStyles((theme: Theme) =>
       },
    })
 );
-//  End hamburger menu stuff
 
+/**
+ * Render a hamburger menu with navigation oriented for business pages.
+ */
 export default function BusinessNav() {
-   //  Hamburger menu stuff
    const classes = useStyles();
    const theme = useTheme();
    const [open, setOpen] = React.useState(false);
 
+   // open the hamburger
    const handleDrawerOpen = () => {
       setOpen(true);
    };
 
+   // close the hamburger
    const handleDrawerClose = () => {
       setOpen(false);
    };
-   //  End hamburger menu stuff
 
    return (
       <nav>
@@ -125,48 +127,42 @@ export default function BusinessNav() {
             <Divider />
 
             <List>
-               <ListItem button key={'Home'}>
-                  <Link className={classes.nodecor} to='/'>
-                     Home
+               <ListItem button key={'Dashboard'}>
+                  <Link className={classes.nodecor} to='/businessDashboard'>
+                  <ListItemText
+                     className={classes.white}
+                     primary={'Dashboard'}
+                  />
                   </Link>
                </ListItem>
-               <ListItem button key={'View Profile'}>
+               <ListItem button key={'employeeManagement'}>
+                  <Link className={classes.nodecor} to='/employeeManagement'>
                   <ListItemText
                      className={classes.white}
-                     primary={'View Profile'}
+                     primary={'Employees'}
                   />
+                  </Link>
                </ListItem>
-               <ListItem button key={'View Analytics'}>
+               <ListItem button key={'bizProfile'}>
+                  <Link className={classes.nodecor} to='/businessProfile'>
                   <ListItemText
                      className={classes.white}
-                     primary={'View Analytics'}
+                     primary={'Business profile'}
                   />
-               </ListItem>
-               <ListItem button key={'Manage Booth'}>
-                  <ListItemText
-                     className={classes.white}
-                     primary={'Manage Booth'}
-                  />
-               </ListItem>
-               <ListItem button key={'Manage Employees'}>
-                  <ListItemText
-                     className={classes.white}
-                     primary={'Manage Employees'}
-                  />
-               </ListItem>
-               <ListItem button key={'Help'}>
-                  <ListItemText className={classes.white} primary={'Help'} />
+                  </Link>
                </ListItem>
                <ListItem button key={'About Us'}>
                   <Link className={classes.nodecor} to='/aboutUs'>
-                     About Us
+                  <ListItemText className={classes.white} primary={'About us'} />
                   </Link>
                </ListItem>
-            </List>
-            <Divider />
-            <List>
-               <ListItem button key={'Logout'}>
-                  <ListItemText className={classes.white} primary={'Logout'} />
+               <ListItem button key={'contactUs'}>
+                  <Link className={classes.nodecor} to='/contactUs'>
+                  <ListItemText
+                     className={classes.white}
+                     primary={'Contact us'}
+                  />
+                  </Link>
                </ListItem>
             </List>
          </Drawer>

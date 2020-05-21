@@ -1,0 +1,59 @@
+body {
+   color: #fff;
+   background: #242323;
+   font-family: 'Roboto', sans-serif;
+}
+
+.first-element {
+   margin-top: 150px;
+}
+
+.last-element {
+   margin-bottom: 250px;
+}
+
+.form-group {
+   width: 300px;
+   margin-left: auto;
+   margin-right: auto;
+   margin-bottom: 10px;
+}
+
+.form-group input {
+   height: 50px;
+}
+
+.btn {
+   background-color: #242323;
+   border-color: #eef13e;
+   color: white;
+}
+
+.btn:hover {
+   background-color: darkgray;
+   border-color: #eef13e;
+   color: white;
+}
+
+.btn:active {
+   background-color: black;
+   border-color: #eef13e;
+   color: white;
+}
+
+.bottom-space {
+   margin-bottom: 50px;
+}
+
+a {
+   text-decoration: underline;
+   color: white;
+}
+
+.radio-class label {
+   font-size: 20px;
+}
+
+.social-btn {
+   width: 260px;
+}

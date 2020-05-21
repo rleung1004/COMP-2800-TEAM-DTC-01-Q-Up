@@ -1,0 +1,22 @@
+.fbPaper {
+    width: 100%;
+}
+
+@media screen and(max-width: 960px) {
+        .fbContainer {
+            margin-top: 2rem;
+    }
+}
+
+
+.coloredPaper {
+    background-color: #242323;
+    padding: 0 0 1rem;
+}
+
+.squareContainer {
+    padding: 3rem;
+    border-radius: 15px;
+    border: thin solid #FFE13F;
+    margin: 1rem;
+}

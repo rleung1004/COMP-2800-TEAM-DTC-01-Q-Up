@@ -1,0 +1,15 @@
+.rightText, .leftText{
+    text-align: center;
+}
+
+
+
+@media screen and (min-width: 600px) {
+    .rightText{
+        text-align: right;
+    }
+    
+    .leftText{
+        text-align: left;
+    }
+}

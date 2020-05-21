@@ -1,22 +1,53 @@
 import React, { useState } from "react";
 import "../styles/easterEgg.scss";
-import isMobile from "../utils/mobileDetection";
+import { isMobile } from "../utils/misc";
 
+/**
+ * Deploy a smashing easter egg.
+ *
+ * To insert easter egg in any page copy the folowing code into the parent component:
+ *
+ * In JS body:
+ * const [showEgg, setShowEgg] = useState({ value: false });
+ *
+ * const exitEgg = () => {
+ *   setShowEgg({ value: false });
+ * };
+ * const startEgg = () => {
+ *   setShowEgg({ value: true });
+ * };
+ *
+ * In JSX content:
+ * {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : <> </>}
+ *
+ * @param props must contain a function named exitEgg that accepts no params
+ */
 export default function EasterEgg(props: any) {
-  const arr:Array<any> = [];
+  const arr: Array<any> = [];
   const [cracks, setCracks] = useState(arr);
   const [hammer, setHammer] = useState({ img: <></> });
+
+  /**
+   * Render a smashing animation.
+   * @param event a MouseEvent
+   * @post will render a smashed glass image
+   * @post will render a smashing sound
+   * @post will render a smashing hammer animation
+   */
   const clickHandler = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     const container = document.getElementById("container");
+
+    // evaluate images positions according to mouse location
     const x = event.clientX;
     const y = event.clientY;
-
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     const imgWidth = Math.round(screenWidth * 0.2);
     const imgHeight = Math.round(screenHeight * 0.2);
+
+    // prepare images styles
     const styles = {
       glass: {
         position: "absolute" as "absolute",
@@ -32,6 +63,11 @@ export default function EasterEgg(props: any) {
       },
     };
 
+    /**
+     * staticCrack and new Hammer take advantage of JS closure to capture
+     * properties that will be unique per each click event.
+     * The properties are applied with the css classes.
+     */
     const staticCrack = (
       <img
         src={require("../img/easter-egg/statickBreak.png")}
@@ -48,22 +84,24 @@ export default function EasterEgg(props: any) {
       />
     );
 
+    // Functionality to be executed when the user is in mobile.
     const whenIsMobile = () => {
       always();
     };
 
+    /**
+     * Functionality to be executed when the user is in mobile.
+     * Manage the mouse appareance when user is in desktop.
+     */
     const whenNotMobile = () => {
       if (!container) {
         return;
       }
       container.className = "removeCursor";
       always();
-      setTimeout(
-        () =>{
-          container.className = "applyCursor"
-          },
-        700
-        );
+      setTimeout(() => {
+        container.className = "applyCursor";
+      }, 700);
     };
 
     const always = () => {
@@ -71,6 +109,7 @@ export default function EasterEgg(props: any) {
       setHammer({ img: newHammer });
       // insert crack
       setTimeout(() => {
+        // sync glass and audio insertion with hammer animation
         setCracks([staticCrack].concat(cracks.slice()));
         const audio = new Audio(require("../rsc/breakingGlass.mp3"));
         audio.play(); // remove animated hammer
@@ -87,6 +126,7 @@ export default function EasterEgg(props: any) {
     }
   };
 
+  // call the exit egg function provided by the parent component
   const exitClickHandler = () => {
     props.exitEgg();
   };
