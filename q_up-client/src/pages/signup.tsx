@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { withRouter, Link } from "react-router-dom";
 import "../styles/signupPage.scss";
+import app from "../firebase";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
@@ -13,6 +14,7 @@ import Button from "@material-ui/core/Button";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import FirebaseSignup from "../components/socialMediaSignup";
 
@@ -32,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: "20px auto 20px auto",
+    position: "relative",
+  },
+  progress: {
+    position: "absolute",
   },
 }));
 
@@ -77,45 +83,49 @@ const SignupPage = ({ history }: any) => {
   };
 
   // handle the form submit
-  const handleSubmit = useCallback(async (event: FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
 
-    setFormState((prevState) => ({ ...prevState, loading: true }));
+      setFormState((prevState) => ({ ...prevState, loading: true }));
 
-    const userData = {
-      email: formState.email,
-      password: formState.password,
-      confirmPassword: formState.confirmPassword,
-      userType: formState.userType,
-      businessName: formState.businessName,
-    };
+      const userData = {
+        email: formState.email,
+        password: formState.password,
+        confirmPassword: formState.confirmPassword,
+        userType: formState.userType,
+        businessName: formState.businessName,
+      };
 
-    await axios
-      .post("/signup", userData)
-      .then((res) => {
-        if (formState.userType === "customer") {
-          setFormState((prevState) => ({ ...prevState, loading: false }));
-          sessionStorage.setItem(
-            "user",
-            JSON.stringify({ token: res.data.token, type: "customer" })
-          );
-          history.push("/consumerRegistration");
-        } else {
-          sessionStorage.setItem(
-            "user",
-            JSON.stringify({ token: res.data.token, type: "manager" })
-          );
-          history.push("/businessRegistration");
-        }
-      })
-      .catch((err) => {
-        setFormState((prevState) => ({
-          ...prevState,
-          errors: err.response.data,
-          loading: false,
-        }));
-      });
-  }, [history, formState]);
+      await axios
+        .post("/signup", userData)
+        .then(async (res) => {
+          if (formState.userType === "customer") {
+            setFormState((prevState) => ({ ...prevState, loading: false }));
+            sessionStorage.setItem(
+              "user",
+              JSON.stringify({ token: res.data.token, type: "customer" })
+            );
+            await app.auth().signInWithEmailAndPassword(formState.email, formState.password)
+            history.push("/consumerRegistration");
+          } else {
+            sessionStorage.setItem(
+              "user",
+              JSON.stringify({ token: res.data.token, type: "manager" })
+            );
+            history.push("/businessRegistration");
+          }
+        })
+        .catch((err) => {
+          setFormState((prevState) => ({
+            ...prevState,
+            errors: err.response.data,
+            loading: false,
+          }));
+        });
+    },
+    [history, formState]
+  );
 
   return (
     <>
@@ -212,18 +222,20 @@ const SignupPage = ({ history }: any) => {
                 variant="contained"
                 color="primary"
                 className={classes.button}
+                disabled={formState.loading}
               >
                 Sign Up
+                {formState.loading && (
+                  <CircularProgress className={classes.progress} size={30} />
+                )}
               </Button>
             </Grid>
           </form>
           {formState.userType === "customer" && (
             <Typography variant="body1">Or</Typography>
           )}
-          {formState.userType === "customer" && (
-            <FirebaseSignup />
-          )}
-          
+          {formState.userType === "customer" && <FirebaseSignup />}
+
           <Button
             type="button"
             variant="contained"
@@ -242,6 +254,6 @@ const SignupPage = ({ history }: any) => {
       <Footer />
     </>
   );
-}
+};
 
 export default withRouter(SignupPage);

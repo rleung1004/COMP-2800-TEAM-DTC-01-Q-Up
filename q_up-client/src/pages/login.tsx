@@ -20,6 +20,7 @@ import {
   TextField,
   Typography,
   Button,
+  CircularProgress,
   makeStyles,
 } from "@material-ui/core";
 
@@ -38,10 +39,14 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: "20px auto 20px auto",
+    position: "relative",
   },
   customError: {
     color: "red",
     fontSize: "0.8em",
+  },
+  progress: {
+    position: "absolute",
   },
 }));
 
@@ -246,8 +251,10 @@ const LoginPage = ({ history }: any) => {
                 variant="contained"
                 color="primary"
                 className={classes.button}
+                disabled={formState.loading}
               >
                 Login
+                {formState.loading && <CircularProgress className={classes.progress} size={30} />}
               </Button>
             </Grid>
           </form>
