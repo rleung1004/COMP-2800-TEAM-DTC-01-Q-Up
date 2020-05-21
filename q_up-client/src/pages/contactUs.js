@@ -20,6 +20,7 @@ const useStyles = makeStyles({
   darkPaper: {
     backgroundColor: "rgba(29,161,242, 0.7)",
     padding: "0rem 1rem 1.5rem",
+    width: '100%'
   },
   sidePadedPaper: {
     padding: "2rem 1rem",
@@ -28,13 +29,16 @@ const useStyles = makeStyles({
     padding: '1rem 0rem 1rem'
   },
   fbPaper: {
-    width: '100%',
+    maxWidth: '331px',
     padding: '2rem 1rem'
+  },
+  TextField: {
+    width: '100%'
   }
 });
 
 // default hashtags for tweet button
-const hashes = "QUpForLife, NoMoreWaiting, NoTimeToWaste";
+const hashes = "#TalkToQUp";
 
 // reference to insert by default into tweet button
 const homePage = "https://q-up-c2b70.web.app/";
@@ -55,7 +59,6 @@ export default function ContactUsPage() {
     if (value.length > 280) {
       return;
     }
-    console.log(twitterText);
     setTwitterText(event.target.value);
   };
 
@@ -68,7 +71,8 @@ export default function ContactUsPage() {
       window.location.toString()
     )}&ref_src=twsrc%5Etfw&text=${formatURL(
       twitterText
-    )}&tw_p=tweetbutton&url=${homePage}`;
+    )}&tw_p=tweetbutton&url=${homePage
+    }&via=${formatURL('QueueQup')}`;
   };
 
   // tweeter button click handler
@@ -99,18 +103,19 @@ export default function ContactUsPage() {
                 >
                   <TwitterTimelineEmbed
                     sourceType="url"
-                    url="https://twitter.com/Karel19726069?ref_src=twsrc%5Etfw"
+                    url="https://twitter.com/QueueQup?"
                     options={{ height: 400 }}
                   />
                   <Paper className={classes.darkPaper}>
                     <TextField
                       id="filled-multiline-static"
-                      label="Your tweet"
+                      label="Send us a Tweet!"
                       multiline
-                      rows={4}
+                      rowsMax={4}
                       name="YourTweet"
                       value={twitterText}
                       onChange={onTwitTextChange}
+                      className={classes.TextField}
                     />
                   </Paper>
                   <IconButton onClick={tweet}>
@@ -132,7 +137,7 @@ export default function ContactUsPage() {
               alignItems="center"
               className="fbContainer"
             >
-              <Grid container item xs={11} md={20} className={classes.socialGrid}>
+              <Grid container item xs={11} md={20} className={classes.socialGrid} justify="center">
                 <Paper className={classes.fbPaper}>
                   <header>
                     <Typography variant="body1">On Facebook</Typography>
