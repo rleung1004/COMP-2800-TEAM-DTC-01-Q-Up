@@ -106,13 +106,18 @@ const SignupPage = ({ history }: any) => {
               "user",
               JSON.stringify({ token: res.data.token, type: "customer" })
             );
-            await app.auth().signInWithEmailAndPassword(formState.email, formState.password)
+            await app
+              .auth()
+              .signInWithEmailAndPassword(formState.email, formState.password);
             history.push("/consumerRegistration");
           } else {
             sessionStorage.setItem(
               "user",
               JSON.stringify({ token: res.data.token, type: "manager" })
             );
+            await app
+              .auth()
+              .signInWithEmailAndPassword(formState.email, formState.password);
             history.push("/businessRegistration");
           }
         })
@@ -199,7 +204,7 @@ const SignupPage = ({ history }: any) => {
                 />
               )}
               <FormControl component="fieldset">
-                <FormLabel component="legend"/>
+                <FormLabel component="legend" />
                 <RadioGroup
                   name="userType"
                   value={formState.userType}
