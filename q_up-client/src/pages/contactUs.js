@@ -15,6 +15,7 @@ import { formatURL } from "../utils/formatting";
 import "../styles/contactUs.scss";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
+//Mui stylings
 const useStyles = makeStyles({
   darkPaper: {
     backgroundColor: "rgba(29,161,242, 0.7)",
@@ -31,8 +32,14 @@ const useStyles = makeStyles({
     padding: '2rem 1rem'
   }
 });
+
+// default hashtags for tweet button
 const hashes = "QUpForLife, NoMoreWaiting, NoTimeToWaste";
+
+// reference to insert by default into tweet button
 const homePage = "https://q-up-c2b70.web.app/";
+
+
 /**
  * Render a contact us page.
  *
@@ -40,6 +47,8 @@ const homePage = "https://q-up-c2b70.web.app/";
  */
 export default function ContactUsPage() {
   const classes = useStyles();
+
+  // manage twitter input
   const [twitterText, setTwitterText] = useState("");
   const onTwitTextChange = (event) => {
     const value = event.target.value;
@@ -50,6 +59,7 @@ export default function ContactUsPage() {
     setTwitterText(event.target.value);
   };
 
+  // create tweeter button url
   const prepTweeterURL = () => {
     return `
     https://twitter.com/intent/tweet?hashtags=${formatURL(
@@ -61,6 +71,7 @@ export default function ContactUsPage() {
     )}&tw_p=tweetbutton&url=${homePage}`;
   };
 
+  // tweeter button click handler
   const tweet = () => {
     window.open(prepTweeterURL());
   };
