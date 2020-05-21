@@ -53,7 +53,7 @@ export default function BoothDashBoard() {
          .catch((err) => {
             console.error(err);
          });
-   });
+   },[getData, axiosConfig]);
 
    return (
       <>
