@@ -91,6 +91,7 @@ export const getDisplayInfo = async (req: Request, res: Response) => {
             return res.status(200).json({
                 general:"obtained the display information successfully",
                 displayInfo: displayInfo,
+                estimatedWaitTime: data.docs[0].data().queue.currentWaitTime,
             });
         })
         .catch(async (err) => {
