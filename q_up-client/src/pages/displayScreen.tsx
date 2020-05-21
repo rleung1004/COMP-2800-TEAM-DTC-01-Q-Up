@@ -10,7 +10,7 @@ export default function BoothDashBoard() {
          <DisplayHeader />
          <main>
             <Grid container>
-               <Grid item xs={7}>
+               <Grid className='left-column' item xs={7}>
                   <Box pt={20}>
                      <Typography className='now-serving'>
                         NOW SERVING
@@ -22,7 +22,7 @@ export default function BoothDashBoard() {
                      </Typography>
                   </Box>
                </Grid>
-               <Grid className='right-columns' item xs={5} container>
+               <Grid className='right-column' item xs={5} container>
                   <Grid xs={6}>
                      <Box pt={5}>Ticket #</Box>
                   </Grid>
