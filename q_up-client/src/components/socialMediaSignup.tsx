@@ -11,7 +11,7 @@ import {
 import { Grid } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 
-const FirebaseSignup = ({ history, isLogin }: any) => {
+const FirebaseSignup = ({ history }: any) => {
   const oAuthSignup = useCallback(
     async (provider: firebase.auth.AuthProvider) => {
       let userData: any;
@@ -134,57 +134,30 @@ const FirebaseSignup = ({ history, isLogin }: any) => {
 
   return (
     <>
-      {!!isLogin ? (
-        <div className="social-btn">
-          <Grid container direction="column">
-            <Grid item xs={12}>
-              <GoogleLoginButton onClick={signInWithGoogle}>
-                Sign in with Google
-              </GoogleLoginButton>
-            </Grid>
-            <Grid item xs={12}>
-              <FacebookLoginButton onClick={signInWithFacebook}>
-                Sign in with Facebook
-              </FacebookLoginButton>
-            </Grid>
-            <Grid item xs={12}>
-              <TwitterLoginButton onClick={signInWithTwitter}>
-                Sign in with Twitter
-              </TwitterLoginButton>
-            </Grid>
-            <Grid item xs={12}>
-              <GithubLoginButton onClick={signInWithGithub}>
-                Sign in with Github
-              </GithubLoginButton>
-            </Grid>
+      <div className="social-btn">
+        <Grid container direction="column">
+          <Grid item xs={12}>
+            <GoogleLoginButton onClick={signInWithGoogle}>
+              Sign up with Google
+            </GoogleLoginButton>
           </Grid>
-        </div>
-      ) : (
-        <div className="social-btn">
-          <Grid container direction="column">
-            <Grid item xs={12}>
-              <GoogleLoginButton onClick={signInWithGoogle}>
-                Sign up with Google
-              </GoogleLoginButton>
-            </Grid>
-            <Grid item xs={12}>
-              <FacebookLoginButton onClick={signInWithFacebook}>
-                Sign up with Facebook
-              </FacebookLoginButton>
-            </Grid>
-            <Grid item xs={12}>
-              <TwitterLoginButton onClick={signInWithTwitter}>
-                Sign up with Twitter
-              </TwitterLoginButton>
-            </Grid>
-            <Grid item xs={12}>
-              <GithubLoginButton onClick={signInWithGithub}>
-                Sign up with Github
-              </GithubLoginButton>
-            </Grid>
+          <Grid item xs={12}>
+            <FacebookLoginButton onClick={signInWithFacebook}>
+              Sign up with Facebook
+            </FacebookLoginButton>
           </Grid>
-        </div>
-      )}
+          <Grid item xs={12}>
+            <TwitterLoginButton onClick={signInWithTwitter}>
+              Sign up with Twitter
+            </TwitterLoginButton>
+          </Grid>
+          <Grid item xs={12}>
+            <GithubLoginButton onClick={signInWithGithub}>
+              Sign up with Github
+            </GithubLoginButton>
+          </Grid>
+        </Grid>
+      </div>
     </>
   );
 };
