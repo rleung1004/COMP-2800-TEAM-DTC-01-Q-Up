@@ -2,6 +2,7 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import "../styles/staticHeader.scss";
 import axios from "axios";
+import app from "../firebase";
 import { IconButton, makeStyles } from "@material-ui/core";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 
@@ -42,9 +43,9 @@ export default function Header(props: any) {
     if (userType === "employee") {
       axios
         .get("/logout", axiosConfig)
-        .then(() => {
+        .then(async () => {
           sessionStorage.removeItem("user");
-          window.location.href = "/";
+          return await app.auth().signOut();
         })
         .catch((err) => {
           console.error(err);

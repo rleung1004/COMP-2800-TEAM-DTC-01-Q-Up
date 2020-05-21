@@ -1,7 +1,7 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useCallback } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { Link, useHistory } from "react-router-dom";
+import { withRouter, Redirect } from "react-router-dom";
 import "../styles/signupPage.scss";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid";
@@ -40,8 +40,7 @@ const useStyles = makeStyles((theme) => ({
  *
  * Accessible to: All users
  */
-export default function SignupPage() {
-  const history = useHistory();
+const SignupPage = ({ history }: any) => {
   const classes = useStyles();
   // error type definition to be used in input feedback
   interface errors {
@@ -78,7 +77,7 @@ export default function SignupPage() {
   };
 
   // handle the form submit
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = useCallback((event: FormEvent) => {
     event.preventDefault();
 
     setFormState((prevState) => ({ ...prevState, loading: true }));
@@ -100,13 +99,13 @@ export default function SignupPage() {
             "user",
             JSON.stringify({ token: res.data.token, type: "customer" })
           );
-          window.location.href = "/consumerRegistration";
+          history.push("/consumerRegistration");
         } else {
           sessionStorage.setItem(
             "user",
             JSON.stringify({ token: res.data.token, type: "manager" })
           );
-          window.location.href = "/businessRegistration";
+          history.push("/businessRegistration");
         }
       })
       .catch((err) => {
@@ -116,7 +115,11 @@ export default function SignupPage() {
           loading: false,
         }));
       });
-  };
+  }, [history, formState]);
+
+  const redirectToLogin = () => {
+    return <Redirect to="/login" />
+  }
   return (
     <>
       <Header />
@@ -235,7 +238,7 @@ export default function SignupPage() {
           </Button>
 
           <div className="text-center last-element">
-            Already have an account? <Link to="/login">Log in</Link>
+            Already have an account? <div onClick={redirectToLogin}>Log in</div>
           </div>
         </Grid>
       </main>
@@ -243,3 +246,5 @@ export default function SignupPage() {
     </>
   );
 }
+
+export default withRouter(SignupPage);

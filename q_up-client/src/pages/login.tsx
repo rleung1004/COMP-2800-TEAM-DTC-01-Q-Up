@@ -1,10 +1,19 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, {
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useContext,
+} from "react";
+import { withRouter } from "react-router-dom";
+import { AuthContext } from "../Auth";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "bootstrap/dist/css/bootstrap.css";
 import "../styles/loginPage.scss";
+import app from "../firebase";
 import FirebaseLogin from "../components/socialMediaLogin";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 // material-ui components
 import Grid from "@material-ui/core/Grid";
@@ -12,7 +21,6 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import routeUsers from "src/utils/customerLoginRouting";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,8 +49,7 @@ const useStyles = makeStyles((theme) => ({
  *
  * Accessible to: All users
  */
-export default function LoginPage() {
-  const history = useHistory();
+const LoginPage = ({ history }: any) => {
   const classes = useStyles();
 
   // error type definition to be used in input feedback for login form
@@ -77,30 +84,112 @@ export default function LoginPage() {
   };
 
   // handle submit click
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
 
-    setFormState((prevState) => ({ ...prevState, loading: true }));
+      setFormState((prevState) => ({ ...prevState, loading: true }));
 
-    const userData = {
-      email: formState.email,
-      password: formState.password,
-    };
-    axios
-      .post("/login", userData)
-      .then((res: any) => {
-        routeUsers(res);
-      })
-      .catch((err) => {
-        console.log(err);
+      const userData = {
+        email: formState.email,
+        password: formState.password,
+      };
+      axios
+        .post("/login", userData)
+        .then(async (res: any) => {
+          try {
+            await app
+              .auth()
+              .signInWithEmailAndPassword(userData.email, userData.password);
+          } catch (err) {
+            alert(err);
+          }
+          switch (res.data.userType) {
+            case "manager":
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: "manager",
+                })
+              );
+              history.push("/businessDashBoard");
+              break;
+            case "employee":
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: "employee",
+                })
+              );
+              history.push("/teller");
+              break;
+            case "display":
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: "display",
+                })
+              );
+              break;
+            case "booth":
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: "booth",
+                })
+              );
+              history.push("/boothDashBoard");
+              break;
+            default:
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                  token: res.data.generatedToken,
+                  type: res.data.userType,
+                  email: res.data.userEmail,
+                })
+              );
+              history.push("/consumerDashboard");
+              break;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
 
-        setFormState((prevState) => ({
-          ...prevState,
-          errors: err.response.data,
-          loading: false,
-        }));
-      });
-  };
+          setFormState((prevState) => ({
+            ...prevState,
+            errors: err.response.data,
+            loading: false,
+          }));
+        });
+    },
+    [formState.email, formState.password, history]
+  );
+  // if user is authenticated redirect them to their home route
+  const currentUser = useContext(AuthContext);
+
+  console.log(currentUser);
+
+  // if (currentUser) {
+  //   switch (JSON.parse(sessionStorage.user).type) {
+  //     case "manager":
+  //       return <Redirect to="/businessDashboard" />;
+  //     case "employee":
+  //       return <Redirect to="/teller" />;
+  //     case "booth":
+  //       return <Redirect to="/boothDashboard" />;
+  //     default:
+  //       return <Redirect to="/consumerDashboard" />;
+  //   }
+  // }
+  // if (currentUser) {
+  //   return <Redirect to="/consumerDashboard" />;
+  // }
+
   return (
     <>
       <Header />
@@ -183,4 +272,6 @@ export default function LoginPage() {
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(LoginPage);
