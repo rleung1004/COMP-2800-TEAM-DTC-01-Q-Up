@@ -97,15 +97,13 @@ export default function Booth() {
                      How it works
                   </Typography>
                   <Grid item xs={8}>
-                  <Typography variant="body2" align="left">
                      <ol className="orderedList">
-                        <li>1 - Enter your name</li>
-                        <li>2 - Press queue up</li>
-                        <li>3 - Get your ticket number and your code city</li>
-                        <li>4 - Look for your ticket number in the queue display</li>
-                        <li>5 - When your turn comes, state your code city to the queue keeper</li>
+                        <li><Typography variant="body2" align="left">1 - Enter your name</Typography></li>
+                        <li><Typography variant="body2" align="left">2 - Press queue up</Typography></li>
+                        <li><Typography variant="body2" align="left">3 - Get your ticket number and your code city</Typography></li>
+                        <li><Typography variant="body2" align="left">4 - Look for your ticket number in the queue display</Typography></li>
+                        <li><Typography variant="body2" align="left">5 - When your turn comes, state your code city to the queue keeper</Typography></li>
                      </ol>
-                  </Typography>
                   </Grid>
                </Grid>
             </Grid>
