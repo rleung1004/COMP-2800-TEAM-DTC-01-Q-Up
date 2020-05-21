@@ -157,7 +157,7 @@ export default function LandingPage() {
                   <img
                      style={{ width: '100%' }}
                      src={require('../img/product image.png')}
-                     alt='Product image'
+                     alt='Product'
                   />
                </Grid>
                <Grid container justify='center' alignItems='center'>
