@@ -28,10 +28,9 @@ export default function BoothDashBoard() {
    };
 
    const [getData, setGetData] = useState(true);
-
    const [nowServing, setNowServing] = useState(-1);
-
    const [queueLength, setQueueLength] = useState(-1);
+   const [estimatedWaitTime, setEstimatedWaitTime] = useState(-1);
 
    useEffect(() => {
       if (!getData) {
@@ -42,8 +41,12 @@ export default function BoothDashBoard() {
          .get('/getDisplay', axiosConfig)
          .then((res) => {
             const data = res.data.displayInfo;
+            const waitTime = res.data.estimatedWaitTime;
+            console.log(res);
+
             setNowServing(data[0]);
             setQueueLength(data.length);
+            setEstimatedWaitTime(waitTime);
          })
          .catch((err) => {
             console.error(err);
@@ -62,12 +65,22 @@ export default function BoothDashBoard() {
                      <img src={require('../img/logo.png')} alt='QUP logo' />
                   </Grid>
                   <Grid item xs={2}></Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={2}>
                      <Grid>
                         <Typography variant='h2'>Customers in line</Typography>
                      </Grid>
                      <Grid>
                         <Typography variant='h3'>{queueLength}</Typography>
+                     </Grid>
+                  </Grid>
+                  <Grid item xs={2}>
+                     <Grid>
+                        <Typography variant='h2'>Est. wait time</Typography>
+                     </Grid>
+                     <Grid>
+                        <Typography variant='h3'>
+                           {estimatedWaitTime}
+                        </Typography>
                      </Grid>
                   </Grid>
                   <Grid item xs={2}></Grid>
