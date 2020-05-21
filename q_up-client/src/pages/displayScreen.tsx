@@ -27,11 +27,13 @@ export default function BoothDashBoard() {
       },
    };
 
+   // states
    const [getData, setGetData] = useState(true);
    const [nowServing, setNowServing] = useState(-1);
    const [queueLength, setQueueLength] = useState(-1);
    const [estimatedWaitTime, setEstimatedWaitTime] = useState(-1);
 
+   // Get data queue data
    useEffect(() => {
       if (!getData) {
          return;
@@ -55,16 +57,16 @@ export default function BoothDashBoard() {
 
    return (
       <>
-         <div
-            className='displayScreenHeader'
-            style={{ backgroundColor: '#242323' }}
-         >
+         {/* Top bar*/}
+         <div className='displayScreenHeader'>
             <Grid container justify='center'>
                <Grid item container alignItems='center' xs={12}>
+                  {/* Logo */}
                   <Grid item xs={2}>
                      <img src={require('../img/logo.png')} alt='QUP logo' />
                   </Grid>
                   <Grid item xs={2}></Grid>
+                  {/* Display customers in line */}
                   <Grid item xs={2}>
                      <Grid>
                         <Typography variant='h2'>Customers in line</Typography>
@@ -73,6 +75,8 @@ export default function BoothDashBoard() {
                         <Typography variant='h3'>{queueLength}</Typography>
                      </Grid>
                   </Grid>
+                  {/* End display customers in line */}
+                  {/* Display est wait time */}
                   <Grid item xs={2}>
                      <Grid>
                         <Typography variant='h2'>Est. wait time</Typography>
@@ -84,6 +88,8 @@ export default function BoothDashBoard() {
                      </Grid>
                   </Grid>
                   <Grid item xs={2}></Grid>
+                  {/* End display est wait time */}
+                  {/* Display current time */}
                   <Grid item xs={2}>
                      <Grid>
                         <Typography variant='h2'>Current time</Typography>
@@ -94,9 +100,12 @@ export default function BoothDashBoard() {
                         </Typography>
                      </Grid>
                   </Grid>
+                  {/* End display current time */}
                </Grid>
             </Grid>
          </div>
+         {/* End top bar */}
+         {/* Body */}
          <main className='displayPage'>
             <Grid container>
                <Grid className='left-column' item xs={12}>
@@ -113,6 +122,8 @@ export default function BoothDashBoard() {
                </Grid>
             </Grid>
          </main>
+         {/* Body */}
+         {/* Bottom section */}
          <footer className='displayScreenFooter'>
             <Grid>
                <Typography variant='h2'>
@@ -120,6 +131,7 @@ export default function BoothDashBoard() {
                </Typography>
             </Grid>
          </footer>
+         {/* bottom section */}
       </>
    );
 }
