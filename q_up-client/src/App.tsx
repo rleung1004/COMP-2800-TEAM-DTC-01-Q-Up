@@ -41,10 +41,10 @@ function App() {
               <Route path="/signup" component={SignupPage} exact />
               <Route path="/aboutUs" component={aboutUsPage} exact />
               <Route path="/contactUs" component={ContactUsPage} exact />
+              <Route path="/termsAndConditions" component={TermsPage} exact />
+              <Route path="/privacyPolicy" component={PrivacyPage} exact />
               <PrivateRoute path="/consumerRegistration" component={ConsumerRegistrationPage} exact />
               <PrivateRoute path="/businessRegistration" component={BusinessRegistrationPage} exact />
-              <PrivateRoute path="/termsAndConditions" component={TermsPage} exact />
-              <PrivateRoute path="/privacyPolicy" component={PrivacyPage} exact />
               <PrivateRoute path="/businessDashboard" component={BusinessDashboardPage} exact />
               <PrivateRoute path="/consumerDashboard" component={ConsumerDashboard} exact />
               <PrivateRoute path="/consumerProfile" component={ConsumerProfilePage} exact />
