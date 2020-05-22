@@ -95,7 +95,7 @@ export default function QueueListRow(props: any) {
    * else will curry true
    * @post will replace the fav button with a new one
    */
-  const handleFavClick = (fav: Boolean) => () => {
+  const handleFavClick = (fav: Boolean) => async () => {
     const iconButtonManager = () => {
       if (fav) {
         setFavicon(
@@ -117,7 +117,7 @@ export default function QueueListRow(props: any) {
       favoriteQueueName: data.name.charAt(0).toUpperCase() +  data.name.substr(1).toLowerCase(),
     };
 
-    Axios.put("/changeFavoriteQueueStatus", packet, axiosConfig)
+    await Axios.put("/changeFavoriteQueueStatus", packet, axiosConfig)
       .then((res: any) => {
         window.alert(res.data.general);
         iconButtonManager();
@@ -181,11 +181,11 @@ export default function QueueListRow(props: any) {
   );
 
   // click handler for queueUp button
-  const queueUp = () => {
+  const queueUp = async () => {
     const packet = {
       queueName: data.name.charAt(0).toUpperCase() +  data.name.substr(1).toLowerCase(),
     };
-    Axios.post("/customerEnterQueue", packet, axiosConfig)
+    await Axios.post("/customerEnterQueue", packet, axiosConfig)
       .then((res) => {
         console.log(res);
         window.alert(res.data.general);

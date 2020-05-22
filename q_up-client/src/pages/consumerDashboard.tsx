@@ -82,80 +82,75 @@ const ClientDashboardPage = ({ history }: any) => {
 
   // fetch current queue data
   useEffect(() => {
-    return () => {
-      if (!getData) {
-        return;
-      }
-      setGetData(false);
-      axios
-        .get("/getCustomerQueueInfo", axiosConfig)
-        .then((res) => {
-          const data = res.data.queueSlotInfo;
-          setCurrentQueueInfo({
-            businessName: data.currentQueue,
-            estimatedWait: data.currentWaitTime,
-            currentPosition: data.queuePosition,
-            ticketNumber: data.ticketNumber,
-            password: data.password,
-            inQueue: true,
-          });
-        })
-        .catch((err) => {
-          console.error(err.response);
-          if (err.response.status === 404) {
-            setCurrentQueueInfo((prevState: any) => ({
-              ...prevState,
-              inQueue: false,
-            }));
-            return;
-          }
-          if (err.response.status && err.response.status === 332) {
-            window.alert("Please login again to continue, your token expired");
-            app.auth().signOut().catch(console.error);
-            return;
-          }
-          window.alert(err.response.data.general);
+    if (!getData) {
+      return;
+    }
+
+    axios
+      .get("/getCustomerQueueInfo", axiosConfig)
+      .then(async (res) => {
+        const data = res.data.queueSlotInfo;
+        await setCurrentQueueInfo({
+          businessName: data.currentQueue,
+          estimatedWait: data.currentWaitTime,
+          currentPosition: data.queuePosition,
+          ticketNumber: data.ticketNumber,
+          password: data.password,
+          inQueue: true,
         });
-    };
+        setGetData(false);
+      })
+      .catch((err) => {
+        console.error(err.response);
+        if (err.response.status === 404) {
+          setCurrentQueueInfo((prevState: any) => ({
+            ...prevState,
+            inQueue: false,
+          }));
+          return;
+        }
+        if (err.response.status && err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          app.auth().signOut().catch(console.error);
+          return;
+        }
+        window.alert(err.response.data.general);
+      });
   }, [axiosConfig, getData]);
 
   // fetch favorite queues
   useEffect(() => {
-    return () => {
-      if (!getData) {
-        return;
-      }
-      setGetData(false);
-      axios
-        .get("/getFavouriteQueues", axiosConfig)
-        .then((res) => {
-          const businesses = res.data.favoriteBusinesses;
-          const data: Array<object> = [];
-          for (const business in businesses) {
-            data.push({
-              ...businesses[business],
-              triggerGetStatus,
-              isFav: true,
-            });
-          }
-          setFavQueues(data);
-          console.log(data);
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.response.status === 404) {
-            return;
-          }
-          if (err.response.status && err.response.status === 332) {
-            window.alert("Please login again to continue, your token expired");
-            app.auth().signOut().catch(console.error);
-            return;
-          }
-          window.alert(
-            "Connection error: Could not load your favourite queues."
-          );
-        });
-    };
+    if (!getData) {
+      return;
+    }
+    setGetData(false);
+    axios
+      .get("/getFavouriteQueues", axiosConfig)
+      .then(async (res) => {
+        const businesses = res.data.favoriteBusinesses;
+        const data: Array<object> = [];
+        for (const business in businesses) {
+          data.push({
+            ...businesses[business],
+            triggerGetStatus,
+            isFav: true,
+          });
+        }
+        await setFavQueues(data);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response.status === 404) {
+          return;
+        }
+        if (err.response.status && err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          app.auth().signOut().catch(console.error);
+          return;
+        }
+        window.alert("Connection error: Could not load your favourite queues.");
+      });
   }, [axiosConfig, getData]);
 
   if (JSON.parse(sessionStorage.user).type !== "customer") {

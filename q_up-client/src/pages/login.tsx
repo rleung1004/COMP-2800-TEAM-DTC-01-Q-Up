@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useContext,
 } from "react";
-import { Redirect, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { AuthContext } from "../components/Auth";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -182,13 +182,17 @@ const LoginPage = ({ history }: any) => {
     }
     switch (userType) {
       case "manager":
-        return <Redirect to="/businessDashboard" />;
+        history.push("/businessDashboard");
+        break;
       case "employee":
-        return <Redirect to="/teller" />;
+        history.push("/teller");
+        break;
       case "booth":
-        return <Redirect to="/boothDashboard" />;
+        history.push("/boothDashboard");
+        break;
       default:
-        return <Redirect to="/consumerDashboard" />;
+        history.push("/consumerDashboard");
+        break;
     }
   }
 
@@ -253,7 +257,9 @@ const LoginPage = ({ history }: any) => {
                 disabled={formState.loading}
               >
                 Sign In
-                {formState.loading && <CircularProgress className={classes.progress} size={30} />}
+                {formState.loading && (
+                  <CircularProgress className={classes.progress} size={30} />
+                )}
               </Button>
             </Grid>
           </form>

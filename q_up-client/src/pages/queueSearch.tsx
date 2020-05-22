@@ -14,7 +14,7 @@ import "../styles/queueSearch.scss";
 import axios from "axios";
 import Grid from "@material-ui/core/Grid/Grid";
 import { Paper, Button } from "@material-ui/core";
-import { withRouter, Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 /**
  * Render a queue search page.
@@ -75,7 +75,7 @@ const QueueSearchPage = ({ history }: any) => {
     if (!getData) {
       return;
     }
-    setGetData(false);
+    
     axios
       .get("/getFavouriteQueues", axiosConfig)
       .then((res) => {
@@ -86,6 +86,7 @@ const QueueSearchPage = ({ history }: any) => {
           names.push(businesses[business].name);
         }
         setFavQueues(names);
+        setGetData(false);
       })
       .catch((err) => {
         console.log(err.response);
@@ -102,7 +103,7 @@ const QueueSearchPage = ({ history }: any) => {
   }, [axiosConfig, getData]);
 
   if (JSON.parse(sessionStorage.user).type !== "customer") {
-    return <Redirect to="/login" />;
+    return history.push("/login");
   }
   
   return (
