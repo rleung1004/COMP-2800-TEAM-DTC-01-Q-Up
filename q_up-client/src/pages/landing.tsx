@@ -132,7 +132,7 @@ export default function LandingPage() {
                   <Grid item xs={12}>
                      <img
                         style={{ width: '100%' }}
-                        src={require('../img/hugeasslineup.jpeg')}
+                        src={require('../img/hugelineup.jpeg')}
                         alt='Hugo line up'
                      />
                   </Grid>

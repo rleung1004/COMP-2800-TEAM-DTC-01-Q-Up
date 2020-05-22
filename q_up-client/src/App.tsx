@@ -1,9 +1,9 @@
 import React from "react";
-import "./App.scss";
+import "./styles/App.scss";
 import axios from "axios";
-import { AuthProvider } from "./Auth";
+import { AuthProvider } from "./components/Auth";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import PrivateRoute from "./PrivateRoute"
+import PrivateRoute from "./components/PrivateRoute"
 import LandingPage from "./pages/landing";
 import LoginPage from "./pages/login";
 import SignupPage from "./pages/signup";
@@ -27,8 +27,7 @@ import Booth from './pages/booth';
 import DisplayScreen from './pages/displayScreen'
 import ContactUsPage from "./pages/contactUs.js";
 
-axios.defaults.baseURL =
-  "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
+axios.defaults.baseURL = "https://us-central1-q-up-c2b70.cloudfunctions.net/api";
 
 function App() {
   const theme = themes();

@@ -6,7 +6,7 @@ import React, {
   useContext,
 } from "react";
 import { Redirect, withRouter } from "react-router-dom";
-import { AuthContext } from "../Auth";
+import { AuthContext } from "../components/Auth";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "bootstrap/dist/css/bootstrap.css";

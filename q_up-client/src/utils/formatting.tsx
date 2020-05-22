@@ -91,3 +91,18 @@ export function formatTimeInto12h(time24h: string) {
     const intHours = parseInt(hours);
     return (intHours % 12 || 12) + ":" + mins + (intHours >= 12 ? "PM" : "AM");
   }
+
+
+/**
+ * Format the description of businesses.
+ *
+ * @param description   a string.
+ * @return string       the formatted description.
+ */
+export const formatDescription = (description: String) => {
+    let sentences: Array<string> = description.split('.');
+    sentences = sentences.map((sentence: string) => sentence.charAt(0).toUpperCase() + sentence.substr(1).toLowerCase());
+    let result: string = '';
+    sentences.forEach(sentence => result += sentence);
+    return result;
+};

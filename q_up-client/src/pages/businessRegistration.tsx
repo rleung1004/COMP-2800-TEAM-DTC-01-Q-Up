@@ -24,6 +24,7 @@ import axios from "axios";
 import "../styles/businessDashboard.scss";
 import { withRouter, Redirect } from "react-router-dom";
 import PhoneMaskedInput, { unMaskPhone } from "src/components/PhoneMaskedInput";
+import {formatDescription} from "../utils/formatting";
 
 
 //Mui stylings
@@ -265,17 +266,6 @@ const BusinessRegistrationPage = ({ history }: any) => {
 
       setFormState((prevState) => ({ ...prevState, loading: true }));
 
-      // format the description before sending to the server
-      const formatDescription = (description: String) => {
-        let sentences: Array<string> = description.split(".");
-        sentences = sentences.map(
-          (sentence: string) =>
-            sentence.charAt(0).toUpperCase() + sentence.substr(1).toLowerCase()
-        );
-        let result: string = "";
-        sentences.forEach((sentence) => (result += sentence));
-        return result;
-      };
 
       // map package
       const userData = {
