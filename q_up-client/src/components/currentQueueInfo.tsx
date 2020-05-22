@@ -14,16 +14,17 @@ const useStyles = makeStyles(() => ({
   * Render the customer's current queue info.
   * 
   * @param props.data.businessName a string, the name of the business the customer is queued on
-  * @param props.data.estimatedWaitTime an integer, the estimated wait time
+  * @param props.data.estimatedWaitTime a string, the estimated wait time
   * @param props.data.currentPosition an integer, the number of customers in front
   * @param props.data.ticketNumber an integer, the queue slot identifier
   * @param props.data.password a string, the code to give to the teller
   * 
   * Accessible to: cutomers
   */
-function CurrentQueueInfo(props:any) {
+function CurrentQueueInfo(props: any) {
    const classes = useStyles();
    const data = props.data;
+
    const axiosConfig = {
       headers: {
         Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
@@ -68,7 +69,7 @@ function CurrentQueueInfo(props:any) {
                   Wait Time{'  '}
                </Typography>
                <Typography display='inline' variant='body2'>
-                  {data.estimatedWaitTime}
+                  {data.estimatedWait}
                </Typography>
             </Grid>
 

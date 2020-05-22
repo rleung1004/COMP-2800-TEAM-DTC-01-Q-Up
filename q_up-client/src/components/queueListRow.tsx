@@ -207,7 +207,7 @@ export default function QueueListRow(props: any) {
           app.auth().signOut().catch(console.error);
           return;
         }
-        window.alert(err.response.general);
+        window.alert(err.response.data.general);
       });
   };
   return (
