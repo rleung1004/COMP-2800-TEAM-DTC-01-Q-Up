@@ -202,13 +202,12 @@ export default function QueueListRow(props: any) {
       })
       .catch((err) => {
         console.error(err);
-        console.error(err);
         if (err.response.status && err.response.status === 332) {
           window.alert("Please login again to continue, your token expired");
           app.auth().signOut().catch(console.error);
           return;
         }
-        window.alert(err.response.general);
+        window.alert(err.response.data.general);
       });
   };
   return (
