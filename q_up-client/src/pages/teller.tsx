@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { Grid, Typography, Button } from "@material-ui/core";
+import { Grid, Typography, Button, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import "../styles/teller.scss";
 import { Redirect } from "react-router-dom";
@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
 
   button: {
     margin: "20px auto 20px auto",
+    position: "relative",
+  },
+
+  progress: {
+    position: "absolute",
   },
 }));
 
@@ -62,6 +67,7 @@ export default function TellerPage() {
   const [isActive, setActive] = useState(false);
   const [currentWaitTime, setWaitTime] = useState(null);
   const [queueLength, setQueueLength] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
   // fetch queue data
   useEffect(() => {
@@ -107,9 +113,11 @@ export default function TellerPage() {
   // Handle the check in button click
   const handleCheckInClick = (event: MouseEvent) => {
     event.preventDefault();
+    setLoading(true);
     let index: number;
     if (selected.id === -1) {
       window.alert("No one is selected");
+      setLoading(false);
       return;
     }
     index = selected.id;
@@ -123,6 +131,7 @@ export default function TellerPage() {
         console.log(
           `Removed ticket number ${checkInData.ticketNumber} successfully`
         );
+        setLoading(false);
         setGetData(true);
       })
       .catch((err) => {
@@ -132,6 +141,7 @@ export default function TellerPage() {
           app.auth().signOut().catch(console.error);
           return;
         }
+        setLoading(false);
         window.alert("Connection error");
       });
   };
@@ -139,11 +149,13 @@ export default function TellerPage() {
   // Handle the VIP button click
   const handleVIPClick = (event: MouseEvent) => {
     event.preventDefault();
+    setLoading(true);
     axios
       .put("/VIPEnterQueue", {}, axiosConfig)
       .then((res) => {
         let VIPInfo = res.data.VIPSlotInfo;
         console.log(`Added ${VIPInfo.customer} into the queue`);
+        setLoading(false);
         setGetData(true);
       })
       .catch((err) => {
@@ -153,6 +165,7 @@ export default function TellerPage() {
           app.auth().signOut();
           return;
         }
+        setLoading(false);
         window.alert("Connection error");
       });
   };
@@ -247,8 +260,12 @@ export default function TellerPage() {
                 color="primary"
                 className={classes.button}
                 onClick={handleVIPClick}
+                disabled={isLoading}
               >
                 VIP
+                {isLoading && (
+                  <CircularProgress className={classes.progress} size={30} />
+                )}
               </Button>
             </Grid>
             <Grid item xs={6}>
@@ -258,8 +275,12 @@ export default function TellerPage() {
                 color="primary"
                 className={classes.button}
                 onClick={handleCheckInClick}
+                disabled={isLoading}
               >
                 Check in
+                {isLoading && (
+                  <CircularProgress className={classes.progress} size={30} />
+                )}
               </Button>
             </Grid>
           </Grid>

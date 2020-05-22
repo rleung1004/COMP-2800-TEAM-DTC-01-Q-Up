@@ -1,4 +1,10 @@
-import React, { useState, FormEvent, ChangeEvent, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  FormEvent,
+  ChangeEvent,
+  useCallback,
+  useEffect,
+} from "react";
 import app from "../firebase";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -12,6 +18,7 @@ import {
   MenuItem,
   FormControl,
   Select,
+  CircularProgress
 } from "@material-ui/core";
 import axios from "axios";
 import "../styles/businessDashboard.scss";
@@ -33,6 +40,10 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: "20px auto 20px auto",
+    position: "relative",
+  },
+  progress: {
+    position: "absolute",
   },
   provSelect: {
     minWidth: "4.5rem",
@@ -51,8 +62,8 @@ const BusinessRegistrationPage = ({ history }: any) => {
   const classes = useStyles();
   const array: Array<any> = [];
   const [dropdownData, setDropDownData] = useState({
-      businessCategories: array,
-      provinces: array,
+    businessCategories: array,
+    provinces: array,
   });
   const [getDropdownData, setGetDropdownData] = useState(true);
   const axiosConfig = {
@@ -78,7 +89,9 @@ const BusinessRegistrationPage = ({ history }: any) => {
     };
     phoneNumber?: string;
     website?: string;
-    averageWaitTime?: Number;
+    averageWaitTime?: string;
+    gadgetPassword?: string;
+    gadgetConfirmPassword?: string;
   }
 
   const errorObject: errors = {};
@@ -110,6 +123,8 @@ const BusinessRegistrationPage = ({ history }: any) => {
     phoneNumber: "",
     website: "",
     averageWaitTime: "",
+    gadgetPassword: "",
+    gadgetConfirmPassword: "",
     loading: false,
     errors: errorObject,
   });
@@ -197,7 +212,7 @@ const BusinessRegistrationPage = ({ history }: any) => {
    *
    * @param event an event with target
    */
-  const handleAverageWaitTImeChange = (
+  const handleAverageWaitTimeChange = (
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const newValue = event.target.value;
@@ -250,10 +265,13 @@ const BusinessRegistrationPage = ({ history }: any) => {
 
       // format the description before sending to the server
       const formatDescription = (description: String) => {
-        let sentences: Array<string> = description.split('.');
-        sentences = sentences.map((sentence: string) => sentence.charAt(0).toUpperCase() + sentence.substr(1).toLowerCase());
-        let result: string = '';
-        sentences.forEach(sentence => result += sentence);
+        let sentences: Array<string> = description.split(".");
+        sentences = sentences.map(
+          (sentence: string) =>
+            sentence.charAt(0).toUpperCase() + sentence.substr(1).toLowerCase()
+        );
+        let result: string = "";
+        sentences.forEach((sentence) => (result += sentence));
         return result;
       };
 
@@ -267,6 +285,8 @@ const BusinessRegistrationPage = ({ history }: any) => {
         description: formatDescription(formState.description),
         email: formState.email.toLowerCase(),
         averageWaitTime: parseInt(formState.averageWaitTime),
+        gadgetPassword: formState.gadgetPassword,
+        gadgetConfirmPassword: formState.gadgetConfirmPassword,
       };
 
       // request
@@ -295,29 +315,29 @@ const BusinessRegistrationPage = ({ history }: any) => {
     [formState, axiosConfig, history]
   );
 
-  useEffect(()=> {
+  useEffect(() => {
     if (!getDropdownData) {
       return;
     }
     setGetDropdownData(false);
     axios
-        .get('/getBusinessEnums', axiosConfig)
-        .then(res => setDropDownData(res.data))
-        .catch((err: any) => {
-          console.log(err);
-          if (err.response.status && err.response.status === 332) {
-            window.alert("Please login again to continue, your token expired");
-            app.auth().signOut().catch(console.error);
-            return;
-          }
-          window.alert("Connection error");
-        });
+      .get("/getBusinessEnums", axiosConfig)
+      .then((res) => setDropDownData(res.data))
+      .catch((err: any) => {
+        console.log(err);
+        if (err.response.status && err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          app.auth().signOut().catch(console.error);
+          return;
+        }
+        window.alert("Connection error");
+      });
   }, [axiosConfig, getDropdownData]);
 
   if (JSON.parse(sessionStorage.user).type !== "manager") {
     return <Redirect to="/login" />;
   }
-  
+
   return (
     <>
       <Header />
@@ -343,7 +363,6 @@ const BusinessRegistrationPage = ({ history }: any) => {
               multiline
               rows={4}
               name="description"
-              defaultValue="Default Value"
               value={formState.description}
               onChange={handleOnFieldChange}
             />
@@ -592,11 +611,51 @@ const BusinessRegistrationPage = ({ history }: any) => {
                     name="servingFrequency"
                     color="secondary"
                     size="small"
-                    onChange={handleAverageWaitTImeChange}
+                    onChange={handleAverageWaitTimeChange}
                     value={formState.averageWaitTime}
+                    helperText={formState.errors.averageWaitTime}
+                    error={!!formState.errors.averageWaitTime}
                     required
                   />
                   <Typography variant="body1">minutes</Typography>
+                </Grid>
+              </Grid>
+
+              <Grid container item direction="column">
+                <br />
+                <Typography variant="h6">Service Accounts Password</Typography>
+                <Typography variant="caption">
+                  Creating a business will create service accounts for your
+                  business. These accounts are to access a public booth page and
+                  a display page. Please enter a password for these accounts.
+                </Typography>
+                <Grid container item justify="center" alignItems="center">
+                  <TextField
+                    label="Password"
+                    name="gadgetPassword"
+                    color="secondary"
+                    size="small"
+                    type="password"
+                    onChange={handleOnFieldChange}
+                    value={formState.gadgetPassword}
+                    helperText={formState.errors.gadgetPassword}
+                    error={!!formState.errors.gadgetPassword}
+                    required
+                  />
+                </Grid>
+                <Grid container item justify="center" alignItems="center">
+                  <TextField
+                    label="Confirm Password"
+                    name="gadgetConfirmPassword"
+                    color="secondary"
+                    size="small"
+                    type="password"
+                    onChange={handleOnFieldChange}
+                    value={formState.gadgetConfirmPassword}
+                    helperText={formState.errors.gadgetConfirmPassword}
+                    error={!!formState.errors.gadgetConfirmPassword}
+                    required
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -606,8 +665,12 @@ const BusinessRegistrationPage = ({ history }: any) => {
               variant="contained"
               color="primary"
               className={classes.button}
+              disabled={formState.loading}
             >
               Submit
+              {formState.loading && (
+                <CircularProgress className={classes.progress} size={30} />
+              )}
             </Button>
           </Grid>
         </form>
