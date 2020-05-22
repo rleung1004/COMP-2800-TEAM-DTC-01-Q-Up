@@ -73,6 +73,7 @@ export default function QueueListRow(props: any) {
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
+  const [favStatus, setFavStatus] = useState(props.data ? props.data.isFav : props.hit.isFav);
 
   // Handle click on map button
   const handleToGMap = () => {
@@ -120,6 +121,7 @@ export default function QueueListRow(props: any) {
     await Axios.put("/changeFavoriteQueueStatus", packet, axiosConfig)
       .then((res: any) => {
         window.alert(res.data.general);
+        setFavStatus(!favStatus);
         iconButtonManager();
         data.triggerGetStatus();
       })
@@ -156,7 +158,7 @@ export default function QueueListRow(props: any) {
 
   // determin what is the initial fav button depending on the actual queue state
   const [favicon, setFavicon] = useState(
-    data.isFav ? favButtonModel : notFavButtonModel
+    favStatus ? favButtonModel : notFavButtonModel
   );
 
   // section of the expansion panel header to be displayed if the queue is not active
