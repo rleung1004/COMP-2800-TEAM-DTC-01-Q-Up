@@ -650,13 +650,15 @@ const BusinessRegistrationPage = ({ history }: any) => {
                         <Typography>
                            Email login account for booth is:{' '}
                            <span className={classes.secondary}>
-                              defaultBooth@business.qup
+                              defaultBooth@
+                              {JSON.parse(sessionStorage.user).businessName}.qup
                            </span>
                         </Typography>
                         <Typography>
                            Email login account for display screen is:{' '}
                            <span className={classes.secondary}>
-                              defaultDisplay@business.qup
+                              defaultDisplay@
+                              {JSON.parse(sessionStorage.user).businessName}.qup
                            </span>
                         </Typography>
                         <Grid
