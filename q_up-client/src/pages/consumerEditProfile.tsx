@@ -18,6 +18,7 @@ import {
   Button,
 } from "@material-ui/core";
 import { withRouter, Redirect } from "react-router-dom";
+import PhoneMaskedInput, { unMaskPhone } from "src/components/PhoneMaskedInput";
 
 // Mui stylings
 const useStyles = makeStyles((theme) => ({
@@ -98,7 +99,7 @@ const ConsumerEditProfilePage = ({ history }: any) => {
       event.preventDefault();
       setFormState((prevState) => ({ ...prevState, loading: true }));
       const userData = {
-        phoneNumber: formState.phoneNumber,
+        phoneNumber: unMaskPhone(formState.phoneNumber),
         postalCode: formState.postalCode.toUpperCase(),
         email: sessionStorage.user.email.toLowerCase(),
       };
@@ -190,6 +191,7 @@ const ConsumerEditProfilePage = ({ history }: any) => {
                 className={classes.textField}
                 helperText={formState.errors.phoneNumber}
                 error={!!formState.errors.phoneNumber}
+                InputProps={{inputComponent: PhoneMaskedInput as any} }
               />
               <TextField
                 color="secondary"
