@@ -1,6 +1,6 @@
 import {admin, db} from "../util/firebaseConfig";
 import {Request, Response} from "express";
-import {internalSingUp} from "./users";
+import {internalSignUp} from "./users";
 import * as firebase from "firebase-admin";
 
 /**
@@ -38,7 +38,7 @@ export const registerEmployee = async (req: Request, res: Response) => {
         .get()
         .then(async data => {
             if (!data.exists) {
-                return await internalSingUp(req);
+                return await internalSignUp(req);
             }
             return false
         })

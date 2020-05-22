@@ -417,7 +417,6 @@ const deleteBoothFromBusiness = async (boothEmail: string) => {
         .catch(err => console.error(err))
 };
 
-
 /**
  * Deletes the display for the specific business.
  * first gets the display user id, then deletes it from the database and authentication.

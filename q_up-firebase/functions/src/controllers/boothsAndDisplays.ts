@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {internalSingUp} from "./users";
+import {internalSignUp} from "./users";
 import {db} from "../util/firebaseConfig";
 
 /**
@@ -24,7 +24,7 @@ export const registerNewBooth = async (req: Request) => {
         confirmPassword: requestData.password,
         email: `defaultBooth@${requestData.businessName}.qup`,
     });
-    return await internalSingUp(req);
+    return await internalSignUp(req);
 };
 
 /**
@@ -49,7 +49,7 @@ export const registerNewDisplay = async (req: Request) => {
         confirmPassword: requestData.password,
         email: `defaultDisplay@${requestData.businessName}.qup`,
     });
-    return await internalSingUp(req);
+    return await internalSignUp(req);
 };
 
 /**

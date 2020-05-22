@@ -23,8 +23,7 @@ import {
     getOnlineEmployees,
     updateEmployee
 } from "./controllers/employees";
-import {algoliaAddToIndex, algoliaDeleteFromIndex, algoliaUpdateIndex} from "./controllers/algoliaTriggers";
-import {onQueueUpdate} from "./controllers/appTriggers";
+import {algoliaAddToIndex, algoliaDeleteFromIndex, algoliaUpdateIndex, onQueueUpdate} from "./controllers/triggers";
 import {getDisplayInfo} from "./controllers/boothsAndDisplays";
 import {getDataEnum} from "./controllers/dataEnumerations";
 

@@ -1,7 +1,4 @@
-/**
- * Represents the nodeMailer object.
- */
-const nodeMailer = require('nodemailer');
+import * as nodeMailer from "nodemailer";
 
 /**
  * Creates a transport object that is to be used to send emails.

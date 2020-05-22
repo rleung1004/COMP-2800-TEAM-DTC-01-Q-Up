@@ -100,7 +100,7 @@ export const signUp = async (req: Request, res: Response) => {
  * @param req:      express Request Object
  * @returns         Boolean true if signed up successfully otherwise false
  */
-export const internalSingUp = async (req: Request) => {
+export const internalSignUp = async (req: Request) => {
     const newUser = {
         email: req.body.email,
         password: req.body.password,
