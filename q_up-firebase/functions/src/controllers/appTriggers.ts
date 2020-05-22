@@ -64,9 +64,9 @@ export const onQueueUpdate = dbTrigger
             const prevQueueSlots: Array<any> = prevData.queue.queueSlots;
             if (prevCounts !== newCounts) {
                 if (newHighestTickets.highestNonVIPTicketNumber !== prevHighestTickets.highestNonVIPTicketNumber) {
-                    await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestVipTicketNumber, false);
+                    await changeQueueSlotHighestTicketNumber(newData.name, newHighestTickets.highestNonVIPTicketNumber, false);
                 } else {
-                    await changeQueueSlotHighestTicketNumber(newData.name, newData.queue.highestNonVipTicketNumber, true);
+                    await changeQueueSlotHighestTicketNumber(newData.name, newHighestTickets.highestVIPTicketNumber, true);
                 }
                 await changeCurrentWaitTimeOfQueue(newData);
             }

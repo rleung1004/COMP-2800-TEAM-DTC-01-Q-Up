@@ -4,7 +4,7 @@ import * as BusBoy from "busboy";
 import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
-import {imageObject, validateBusinessData} from "../util/helpers";
+import {imageObject, isStrongPassword, validateBusinessData} from "../util/helpers";
 import {registerNewBooth, registerNewDisplay} from "./boothsAndDisplays";
 
 /**
@@ -66,6 +66,9 @@ export const registerBusiness = async (req: Request, res: Response) => {
     if (requestData.gadgetPassword !== requestData.gadgetConfirmPassword) {
         return res.status(403).json({gadgetConfirmPassword: "Passwords must match"});
     }
+    if (!isStrongPassword(requestData.gadgetPassword)) {
+        return res.status(403).json({gadgetPassword: "must include 1 uppercase, 1 lowercase or 1 number, and be 6 characters"});
+    }
     const doesExist = await db
         .collection('businesses')
         .doc(requestData.businessName)
@@ -73,6 +76,19 @@ export const registerBusiness = async (req: Request, res: Response) => {
         .then(data => data.exists);
     if (doesExist) {
         return res.status(409).json({general: "The business already exists!"});
+    }
+    if (!requestData.isUpdating) {
+        const [registeredBooth] = await Promise.all([registerNewBooth(req)]);
+        console.log(`registeredBooth value is: ${registeredBooth}`);
+        if (!registeredBooth) {
+            return res.status(404).json({general: "did not register the booth properly!"})
+        }
+        Object.assign(req.body, {userType: 'manager'});
+        const [registeredDisplay] = await Promise.all([registerNewDisplay(req)]);
+        console.log(`registeredDisplay value is: ${registeredDisplay}`);
+        if (!registeredDisplay) {
+            return res.status(404).json({general: "did not register the display properly!"})
+        }
     }
     return await db
         .collection('businesses')
@@ -84,17 +100,6 @@ export const registerBusiness = async (req: Request, res: Response) => {
                 .doc(req.body.userEmail)
                 .update({businessName: businessInfo.name})
                 .catch(err => console.error(err));
-            const [registeredBooth] = await Promise.all([registerNewBooth(req)]);
-            console.log(`registeredBooth value is: ${registeredBooth}`);
-            if (!registeredBooth) {
-                return res.status(404).json({general: "did not register the booth properly!"})
-            }
-            Object.assign(req.body, {userType: 'manager'});
-            const [registeredDisplay] = await Promise.all([registerNewDisplay(req)]);
-            console.log(`registeredDisplay value is: ${registeredDisplay}`);
-            if (!registeredDisplay) {
-                return res.status(404).json({general: "did not register the display properly!"})
-            }
             if (requestData.isUpdating) {
                 return null;
             }
