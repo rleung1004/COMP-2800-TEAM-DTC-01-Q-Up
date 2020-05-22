@@ -17,7 +17,7 @@ import {
   TextField,
   Button,
 } from "@material-ui/core";
-import { withRouter, Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import PhoneMaskedInput, { unMaskPhone } from "src/components/PhoneMaskedInput";
 
 // Mui stylings
@@ -101,7 +101,7 @@ const ConsumerEditProfilePage = ({ history }: any) => {
       const userData = {
         phoneNumber: unMaskPhone(formState.phoneNumber),
         postalCode: formState.postalCode.toUpperCase(),
-        email: sessionStorage.user.email.toLowerCase(),
+        email: JSON.parse(sessionStorage.user).email.toLowerCase(),
       };
       console.log(userData);
 
@@ -158,9 +158,9 @@ const ConsumerEditProfilePage = ({ history }: any) => {
   }, [axiosConfig, errorObject, getData]);
 
   if (JSON.parse(sessionStorage.user).type !== "customer") {
-    return <Redirect to="/login" />;
+    history.push("/login");
   }
-  
+
   return (
     <>
       <Header Nav={ConsumerNav} logout />
@@ -191,7 +191,7 @@ const ConsumerEditProfilePage = ({ history }: any) => {
                 className={classes.textField}
                 helperText={formState.errors.phoneNumber}
                 error={!!formState.errors.phoneNumber}
-                InputProps={{inputComponent: PhoneMaskedInput as any} }
+                InputProps={{ inputComponent: PhoneMaskedInput as any }}
               />
               <TextField
                 color="secondary"

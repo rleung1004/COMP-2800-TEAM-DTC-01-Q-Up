@@ -190,6 +190,9 @@ const LoginPage = ({ history }: any) => {
       case "booth":
         history.push("/boothDashboard");
         break;
+      case "display":
+        history.push("/display");
+        break;
       default:
         history.push("/consumerDashboard");
         break;

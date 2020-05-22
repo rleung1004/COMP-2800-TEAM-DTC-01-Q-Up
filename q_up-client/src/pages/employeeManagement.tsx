@@ -297,23 +297,30 @@ export default function EmployeeManagementPage() {
             />
           </Grid>
         </DialogContent>
+
         <DialogActions>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={handleAddCancel}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            onClick={handleAddSubmit}
-          >
-            Ok
-          </Button>
+          <Grid container justify="center">
+            <Grid container item xs={12} sm={6}>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={handleAddCancel}
+              >
+                Cancel
+              </Button>
+            </Grid>
+            <Grid container item xs={12} sm={6}>
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={handleAddSubmit}
+              >
+                Ok
+              </Button>
+            </Grid>
+          </Grid>
         </DialogActions>
       </Dialog>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Box, Typography } from '@material-ui/core';
+import { Grid, Box, Typography, Button } from '@material-ui/core';
 import '../styles/displayScreen.scss';
 import axios from 'axios';
 import app from "../firebase";
@@ -27,6 +27,35 @@ export default function BoothDashBoard() {
          Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
       },
    };
+   const onLogoutHandler = async () => {
+      if (!window.confirm("Are you sure?")) {
+        return;
+      }
+      const userType = JSON.parse(sessionStorage.user).type;
+      
+      await app.auth().signOut();
+      if (userType === "employee") {
+        axios
+          .get("/logout", axiosConfig)
+          .then(() => {
+            sessionStorage.removeItem("user");
+            return;
+          })
+          .catch((err) => {
+            console.error(err);
+            console.error(err);
+            if (err.response.status && err.response.status === 332) {
+              window.alert("Please login again to continue, your token expired");
+              app.auth().signOut().catch(console.error);
+              return;
+            }
+            window.alert("Connection error, please try again");
+            return;
+          });
+      } else {
+        sessionStorage.removeItem("user");
+      }
+    };
 
    // states
    const [getData, setGetData] = useState(true);
@@ -139,6 +168,9 @@ export default function BoothDashBoard() {
             </Grid>
          </footer>
          {/* bottom section */}
+         <Button type="button" variant="contained" color="primary" onClick={onLogoutHandler}>
+            EXIT
+         </Button>
       </>
    );
 }

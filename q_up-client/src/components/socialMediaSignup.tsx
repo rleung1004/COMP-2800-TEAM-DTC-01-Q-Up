@@ -26,6 +26,7 @@ const FirebaseSignup = ({ history }: any) => {
               JSON.stringify({
                 token: generatedToken,
                 type: "customer",
+                email: result.user?.email,
               })
             );
           });

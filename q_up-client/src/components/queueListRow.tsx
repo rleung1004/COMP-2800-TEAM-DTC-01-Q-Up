@@ -17,7 +17,7 @@ import Axios from "axios";
 import { formatURL, formatAddress } from "src/utils/formatting";
 import "../styles/queueListRow.scss";
 import { formatTimeInto12h } from "../utils/formatting";
-import { evaluateOpenTime, evaluateCloseTime } from '../utils/misc';
+import { evaluateOpenTime, evaluateCloseTime } from "../utils/misc";
 import app from "../firebase";
 
 // Mui stylings
@@ -36,12 +36,12 @@ const useStyles = makeStyles({
 
 /**
  * Render an individual queue list row.
- * 
+ *
  * Queue list rows are displayed as an expansion panel.
  * The summary section is always shown. The details section is show selectively.
  * @param props.hit optional parameter, data as provided by algolia
  * @param props.data optional parameter, data as provided by our server
- * 
+ *
  * props.hit (+) props.data
  * Parameters are mutually exclusive.
  */
@@ -73,7 +73,9 @@ export default function QueueListRow(props: any) {
   const address = data.address;
   const expanded = props.isExpanded;
   const handleChange = props.handleChange;
-  const [favStatus, setFavStatus] = useState(props.data ? props.data.isFav : props.hit.isFav);
+  const [favStatus, setFavStatus] = useState(
+    props.data ? props.data.isFav : props.hit.isFav
+  );
 
   // Handle click on map button
   const handleToGMap = () => {
@@ -86,7 +88,7 @@ export default function QueueListRow(props: any) {
 
   /**
    * Handle click on Fav button.
-   * 
+   *
    * The Fav button is a curried button.
    * It remembers whether to call the click handler with true or false
    * @param fav the previous state
@@ -115,7 +117,7 @@ export default function QueueListRow(props: any) {
 
     // map the data into server format
     const packet = {
-      favoriteQueueName: data.name.charAt(0).toUpperCase() +  data.name.substr(1).toLowerCase(),
+      favoriteQueueName: data.name.toLowerCase(),
     };
 
     await Axios.put("/changeFavoriteQueueStatus", packet, axiosConfig)
@@ -185,7 +187,8 @@ export default function QueueListRow(props: any) {
   // click handler for queueUp button
   const queueUp = async () => {
     const packet = {
-      queueName: data.name.charAt(0).toUpperCase() +  data.name.substr(1).toLowerCase(),
+      queueName:
+        data.name.toLowerCase(),
     };
     await Axios.post("/customerEnterQueue", packet, axiosConfig)
       .then((res) => {
