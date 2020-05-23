@@ -76,7 +76,10 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.queueName);
             if (onlineEmployees < 1) {
-                return res.status(403).json({general: 'There is no online tellers for this queue!!'});
+                return res.status(200).json({
+                    general: 'There is no online tellers for this queue!, please wait!',
+                    noEmployee: true,
+                });
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const customerSlot = createQueueSlot(requestData.userEmail, lastHighestTicketNumber);
@@ -92,6 +95,7 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
                 .update({ currentQueue: requestData.queueName });
             return res.status(201).json({
                 general: `you have been added into ${requestData.queueName}'s queue successfully`,
+                noEmployee: false,
                 customerSlotInfo: {
                     customer: customerSlot.customer,
                     password: customerSlot.password,
@@ -203,7 +207,7 @@ export const boothEnterQueue = async (req: Request, res: Response) => {
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.businessName);
             if (onlineEmployees < 1) {
-                return res.status(403).json({general: 'There is no online tellers for this queue!!'});
+                return res.status(403).json({general: 'booth is momentarily paused.'});
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const boothSlot = createQueueSlot(requestData.userName, lastHighestTicketNumber);
@@ -503,10 +507,21 @@ export const getQueueSlotInfo = async (req: Request, res: Response) => {
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.currentQueue);
             if (onlineEmployees < 1) {
-                return res.status(403).json({general: 'There is no online tellers for this queue!, please wait!'});
+                return res.status(200).json({
+                    general: 'There is no online tellers for this queue!, please wait!',
+                    noEmployee: true,
+                    queueSlotInfo: {
+                        currentQueue: requestData.currentQueue,
+                        ticketNumber: queueSlots[queueSlotIndex].ticketNumber,
+                        password: queueSlots[queueSlotIndex].password,
+                        currentWaitTime: -1,
+                        queuePosition: queueSlotIndex + 1,
+                    },
+                });
             }
             return res.status(200).json({
                 general: "obtained the customer's current queue information successfully",
+                noEmployee: false,
                 queueSlotInfo: {
                     currentQueue: requestData.currentQueue,
                     ticketNumber: queueSlots[queueSlotIndex].ticketNumber,
