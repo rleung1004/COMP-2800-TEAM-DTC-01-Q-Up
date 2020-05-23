@@ -14,7 +14,7 @@ import {
   TextField,
   DialogActions,
 } from "@material-ui/core";
-import app from "../firebase"
+import app from "../firebase";
 import axios from "axios";
 import { formatPhone } from "../utils/formatting";
 import "../styles/businessProfile.scss";
@@ -227,7 +227,7 @@ const BusinessProfilePage = ({ history }: any) => {
   if (JSON.parse(sessionStorage.user).type !== "manager") {
     return <Redirect to="/login" />;
   }
-  
+
   return (
     <>
       <Header Nav={BusinessNav} logout />
@@ -279,6 +279,25 @@ const BusinessProfilePage = ({ history }: any) => {
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body2">{formState.description}</Typography>
+            </Grid>
+          </Grid>
+        </section>
+        <section>
+          <Grid container>
+            <Grid item xs={12}>
+              <Typography variant="body1">Booth and Teller Accounts</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="body2">
+                defaultBooth@{formState.name}.qup
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="body2">
+                defaultDisplay@{formState.name}.qup
+              </Typography>
             </Grid>
           </Grid>
         </section>

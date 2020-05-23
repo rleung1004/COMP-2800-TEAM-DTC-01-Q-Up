@@ -43,7 +43,7 @@ const ClientDashboardPage = ({ history }: any) => {
   // queue data
   const [currentQueueInfo, setCurrentQueueInfo] = useState({
     businessName: "",
-    estimatedWait: 0,
+    estimatedWait: "0",
     currentPosition: 0,
     ticketNumber: 0,
     password: "",
@@ -92,12 +92,15 @@ const ClientDashboardPage = ({ history }: any) => {
         const data = res.data.queueSlotInfo;
         await setCurrentQueueInfo({
           businessName: data.currentQueue,
-          estimatedWait: data.currentWaitTime,
+          estimatedWait: res.data.noEmployee
+            ? "Paused"
+            : data.currentWaitTime.toString(),
           currentPosition: data.queuePosition,
           ticketNumber: data.ticketNumber,
           password: data.password,
           inQueue: true,
         });
+
         setGetData(false);
       })
       .catch((err) => {
@@ -117,6 +120,8 @@ const ClientDashboardPage = ({ history }: any) => {
         window.alert(err.response.data.general);
       });
   }, [axiosConfig, getData]);
+  
+  console.log(currentQueueInfo.estimatedWait);
 
   // fetch favorite queues
   useEffect(() => {

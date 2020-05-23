@@ -1,0 +1,17 @@
+.leftText {
+    text-align: left;
+}
+
+.rightText {
+    text-align: right;
+}
+
+@media screen and (max-width: 599px) {
+    .leftText {
+        text-align: center;
+    }
+    
+    .rightText {
+        text-align: center;
+    }
+}
