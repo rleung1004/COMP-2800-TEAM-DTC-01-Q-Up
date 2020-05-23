@@ -6,6 +6,7 @@ import app from "../firebase";
 enum boothStates{
    loading,
    closed,
+   accepting,
    serving
 }
 
@@ -44,7 +45,7 @@ export default function BoothEnterName(props: any) {
                  app.auth().signOut().catch(console.error);
                  return;
              }
-            window.alert('Connection error. Could not add you in the queue.');
+            window.alert(err.response.data.general);
          });
          props.setBoothInfo((prevState:any) => ({ ...prevState, standBy: !state.standBy }));
    };
