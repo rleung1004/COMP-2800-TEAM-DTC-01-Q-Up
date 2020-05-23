@@ -1,6 +1,6 @@
 import {admin, db} from "../util/firebaseConfig";
 import {Request, Response} from "express";
-import {signUp} from "./users";
+import {internalSignUp} from "./users";
 import * as firebase from "firebase-admin";
 
 /**
@@ -32,21 +32,20 @@ export const registerEmployee = async (req: Request, res: Response) => {
         confirmPassword: requestData.password,
         email: requestData.employeeEmail,
     });
-    const signedUpSuccessfully: boolean = await db
+    const [signedUpSuccessfully] = await Promise.all([db
         .collection("users")
         .doc(requestData.employeeEmail)
         .get()
         .then(async data => {
             if (!data.exists) {
-                await signUp(req, res);
-                return true
+                return await internalSignUp(req);
             }
             return false
         })
         .catch(err => {
             console.error(err);
             return false;
-        });
+        })]);
     if (!signedUpSuccessfully) {
         return res.status(409).json({general: "The employee already exists!"});
     }
@@ -103,11 +102,11 @@ export const updateEmployee = async (req: Request, res: Response) => {
             const result: boolean = employeeList.includes(requestData.employeeEmail);
             if (result) {
                 await db.collection("businesses").doc(requestData.businessName).update({
-                        employees: firebase.firestore.FieldValue.arrayRemove(requestData.employeeEmail),
-                    });
+                    employees: firebase.firestore.FieldValue.arrayRemove(requestData.employeeEmail),
+                });
                 await db.collection("businesses").doc(requestData.businessName).update({
-                        employees: firebase.firestore.FieldValue.arrayUnion(requestData.employeeNewEmail),
-                    });
+                    employees: firebase.firestore.FieldValue.arrayUnion(requestData.employeeNewEmail),
+                });
             }
             return result;
         })
@@ -270,7 +269,6 @@ export const getEmployees = async (req: Request, res: Response) => {
         .where("businessName", "==", requestData.businessName)
         .get()
         .then((dataList) => {
-            console.log(dataList.docs[0]);
             if (dataList.empty) {
                 return res.status(404).json({general: "did not find any employees!"});
             }

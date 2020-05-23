@@ -1,0 +1,25 @@
+section{
+    margin-top: 1rem;
+}
+
+section>h4{
+    margin-top: 0.7rem;
+}
+
+section>h2 {
+    padding-top: 0.2rem;
+}
+
+.textLeft, .textRight{
+    text-align: center;
+}
+
+@media screen and (min-width: 600px) {
+    .textLeft{
+        text-align: left;
+    }
+
+    .textRight{
+        text-align: right;
+    }
+}

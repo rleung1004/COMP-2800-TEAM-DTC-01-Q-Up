@@ -1,21 +1,32 @@
 import React, { useState } from "react";
-import Header from "../components/static/Header";
-import Footer from "../components/static/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import "../styles/termsAndPrivacy.scss";
 import StaticNav from "src/components/staticNav";
 import EasterEgg from "src/components/easterEgg";
+import { Button } from "@material-ui/core";
+import { withRouter } from "react-router-dom";
 
-export default function TermsPage() {
+/**
+ * Render a terms and conditions page.
+ * 
+ * Accessible to: All users
+ */
+const TermsPage = ({ history }: any) => {
   const [eggCount, setEggcount] = useState({ value: 0 });
   const [showEgg, setShowEgg] = useState({ value: false });
-
+  
+  // Clean up the egg, this function is passed to the egg
   const exitEgg = () => {
     setShowEgg({ value: false });
   };
+
+  // trigger the egg
   const startEgg = () => {
     setShowEgg({ value: true });
   };
 
+  // control the triggering of the egg
   const layEggs = () => {
     if (3 < eggCount.value) {
       startEgg();
@@ -315,9 +326,19 @@ export default function TermsPage() {
             </li>
           </ul>
         </section>
+        <Button
+          type="button"
+          variant="contained"
+          color="primary"
+          onClick={() => history.goBack()}
+        >
+          Back
+        </Button>
         {showEgg.value ? <EasterEgg exitEgg={exitEgg} /> : <> </>}
       </main>
       <Footer />
     </>
   );
 }
+
+export default withRouter(TermsPage);

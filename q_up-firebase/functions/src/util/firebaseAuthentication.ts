@@ -13,7 +13,7 @@ import {Request, Response} from "express";
  *                  - 500 if an error occurs in the midst of query
  *                  - the return response of the next function
  */
-export const FirebaseAuthentication = async (req: Request, res: Response, next: Function) => {
+export const firebaseAuthentication = async (req: Request, res: Response, next: Function) => {
     let idToken: string;
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
         idToken = req.headers.authorization.split("Bearer ")[1];
@@ -31,7 +31,6 @@ export const FirebaseAuthentication = async (req: Request, res: Response, next: 
                 .where("userId", "==", req.body.decodedToken.uid)
                 .get()
                 .then((data) => {
-                    console.log(data);
                     let userEmail = data.docs[0].data().email;
                     let userType = data.docs[0].data().userType;
                     if (userType === "customer") {
@@ -46,7 +45,7 @@ export const FirebaseAuthentication = async (req: Request, res: Response, next: 
         })
         .catch(async (err) => {
             console.error(err);
-            return res.status(500).json({
+            return res.status(332).json({
                 general: "Error while verifying token",
                 error: await err,
             });

@@ -1,0 +1,34 @@
+.displayPage {
+   background-color: white;
+   color: black;
+
+   .now-serving {
+      font-size: 6rem;
+   }
+
+   .now-serving-ticket-number {
+      line-height: 1;
+      font-size: 32rem;
+   }
+
+   .right-column {
+      font-size: 2rem;
+   }
+}
+
+.displayScreenHeader {
+   background-color: #242323;
+   height: 60px;
+   img {
+      height: 100px;
+   }
+   h2 {
+      margin-bottom: 10px;
+   }
+}
+
+.displayScreenFooter {
+   background-color: #242323;
+   height: 175px;
+   padding-top: 0;
+}

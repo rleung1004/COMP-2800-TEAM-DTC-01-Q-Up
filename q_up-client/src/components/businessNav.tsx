@@ -17,9 +17,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Link } from 'react-router-dom';
 
-//  Hamburger menu stuff
-const drawerWidth = 300;
 
+// Mui stylings
+const drawerWidth = 300;
 const useStyles = makeStyles((theme: Theme) =>
    createStyles({
       root: {
@@ -76,22 +76,24 @@ const useStyles = makeStyles((theme: Theme) =>
       },
    })
 );
-//  End hamburger menu stuff
 
+/**
+ * Render a hamburger menu with navigation oriented for business pages.
+ */
 export default function BusinessNav() {
-   //  Hamburger menu stuff
    const classes = useStyles();
    const theme = useTheme();
    const [open, setOpen] = React.useState(false);
 
+   // open the hamburger
    const handleDrawerOpen = () => {
       setOpen(true);
    };
 
+   // close the hamburger
    const handleDrawerClose = () => {
       setOpen(false);
    };
-   //  End hamburger menu stuff
 
    return (
       <nav>
@@ -152,6 +154,14 @@ export default function BusinessNav() {
                <ListItem button key={'About Us'}>
                   <Link className={classes.nodecor} to='/aboutUs'>
                   <ListItemText className={classes.white} primary={'About us'} />
+                  </Link>
+               </ListItem>
+               <ListItem button key={'contactUs'}>
+                  <Link className={classes.nodecor} to='/contactUs'>
+                  <ListItemText
+                     className={classes.white}
+                     primary={'Contact us'}
+                  />
                   </Link>
                </ListItem>
             </List>

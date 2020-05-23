@@ -34,13 +34,12 @@ export const signUp = async (req: Request, res: Response) => {
     }
     let token: string;
     let userId: any;
-
     return await firebase
         .auth()
         .createUserWithEmailAndPassword(newUser.email, newUser.password)
-        .then((data) => {
+        .then(async (data) => {
             userId = data.user?.uid;
-            return data.user?.getIdToken()
+            return await data.user?.getIdToken()
                 .then(async (generatedToken) => {
                     token = generatedToken;
                     if (newUser.userType === "customer") {
@@ -60,13 +59,13 @@ export const signUp = async (req: Request, res: Response) => {
                             .collection("businesses")
                             .doc(newUser.businessName)
                             .get()
-                            .then((docSnapshot) => {
+                            .then(async (docSnapshot) => {
                                 if (docSnapshot.exists) {
                                     return res.status(409).json({
                                         businessName: "This business already has an account",
                                     });
                                 }
-                                return db
+                                return await db
                                     .doc(`/users/${newUser.email}`)
                                     .set({
                                         email: newUser.email,
@@ -76,27 +75,8 @@ export const signUp = async (req: Request, res: Response) => {
                                     })
                                     .then(() => res.status(201).json({token}));
                             });
-                    } else if (newUser.userType === "booth") {
-                        return await db
-                            .doc(`/users/${newUser.email}`)
-                            .set({
-                                email: newUser.email,
-                                businessName: newUser.businessName,
-                                userId,
-                                userType: "booth",
-                            })
-                            .then(() => res.status(201).json({token}));
                     } else {
-                        return await db
-                            .doc(`/users/${newUser.email}`)
-                            .set({
-                                email: newUser.email,
-                                isOnline: false,
-                                businessName: newUser.businessName,
-                                userId,
-                                userType: "employee",
-                            })
-                            .then(() => res.status(201).json({token}));
+                        return res.status(403).json({general: 'invalid user type for registration'})
                     }
                 });
         })
@@ -107,6 +87,132 @@ export const signUp = async (req: Request, res: Response) => {
             }
             return res.status(500).json({
                 general: "Internal Error. Something went wrong!",
+                error: await err.toString(),
+            });
+        });
+};
+
+/**
+ * Creates internal user accounts for the employees, booths and displays of a business.
+ * first validates the provided information, then creates a new user with email and password, and depending on the type
+ * of the requested user, it will create the appropriate user in the database.
+ *
+ * @param req:      express Request Object
+ * @returns         Boolean true if signed up successfully otherwise false
+ */
+export const internalSignUp = async (req: Request) => {
+    const newUser = {
+        email: req.body.email,
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+        userType: req.body.userType,
+        businessName: req.body.businessName,
+    };
+    console.log(newUser);
+    const {valid, errors} = validateSignUpData(newUser);
+    console.error(errors);
+    if (!valid) {
+        return false;
+    }
+    let userId: any;
+    return await firebase
+        .auth()
+        .createUserWithEmailAndPassword(newUser.email, newUser.password)
+        .then(async (data) => {
+            userId = data.user?.uid;
+            return await data.user?.getIdToken()
+                .then(async () => {
+                    if (newUser.userType === "employee") {
+                        return await db
+                            .doc(`/users/${newUser.email}`)
+                            .set({
+                                email: newUser.email,
+                                isOnline: false,
+                                businessName: newUser.businessName,
+                                userId,
+                                userType: "employee",
+                            })
+                            .then(() => {
+                                console.log(`successfully registered ${newUser.email}`);
+                                return true;
+                            });
+                    } else if (newUser.userType === "booth") {
+                        return await db
+                            .doc(`/users/${newUser.email}`)
+                            .set({
+                                email: newUser.email,
+                                businessName: newUser.businessName,
+                                userId,
+                                userType: "booth",
+                            })
+                            .then(() => {
+                                console.log(`successfully registered ${newUser.email}`);
+                                return true;
+                            });
+                    } else if (newUser.userType === "display") {
+                        return await db
+                            .doc(`/users/${newUser.email}`)
+                            .set({
+                                email: newUser.email,
+                                businessName: newUser.businessName,
+                                userId,
+                                userType: "display",
+                            })
+                            .then(() => {
+                                console.log(`successfully registered ${newUser.email}`);
+                                return true;
+                            });
+                    } else {
+                        return false;
+                    }
+                });
+        })
+        .catch((err) => {
+            console.error(err);
+            return false
+        });
+};
+
+/**
+ * Creates user accounts using oAuth for this web-app.
+ * first checks to determine if the user already exists in the database. If not, creates a new user with the credentials
+ * given
+ *
+ * @param req:      express Request Object
+ * @param res:      express Response Object
+ * @returns         the response data with the status code:
+ *
+ *                  - 409 if Email is already in use
+ *                  - 500 if an error occurs in the midst of query
+ *                  - 201 if successful
+ */
+export const oAuthSignUp = async (req: Request, res: Response) => {
+    const requestData = {
+        email: req.body.email,
+        userId: req.body.userId,
+    };
+    return await db
+        .collection('users')
+        .doc(requestData.email)
+        .get()
+        .then(data => {
+            if (data.exists) {
+                return res.status(409).json({general: "the user already exists!"});
+            } else {
+                db.doc(`users/${requestData.email}`).set({
+                    email: requestData.email,
+                    currentQueue: null,
+                    favoriteBusinesses: [],
+                    userId: requestData.userId,
+                    userType: 'customer',
+                });
+                return res.status(201).json({general:"successfully created the customer!"});
+            }
+        })
+        .catch(async (err) => {
+            console.error(err);
+            return res.status(500).json({
+                general: "unsuccessful. Please try again!",
                 error: await err.toString(),
             });
         });
@@ -168,7 +274,7 @@ export const login = async (req: Request, res: Response) => {
                         .catch(async err => {
                             console.error(err);
                             return res.status(404).json({
-                                general:"Account does not exist!",
+                                general: "Account does not exist!",
                                 error: await err.toString(),
                             });
                         })
@@ -210,7 +316,6 @@ export const logout = async (req: Request, res: Response) => {
             console.error(err);
             return null;
         });
-    console.log(userUserId);
     if (userUserId === null) {
         return res.status(404).json({general: 'can not find the user userId',});
     }
@@ -224,7 +329,7 @@ export const logout = async (req: Request, res: Response) => {
                     .doc(requestData.email)
                     .update({isOnline: false})
             }
-            return  res.status(200).json({general: "logged out successfully"});
+            return res.status(200).json({general: "logged out successfully"});
         })
         .catch(async (err) => {
             console.error(err);
@@ -283,4 +388,3 @@ export const changePassword = async (req: Request, res: Response) => {
             });
         });
 };
-

@@ -1,7 +1,7 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect, useCallback } from "react";
 // import { Link } from 'react-router-dom';
-import Footer from "../components/static/Footer";
-import Header from "../components/static/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import BusinessNav from "../components/businessNav";
 import {
   Grid,
@@ -14,9 +14,13 @@ import {
   TextField,
   DialogActions,
 } from "@material-ui/core";
+import app from "../firebase";
 import axios from "axios";
 import { formatPhone } from "../utils/formatting";
+import "../styles/businessProfile.scss";
+import { withRouter, Redirect } from "react-router-dom";
 
+//Mui stylings
 const useStyles = makeStyles(() => ({
   button: {
     margin: "20px auto 20px auto",
@@ -26,7 +30,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function BusinessProfilePage() {
+/**
+ * Render a business profile page.
+ *
+ * Accessible to: managers
+ */
+const BusinessProfilePage = ({ history }: any) => {
+  // password form error definition
   interface errors {
     // oldPassword?: string,
     newPassword?: string;
@@ -34,6 +44,8 @@ export default function BusinessProfilePage() {
   }
   const errorObj: errors = {};
   const classes = useStyles();
+
+  // form data
   const [formState, setFormState] = useState({
     name: "",
     category: "",
@@ -63,8 +75,12 @@ export default function BusinessProfilePage() {
     averageWaitTime: "",
     loading: true,
   });
+
+  // show password form flag
   const [passDialogOpen, setPassDialogOpen] = useState(false);
+  // fetch flag
   const [getData, setGetData] = useState(true);
+  // password form data
   const [passwordForm, setPasswordForm] = useState({
     // oldPassword: "",
     newPassword: "",
@@ -78,40 +94,57 @@ export default function BusinessProfilePage() {
     },
   };
 
-  const handleEditProfile = () => {
-    window.location.href = "/editBusinessProfile";
-  };
+  // edit profile button handler
+  const handleEditProfile = useCallback(() => {
+    history.push("/editBusinessProfile");
+  }, [history]);
 
+  // password change button handler
   const handlePasswordChange = () => {
     setPassDialogOpen(true);
   };
 
+  // password form close, cancel handler
   const handlePassChangeCancel = () => {
     setPassDialogOpen(false);
+    setPasswordForm({
+      // oldPassword: "",
+      newPassword: "",
+      newPasswordConfirm: "",
+      errors: errorObj,
+    });
   };
 
+  // sync password form inputs with password form data
   const handlePassFormChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
     setPasswordForm((prevState: any) => ({ ...prevState, [name]: value }));
   };
 
+  // delete profile button click handler
   const handleDeleteProfile = () => {
     if (!window.confirm("Are you sure? This cannot be undone.")) {
       return;
     }
     axios
       .delete("/deleteBusiness", axiosConfig)
-      .then(() => {
-        window.location.href = "/";
+      .then(async () => {
         window.alert("Your business has been deleted");
+        await app.auth().signOut();
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status && err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          app.auth().signOut().catch(console.error);
+          return;
+        }
+        window.alert("Connection error");
       });
   };
 
+  // passowrd form submit handler
   const handlePasswordSubmit = () => {
     if (!window.confirm("Are you sure?")) {
       return;
@@ -130,11 +163,17 @@ export default function BusinessProfilePage() {
         setPassDialogOpen(false);
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status && err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          app.auth().signOut().catch(console.error);
+          return;
+        }
+        window.alert("Connection error");
       });
   };
 
+  // Compile address into a format specific to this page
   const compileAddress = () => {
     const {
       unit,
@@ -148,6 +187,7 @@ export default function BusinessProfilePage() {
     } ${streetAddress},\n ${city}, ${province}\n ${postalCode}`;
   };
 
+  // fetch business info
   useEffect(() => {
     if (!getData) {
       return;
@@ -172,152 +212,248 @@ export default function BusinessProfilePage() {
         });
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status && err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          app.auth().signOut().catch(console.error);
+          return;
+        }
+        window.alert("Connection error");
       });
   }, [axiosConfig, errorObj, getData]);
-  
+
   const sectionSpacing = 3;
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <>
-      <Header Nav={BusinessNav} logout/>
+      <Header Nav={BusinessNav} logout />
       <main>
         <section>
           <Typography variant="h2">{formState.name}</Typography>
         </section>
         <section>
-          <Grid container justify="space-around">
-            <Grid item xs={12} md={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={handleEditProfile}
-              >
-                Edit profile
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={handleDeleteProfile}
-              >
-                Delete account
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={handlePasswordChange}
-              >
-                Change password
-              </Button>
+          <Grid container justify="center">
+            <Grid container item xs={12} md={8} lg={6} justify="space-around">
+              <Grid item xs={12} md={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={handleEditProfile}
+                >
+                  Edit profile
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={handleDeleteProfile}
+                >
+                  Delete account
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  onClick={handlePasswordChange}
+                >
+                  Change password
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </section>
-        <br/>
+        <br />
+        <section>
+          <Grid container justify="center">
+            <Grid item xs={12}>
+              <Typography variant="body1">Description</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="body2">{formState.description}</Typography>
+            </Grid>
+          </Grid>
+        </section>
+        <section>
+          <Grid container>
+            <Grid item xs={12}>
+              <Typography variant="body1">Booth and Teller Accounts</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="body2">
+                defaultBooth@{formState.name}.qup
+              </Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography variant="body2">
+                defaultDisplay@{formState.name}.qup
+              </Typography>
+            </Grid>
+          </Grid>
+        </section>
         <section>
           <Grid container direction="column" alignItems="center">
             <Typography variant="h3">Hours</Typography>
-            <Grid container item xs={10} lg={4} spacing={sectionSpacing}>
+            <Grid
+              container
+              item
+              xs={12}
+              sm={8}
+              md={6}
+              lg={4}
+              spacing={sectionSpacing}
+            >
               <Grid item xs={12}>
-                <Typography variant="h4" align="center">Weekdays</Typography>{" "}
+                <Typography variant="h4" align="center">
+                  Weekdays
+                </Typography>{" "}
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Open</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Open
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
+                <Typography variant="body2" className="textRight">
                   {formState.hours.startTime[1]}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Close</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Close
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
+                <Typography variant="body2" className="textRight">
                   {formState.hours.endTime[1]}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="h4" align="center">Weekend</Typography>{" "}
+                <Typography variant="h4" align="center">
+                  Weekend
+                </Typography>{" "}
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Open</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Open
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
+                <Typography variant="body2" className="textRight">
                   {formState.hours.startTime[0]}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Close</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Close
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
+                <Typography variant="body2" className="textRight">
                   {formState.hours.endTime[0]}
                 </Typography>
               </Grid>
             </Grid>
           </Grid>
         </section>
-        <br/>
         <section>
           <Grid container direction="column" alignItems="center">
-            <Grid container item xs={10} lg={4} spacing={sectionSpacing}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Email</Typography>
+            <Grid
+              container
+              item
+              xs={12}
+              sm={8}
+              md={6}
+              lg={4}
+              spacing={sectionSpacing}
+            >
+              <Grid item xs={12} sm={4}>
+                <Typography variant="body1" className="textLeft">
+                  Email
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{formState.email}</Typography>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="body2" className="textRight">
+                  {formState.email}
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Phone number</Typography>
+              <Grid item xs={12} sm={4}>
+                <Typography variant="body1" className="textLeft">
+                  Phone number
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{formatPhone(formState.phoneNumber)}</Typography>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="body2" className="textRight">
+                  {formatPhone(formState.phoneNumber)}
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Website</Typography>
+              <Grid item xs={12} sm={4}>
+                <Typography variant="body1" className="textLeft">
+                  Website
+                </Typography>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{formState.website}</Typography>
+              <Grid item xs={12} sm={8}>
+                <Typography variant="body2" className="textRight">
+                  {formState.website}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
         </section>
-        <br/>
         <section>
           <Grid container direction="column" alignItems="center">
-            <Grid container item xs={10} lg={4} spacing={sectionSpacing}>
+            <Grid
+              container
+              item
+              xs={12}
+              sm={8}
+              md={6}
+              lg={4}
+              spacing={sectionSpacing}
+            >
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Address</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Address
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{compileAddress()}</Typography>
+                <Typography variant="body2" className="textRight">
+                  {compileAddress()}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
         </section>
-        <br/>
         <section>
-        <Grid container direction="column" alignItems="center">
-            <Grid container item xs={10} lg={4} spacing={sectionSpacing} >
+          <Grid container direction="column" alignItems="center">
+            <Grid
+              container
+              item
+              xs={12}
+              sm={8}
+              md={6}
+              lg={4}
+              spacing={sectionSpacing}
+            >
               <Grid item xs={12} sm={6}>
-                <Typography variant="body1">Business category</Typography>
+                <Typography variant="body1" className="textLeft">
+                  Business category
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Typography variant="body2">{formState.category}</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body1">Description</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body2">{formState.description}</Typography>
+                <Typography variant="body2" className="textRight">
+                  {formState.category}
+                </Typography>
               </Grid>
             </Grid>
           </Grid>
@@ -353,7 +489,7 @@ export default function BusinessProfilePage() {
               value={passwordForm.newPassword}
               className={classes.textField}
               helperText={passwordForm.errors.newPassword}
-              error={passwordForm.errors.newPassword ? true : false}
+              error={!!passwordForm.errors.newPassword}
             />
             <TextField
               type="password"
@@ -365,7 +501,7 @@ export default function BusinessProfilePage() {
               value={passwordForm.newPasswordConfirm}
               className={classes.textField}
               helperText={passwordForm.errors.newPasswordConfirm}
-              error={passwordForm.errors.newPasswordConfirm ? true : false}
+              error={!!passwordForm.errors.newPasswordConfirm}
             />
           </Grid>
         </DialogContent>
@@ -391,4 +527,6 @@ export default function BusinessProfilePage() {
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(BusinessProfilePage);

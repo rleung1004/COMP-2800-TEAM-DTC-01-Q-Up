@@ -1,46 +1,31 @@
-import React, { useState } from 'react';
-import QueueListRow from './queueListRow';
+import React, { useState } from "react";
+import QueueListRow from "./queueListRow";
 
-const isFav = (q: string, favList: Array<string>) => {
-   for (const fav of favList) {
-      if (fav === q) {
-         return true;
-      }
-   }
-   return false;
-};
+/**
+ * Render a list of queue rows 
+ * @param props.dataList an array of queue objects, renders one row per each
+ */
+export default function QueueList(props: any) {  
+  const [expandedPanel, setExpanded] = useState("panel");
 
-export default function QueueList(props: any) {
-   const [expandedPanel, setExpanded] = React.useState<string | false>(false);
-   const [dataList, setDataList] = useState(props.dataList);
+  // Manage the queue list row expansion panels states so that only one is expanded at a time
+  const handleChange = (panel: string) => (event: any, isExpanded: boolean) => {
+    if (event.target.name === "fav") {
+      return;
+    }
+    setExpanded(isExpanded ? panel : "panel");
+  };
 
-   const handleChange = (panel: string) => (
-      event: any,
-      isExpanded: boolean
-   ) => {
-      if (event.target.name === 'fav') {
-         return;
-      }
-      setExpanded(isExpanded ? panel : false);
-   };
-
-   const removeRow = (key: number) => () => {
-      setDataList(dataList.slice(0, key).concat(dataList.slice(key + 1)));
-   };
-
-   return (
-      <>
-         {dataList.map((q: any, key: any) => (
-            <QueueListRow
-               key={key}
-               hit={q}
-               handleChange={handleChange('panel' + key)}
-               isExpanded={expandedPanel === 'panel' + key}
-               remove={removeRow(key)}
-               isFavList={props.isFavList}
-               isFav={isFav(q.name, props.favs)}
-            />
-         ))}
-      </>
-   );
+  return (
+    <>
+      {props.dataList.map((q: any, key: any) => 
+        <QueueListRow
+          key={key}
+          data={q}
+          handleChange={handleChange("panel" + key)}
+          isExpanded={expandedPanel === "panel" + key}
+        />
+      )}
+    </>
+  );
 }

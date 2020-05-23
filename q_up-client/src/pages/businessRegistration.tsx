@@ -1,6 +1,13 @@
-import React, { useState, FormEvent, ChangeEvent } from 'react';
-import Footer from '../components/static/Footer';
-import Header from '../components/static/Header';
+import React, {
+   useState,
+   FormEvent,
+   ChangeEvent,
+   useCallback,
+   useEffect,
+} from 'react';
+import app from '../firebase';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 import { makeStyles } from '@material-ui/core/styles';
 import {
    Grid,
@@ -11,11 +18,15 @@ import {
    MenuItem,
    FormControl,
    Select,
+   CircularProgress,
 } from '@material-ui/core';
 import axios from 'axios';
-import { mockProvinces, mockCategories } from 'src/mockData';
 import '../styles/businessDashboard.scss';
+import { withRouter, Redirect } from 'react-router-dom';
+import PhoneMaskedInput, { unMaskPhone } from 'src/components/PhoneMaskedInput';
+import { formatDescription } from '../utils/formatting';
 
+//Mui stylings
 const useStyles = makeStyles((theme) => ({
    root: {
       '& .MuiTextField-root': {
@@ -31,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
    },
    button: {
       margin: '20px auto 20px auto',
+      position: 'relative',
+   },
+   progress: {
+      position: 'absolute',
    },
    provSelect: {
       minWidth: '4.5rem',
@@ -38,15 +53,31 @@ const useStyles = makeStyles((theme) => ({
    catSelect: {
       minWidth: '10.5rem',
    },
+   secondary: {
+      color: '#EEF13E',
+   },
 }));
 
-export default function BusinessRegistrationPage() {
+/**
+ * Render a business registration page.
+ *
+ * Accessible to: managers
+ */
+const BusinessRegistrationPage = ({ history }: any) => {
    const classes = useStyles();
+   const array: Array<any> = [];
+   const [dropdownData, setDropDownData] = useState({
+      businessCategories: array,
+      provinces: array,
+   });
+   const [getDropdownData, setGetDropdownData] = useState(true);
    const axiosConfig = {
       headers: {
          Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
       },
    };
+
+   // error type definition to be used in input feedback
    interface errors {
       hours?: {
          startTime?: string;
@@ -63,11 +94,14 @@ export default function BusinessRegistrationPage() {
       };
       phoneNumber?: string;
       website?: string;
-      averageWaitTime?: Number;
+      averageWaitTime?: string;
+      gadgetPassword?: string;
+      gadgetConfirmPassword?: string;
    }
 
    const errorObject: errors = {};
 
+   // form data
    const [formState, setFormState] = useState({
       category: '',
       description: '',
@@ -99,14 +133,22 @@ export default function BusinessRegistrationPage() {
          province: '',
          postalCode: '',
       },
-      phoneNumber: '',
+      phoneNumber: '(1  )    -    ',
       website: '',
       averageWaitTime: '',
+      gadgetPassword: '',
+      gadgetConfirmPassword: '',
       loading: false,
       errors: errorObject,
    });
-   //
 
+   /**
+    * sync input data with form data
+    *
+    * Each input is assigned a name analog to the form data it represents.
+    * On change the proper property in form data is access by using the name of the event emitter.
+    * @param event an event with target
+    */
    const handleOnFieldChange = (event: any) => {
       const fieldNameTokens = event.target.name.split('-');
       const fieldCategory = fieldNameTokens[0];
@@ -123,6 +165,13 @@ export default function BusinessRegistrationPage() {
       }
    };
 
+   /**
+    * sync hour input data with form data
+    *
+    * Each input is assigned a name analog to the form data it represents.
+    * On change the proper property in form data is access by using the name of the event emitter.
+    * @param event an event with target
+    */
    const handleHourChange = (event: ChangeEvent<HTMLInputElement>) => {
       const fieldNameTokens = event.target.name.split('-');
       const newValue = event.target.value;
@@ -164,58 +213,135 @@ export default function BusinessRegistrationPage() {
       }
    };
 
-  const handleaverageWaitTImeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    if (newValue === "") {
-      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue }));
-      return;
-    }
-    const newChar = newValue[newValue.length - 1];
-    if (!('0' <= newChar && newChar <= '9')) {
-      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue.slice(0,-1)}));
-      return;
-    }
-    const valueAsInt = parseInt(newValue);
-    if (valueAsInt < 1) {
-      setFormState((prevState) => ({ ...prevState, averageWaitTime: "1" }));
-    } else if (valueAsInt > 59) {
-      setFormState((prevState) => ({ ...prevState, averageWaitTime: "59" }));
-    } else {
-      setFormState((prevState) => ({ ...prevState, averageWaitTime: newValue }));
-    }
-  };
-  
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    setFormState((prevState) => ({ ...prevState, loading: true }));
-    const userData = {
-      phoneNumber: formState.phoneNumber,
-      address: formState.address,
-      category: formState.category,
-      website: formState.website,
-      hours: formState.hours,
-      description: formState.description,
-      email: formState.email,
-      averageWaitTime: formState.averageWaitTime
-    };
+   /**
+    * sync average wait time input data with form data
+    *
+    * Each input is assigned a name analog to the form data it represents.
+    * On change the proper property in form data is access by using the name of the event emitter.
+    *
+    * Allowed range: 0 < 59
+    * Only numbers allowed
+    * Allows blank to avoid UX issues
+    *
+    * @param event an event with target
+    */
+   const handleAverageWaitTimeChange = (
+      event: ChangeEvent<HTMLInputElement>
+   ) => {
+      const newValue = event.target.value;
+      if (newValue === '') {
+         setFormState((prevState) => ({
+            ...prevState,
+            averageWaitTime: newValue,
+         }));
+         return;
+      }
+      const newChar = newValue[newValue.length - 1];
+      if (!('0' <= newChar && newChar <= '9')) {
+         setFormState((prevState) => ({
+            ...prevState,
+            averageWaitTime: newValue.slice(0, -1),
+         }));
+         return;
+      }
+      const valueAsInt = parseInt(newValue);
+      if (valueAsInt < 1) {
+         setFormState((prevState) => ({ ...prevState, averageWaitTime: '1' }));
+      } else if (valueAsInt > 59) {
+         setFormState((prevState) => ({ ...prevState, averageWaitTime: '59' }));
+      } else {
+         setFormState((prevState) => ({
+            ...prevState,
+            averageWaitTime: newValue,
+         }));
+      }
+   };
 
-    axios
-      .post("/registerBusiness", userData, axiosConfig)
-      .then(() => {
-        console.log("success registering business");
+   // submit handler
+   const handleSubmit = useCallback(
+      (event: FormEvent) => {
+         event.preventDefault();
 
-        window.location.href = "/businessDashboard";
-      })
-      .catch((err: any) => {
-        console.log("firebase lets you down, ", err);
-        window.alert("Connection error");
-        setFormState((prevState) => ({
-          ...prevState,
-          errors: err.response.data,
-          loading: false,
-        }));
-      });
-  };
+         // validation
+         if (formState.averageWaitTime === ' ') {
+            setFormState((prevState: any) => ({
+               ...prevState,
+               errors: {
+                  ...prevState.errors,
+                  averageWaitTime: 'Must enter a value',
+               },
+            }));
+            return;
+         }
+
+         setFormState((prevState) => ({ ...prevState, loading: true }));
+
+         // map package
+         const userData = {
+            phoneNumber: unMaskPhone(formState.phoneNumber),
+            address: formState.address,
+            category: formState.category,
+            website: formState.website.toLowerCase(),
+            hours: formState.hours,
+            description: formatDescription(formState.description),
+            email: formState.email.toLowerCase(),
+            averageWaitTime: parseInt(formState.averageWaitTime),
+            gadgetPassword: formState.gadgetPassword,
+            gadgetConfirmPassword: formState.gadgetConfirmPassword,
+         };
+
+         // request
+         axios
+            .post('/registerBusiness', userData, axiosConfig)
+            .then(() => {
+               console.log('success registering business');
+
+               history.push('/businessDashboard');
+            })
+            .catch((err: any) => {
+               console.log(err);
+               if (err.response.status && err.response.status === 332) {
+                  window.alert(
+                     'Please login again to continue, your token expired'
+                  );
+                  app.auth().signOut().catch(console.error);
+                  return;
+               }
+               window.alert('Connection error');
+               setFormState((prevState) => ({
+                  ...prevState,
+                  errors: err.response.data,
+                  loading: false,
+               }));
+            });
+      },
+      [formState, axiosConfig, history]
+   );
+
+   useEffect(() => {
+      if (!getDropdownData) {
+         return;
+      }
+      setGetDropdownData(false);
+      axios
+         .get('/getBusinessEnums', axiosConfig)
+         .then((res) => setDropDownData(res.data))
+         .catch((err: any) => {
+            console.log(err);
+            if (err.response.status && err.response.status === 332) {
+               window.alert(
+                  'Please login again to continue, your token expired'
+               );
+               app.auth().signOut().catch(console.error);
+               return;
+            }
+            window.alert('Connection error');
+         });
+   }, [axiosConfig, getDropdownData]);
+
+   if (JSON.parse(sessionStorage.user).type !== 'manager') {
+      return <Redirect to='/login' />;
+   }
 
    return (
       <>
@@ -237,6 +363,15 @@ export default function BusinessRegistrationPage() {
                      Your info
                   </Typography>
                   <TextField
+                     id='filled-multiline-static'
+                     label='Description'
+                     multiline
+                     rows={4}
+                     name='description'
+                     value={formState.description}
+                     onChange={handleOnFieldChange}
+                  />
+                  <TextField
                      required
                      color='secondary'
                      id='phone'
@@ -246,7 +381,8 @@ export default function BusinessRegistrationPage() {
                      value={formState.phoneNumber}
                      className={classes.textField}
                      helperText={formState.errors.phoneNumber}
-                     error={formState.errors.phoneNumber ? true : false}
+                     error={!!formState.errors.phoneNumber}
+                     InputProps={{ inputComponent: PhoneMaskedInput as any }}
                   />
                   <TextField
                      required
@@ -258,7 +394,7 @@ export default function BusinessRegistrationPage() {
                      value={formState.email}
                      className={classes.textField}
                      helperText={formState.errors.email}
-                     error={formState.errors.email ? true : false}
+                     error={!!formState.errors.email}
                   />
                   <TextField
                      required
@@ -270,7 +406,7 @@ export default function BusinessRegistrationPage() {
                      value={formState.website}
                      className={classes.textField}
                      helperText={formState.errors.website}
-                     error={formState.errors.website ? true : false}
+                     error={!!formState.errors.website}
                   />
                   <Grid item xs={12}>
                      <FormControl className={classes.catSelect}>
@@ -285,7 +421,7 @@ export default function BusinessRegistrationPage() {
                            value={formState.category}
                            onChange={handleOnFieldChange}
                         >
-                           {mockCategories().map((cat, key) => {
+                           {dropdownData.businessCategories.map((cat, key) => {
                               return (
                                  <MenuItem key={key} value={cat}>
                                     {cat}
@@ -312,7 +448,7 @@ export default function BusinessRegistrationPage() {
                            value={formState.address.unit}
                            className={classes.textField}
                            helperText={formState.errors.address?.unit}
-                           error={formState.errors.address?.unit ? true : false}
+                           error={!!formState.errors.address?.unit}
                         />
                      </Grid>
                      <Grid item xs={12}>
@@ -325,11 +461,8 @@ export default function BusinessRegistrationPage() {
                            value={formState.address.streetAddress}
                            className={classes.textField}
                            helperText={formState.errors.address?.streetAddress}
-                           error={
-                              formState.errors.address?.streetAddress
-                                 ? true
-                                 : false
-                           }
+                           error={!!formState.errors.address?.streetAddress}
+                           required
                         />
                      </Grid>
                      <Grid item xs={12}>
@@ -342,7 +475,8 @@ export default function BusinessRegistrationPage() {
                            value={formState.address.city}
                            className={classes.textField}
                            helperText={formState.errors.address?.city}
-                           error={formState.errors.address?.city ? true : false}
+                           error={!!formState.errors.address?.city}
+                           required
                         />
                      </Grid>
                      <Grid item xs={12}>
@@ -362,7 +496,7 @@ export default function BusinessRegistrationPage() {
                               value={formState.address.province}
                               onChange={handleOnFieldChange}
                            >
-                              {mockProvinces().map((prov, key) => {
+                              {dropdownData.provinces.map((prov, key) => {
                                  return (
                                     <MenuItem key={key} value={prov}>
                                        {prov}
@@ -381,11 +515,8 @@ export default function BusinessRegistrationPage() {
                               value={formState.address.postalCode}
                               className={classes.textField}
                               helperText={formState.errors.address?.postalCode}
-                              error={
-                                 formState.errors.address?.postalCode
-                                    ? true
-                                    : false
-                              }
+                              error={!!formState.errors.address?.postalCode}
+                              required
                            />
                         </Grid>
                      </Grid>
@@ -411,6 +542,7 @@ export default function BusinessRegistrationPage() {
                                  name='hours-weekday-startTime'
                                  onChange={handleHourChange}
                                  value={formState.hours.startTime[1]}
+                                 required
                               />
                            </Grid>
                            <Grid item xs={12}>
@@ -428,6 +560,7 @@ export default function BusinessRegistrationPage() {
                                  name='hours-weekday-endTime'
                                  onChange={handleHourChange}
                                  value={formState.hours.endTime[1]}
+                                 required
                               />
                            </Grid>
                         </Grid>
@@ -448,6 +581,7 @@ export default function BusinessRegistrationPage() {
                                  name='hours-weekend-startTime'
                                  onChange={handleHourChange}
                                  value={formState.hours.startTime[0]}
+                                 required
                               />
                            </Grid>
                            <Grid item xs={12}>
@@ -465,6 +599,7 @@ export default function BusinessRegistrationPage() {
                                  name='hours-weekend-endTime'
                                  onChange={handleHourChange}
                                  value={formState.hours.endTime[0]}
+                                 required
                               />
                            </Grid>
                         </Grid>
@@ -491,10 +626,80 @@ export default function BusinessRegistrationPage() {
                               name='servingFrequency'
                               color='secondary'
                               size='small'
-                              onChange={handleaverageWaitTImeChange}
+                              onChange={handleAverageWaitTimeChange}
                               value={formState.averageWaitTime}
-                           ></TextField>
+                              helperText={formState.errors.averageWaitTime}
+                              error={!!formState.errors.averageWaitTime}
+                              required
+                           />
                            <Typography variant='body1'>minutes</Typography>
+                        </Grid>
+                     </Grid>
+
+                     <Grid container item direction='column'>
+                        <br />
+                        <Typography variant='h6'>
+                           Service Accounts Password
+                        </Typography>
+                        <Typography variant='caption'>
+                           Creating a business will create service accounts for
+                           your business. These accounts are to access a public
+                           booth page and a display page. Please enter a
+                           password for these accounts.
+                        </Typography>
+                        <Typography>
+                           Email login account for booth is:{' '}
+                           <span className={classes.secondary}>
+                              defaultBooth@
+                              {JSON.parse(sessionStorage.user).businessName}.qup
+                           </span>
+                        </Typography>
+                        <Typography>
+                           Email login account for display screen is:{' '}
+                           <span className={classes.secondary}>
+                              defaultDisplay@
+                              {JSON.parse(sessionStorage.user).businessName}.qup
+                           </span>
+                        </Typography>
+                        <Grid
+                           container
+                           item
+                           justify='center'
+                           alignItems='center'
+                        >
+                           <TextField
+                              label='Password'
+                              name='gadgetPassword'
+                              color='secondary'
+                              size='small'
+                              type='password'
+                              onChange={handleOnFieldChange}
+                              value={formState.gadgetPassword}
+                              helperText={formState.errors.gadgetPassword}
+                              error={!!formState.errors.gadgetPassword}
+                              required
+                           />
+                        </Grid>
+                        <Grid
+                           container
+                           item
+                           justify='center'
+                           alignItems='center'
+                        >
+                           <TextField
+                              label='Confirm Password'
+                              name='gadgetConfirmPassword'
+                              color='secondary'
+                              size='small'
+                              type='password'
+                              onChange={handleOnFieldChange}
+                              value={formState.gadgetConfirmPassword}
+                              helperText={
+                                 formState.errors.gadgetConfirmPassword
+                              }
+                              error={!!formState.errors.gadgetConfirmPassword}
+                              required
+                           />
                         </Grid>
                      </Grid>
                   </Grid>
@@ -504,8 +709,15 @@ export default function BusinessRegistrationPage() {
                      variant='contained'
                      color='primary'
                      className={classes.button}
+                     disabled={formState.loading}
                   >
                      Submit
+                     {formState.loading && (
+                        <CircularProgress
+                           className={classes.progress}
+                           size={30}
+                        />
+                     )}
                   </Button>
                </Grid>
             </form>
@@ -513,4 +725,6 @@ export default function BusinessRegistrationPage() {
          <Footer />
       </>
    );
-}
+};
+
+export default withRouter(BusinessRegistrationPage);

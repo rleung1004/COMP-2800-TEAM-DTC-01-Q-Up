@@ -1,6 +1,13 @@
-import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
-import Footer from "../components/static/Footer";
-import Header from "../components/static/Header";
+import React, {
+  useState,
+  FormEvent,
+  ChangeEvent,
+  useEffect,
+  useCallback,
+} from "react";
+import app from "../firebase";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -13,10 +20,13 @@ import {
   Select,
 } from "@material-ui/core";
 import axios from "axios";
-import { mockProvinces, mockCategories } from "src/mockData";
 import "../styles/businessDashboard.scss";
 import BusinessNav from "src/components/businessNav";
+import { withRouter, Redirect } from "react-router-dom";
+import PhoneMaskedInput, { unMaskPhone } from '../components/PhoneMaskedInput';
+import {formatDescription} from "../utils/formatting";
 
+// Mui stylings
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -41,13 +51,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EditBusinessProfilePage() {
+/**
+ * Render a business edit profile page.
+ *
+ * Accessible to: managers
+ */
+const EditBusinessProfilePage = ({ history }: any) => {
+  const array: Array<any> = [];
+  const [dropdownData, setDropDownData] = useState({
+    categories: array,
+    provinces: array,
+  });
+  const [getDropdownData, setGetDropdownData] = useState(true);
   const classes = useStyles();
   const axiosConfig = {
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
     },
   };
+
+  // error type definition to be used in input feedback
   interface errors {
     hours?: {
       startTime?: string;
@@ -70,6 +93,7 @@ export default function EditBusinessProfilePage() {
 
   const errorObject: errors = {};
 
+  // form data
   const [formState, setFormState] = useState({
     category: "",
     description: "",
@@ -94,14 +118,20 @@ export default function EditBusinessProfilePage() {
       postalCode: "",
     },
     name: "",
-    phoneNumber: "",
+    phoneNumber: "(1  )    -    ",
     website: "",
     averageWaitTime: "",
     loading: false,
     errors: errorObject,
   });
-  //
 
+  /**
+   * sync input data with form data
+   *
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
   const handleOnFieldChange = (event: any) => {
     const fieldNameTokens = event.target.name.split("-");
     const fieldCategory = fieldNameTokens[0];
@@ -118,6 +148,13 @@ export default function EditBusinessProfilePage() {
     }
   };
 
+  /**
+   * sync hour input data with form data
+   *
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   * @param event an event with target
+   */
   const handleHourChange = (event: ChangeEvent<HTMLInputElement>) => {
     const fieldNameTokens = event.target.name.split("-");
     const newValue = event.target.value;
@@ -159,7 +196,19 @@ export default function EditBusinessProfilePage() {
     }
   };
 
-  const handleaverageWaitTImeChange = (
+  /**
+   * sync average wait time input data with form data
+   *
+   * Each input is assigned a name analog to the form data it represents.
+   * On change the proper property in form data is access by using the name of the event emitter.
+   *
+   * Allowed range: 0 < 59
+   * Only numbers allowed
+   * Allows blank to avoid UX issues
+   *
+   * @param event an event with target
+   */
+  const handleaverageWaitTimeChange = (
     event: ChangeEvent<HTMLInputElement>
   ) => {
     const newValue = event.target.value;
@@ -191,8 +240,9 @@ export default function EditBusinessProfilePage() {
     }
   };
 
+  // Fetch flag
   const [getData, setGetData] = useState(true);
-
+  // fetch business data to be prepopulated in inputs
   useEffect(() => {
     if (!getData) {
       return;
@@ -217,47 +267,101 @@ export default function EditBusinessProfilePage() {
         });
       })
       .catch((err: any) => {
-        window.alert("Connection error");
         console.log(err);
+        if (err.response.status && err.response.status === 332) {
+          window.alert("Please login again to continue, your token expired");
+          app.auth().signOut().catch(console.error);
+          return;
+        }
+        window.alert("Connection error");
       });
   }, [axiosConfig, errorObject, getData]);
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    setFormState((prevState) => ({ ...prevState, loading: true }));
-    const userData = {
-      name: formState.name,
-      phoneNumber: formState.phoneNumber,
-      address: formState.address,
-      category: formState.category,
-      website: formState.website,
-      hours: formState.hours,
-      description: formState.description,
-      email: formState.email,
-      averageWaitTime: formState.averageWaitTime,
-    };
-
+  useEffect(()=> {
+    if (!getDropdownData) {
+      return;
+    }
+    setGetDropdownData(false);
     axios
-      .put("/updateBusiness", userData, axiosConfig)
-      .then(() => {
-        console.log("success registering business");
+        .get('/getBusinessEnums', axiosConfig)
+        .then(res => setDropDownData(res.data))
+        .catch((err: any) => {
+          console.log(err);
+          if (err.response.status && err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            app.auth().signOut().catch(console.error);
+            return;
+          }
+          window.alert("Connection error");
+        });
+  }, [axiosConfig, getDropdownData]);
 
-        window.location.href = "/businessDashboard";
-      })
-      .catch((err: any) => {
-        console.log("firebase lets you down, ", err);
-        window.alert("Connection error");
-        setFormState((prevState) => ({
+  // submit handler
+  const handleSubmit = useCallback(
+    (event: FormEvent) => {
+      event.preventDefault();
+
+      // validation
+      if (formState.averageWaitTime === " ") {
+        setFormState((prevState: any) => ({
           ...prevState,
-          errors: err.response.data,
-          loading: false,
+          errors: {
+            ...prevState.errors,
+            averageWaitTime: "Must enter a value",
+          },
         }));
-      });
-  };
+        return;
+      }
+      setFormState((prevState) => ({ ...prevState, loading: true }));
+
+
+      // map package
+      const userData = {
+        name: formState.name.charAt(0).toUpperCase() + formState.name.substr(1).toLowerCase(),
+        phoneNumber: unMaskPhone(formState.phoneNumber),
+        address: formState.address,
+        category: formState.category,
+        website: formState.website.toLowerCase(),
+        hours: formState.hours,
+        description: formatDescription(formState.description),
+        email: formState.email.toLowerCase(),
+        averageWaitTime: parseInt(formState.averageWaitTime),
+      };
+
+      // request
+      axios
+        .put("/updateBusiness", userData, axiosConfig)
+        .then(() => {
+          console.log("success updating business");
+          history.push("/businessProfile");
+        })
+        .catch((err: any) => {
+          console.error(err);
+          if (err.response.status && err.response.status === 332) {
+            window.alert("Please login again to continue, your token expired");
+            app.auth().signOut().catch(console.error);
+            return;
+          }
+          window.alert("Connection error");
+          setFormState((prevState) => ({
+            ...prevState,
+            errors: err.response.data,
+            loading: false,
+          }));
+        });
+    },
+    [history, formState, axiosConfig]
+  );
+
+  if (JSON.parse(sessionStorage.user).type !== "manager") {
+    return <Redirect to="/login" />;
+  }
+
+
 
   return (
     <>
-      <Header Nav={BusinessNav} logout/>
+      <Header Nav={BusinessNav} logout />
       <main>
         <form
           className={classes.root}
@@ -284,7 +388,17 @@ export default function EditBusinessProfilePage() {
               value={formState.name}
               className={classes.textField}
               helperText={formState.errors.name}
-              error={formState.errors.name ? true : false}
+              error={!!formState.errors.name}
+            />
+            <TextField
+              id="filled-multiline-static"
+              label="Description"
+              multiline
+              rows={4}
+              name="description"
+              defaultValue="Default Value"
+              value={formState.description}
+              onChange={handleOnFieldChange}
             />
             <TextField
               required
@@ -296,7 +410,8 @@ export default function EditBusinessProfilePage() {
               value={formState.phoneNumber}
               className={classes.textField}
               helperText={formState.errors.phoneNumber}
-              error={formState.errors.phoneNumber ? true : false}
+              error={!!formState.errors.phoneNumber}
+              InputProps={{inputComponent: PhoneMaskedInput as any} }
             />
             <TextField
               required
@@ -308,7 +423,7 @@ export default function EditBusinessProfilePage() {
               value={formState.email}
               className={classes.textField}
               helperText={formState.errors.email}
-              error={formState.errors.email ? true : false}
+              error={!!formState.errors.email}
             />
             <TextField
               required
@@ -320,7 +435,7 @@ export default function EditBusinessProfilePage() {
               value={formState.website}
               className={classes.textField}
               helperText={formState.errors.website}
-              error={formState.errors.website ? true : false}
+              error={!!formState.errors.website}
             />
             <Grid item xs={12}>
               <FormControl className={classes.catSelect}>
@@ -335,7 +450,7 @@ export default function EditBusinessProfilePage() {
                   value={formState.category}
                   onChange={handleOnFieldChange}
                 >
-                  {mockCategories().map((cat, key) => {
+                  {dropdownData.categories.map((cat, key) => {
                     return (
                       <MenuItem key={key} value={cat}>
                         {cat}
@@ -362,7 +477,7 @@ export default function EditBusinessProfilePage() {
                   value={formState.address.unit}
                   className={classes.textField}
                   helperText={formState.errors.address?.unit}
-                  error={formState.errors.address?.unit ? true : false}
+                  error={!!formState.errors.address?.unit}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -375,7 +490,7 @@ export default function EditBusinessProfilePage() {
                   value={formState.address.streetAddress}
                   className={classes.textField}
                   helperText={formState.errors.address?.streetAddress}
-                  error={formState.errors.address?.streetAddress ? true : false}
+                  error={!!formState.errors.address?.streetAddress}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -388,7 +503,7 @@ export default function EditBusinessProfilePage() {
                   value={formState.address.city}
                   className={classes.textField}
                   helperText={formState.errors.address?.city}
-                  error={formState.errors.address?.city ? true : false}
+                  error={!!formState.errors.address?.city}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -404,7 +519,7 @@ export default function EditBusinessProfilePage() {
                     value={formState.address.province}
                     onChange={handleOnFieldChange}
                   >
-                    {mockProvinces().map((prov, key) => {
+                    {dropdownData.provinces.map((prov, key) => {
                       return (
                         <MenuItem key={key} value={prov}>
                           {prov}
@@ -423,7 +538,7 @@ export default function EditBusinessProfilePage() {
                     value={formState.address.postalCode}
                     className={classes.textField}
                     helperText={formState.errors.address?.postalCode}
-                    error={formState.errors.address?.postalCode ? true : false}
+                    error={!!formState.errors.address?.postalCode}
                   />
                 </Grid>
               </Grid>
@@ -507,9 +622,10 @@ export default function EditBusinessProfilePage() {
                   </Grid>
                 </Grid>
               </Grid>
+
               <Grid container item direction="column">
-                <br />
-                <Typography variant="h6">
+                <Typography variant="h3">
+                  <br />
                   Estimated Serving Frequency(SF)
                 </Typography>
                 <Typography variant="caption">
@@ -523,10 +639,9 @@ export default function EditBusinessProfilePage() {
                     name="servingFrequency"
                     color="secondary"
                     size="small"
-                    onChange={handleaverageWaitTImeChange}
+                    onChange={handleaverageWaitTimeChange}
                     value={formState.averageWaitTime}
-                  ></TextField>
-                  <Typography variant="body1">minutes</Typography>
+                  />
                 </Grid>
               </Grid>
             </Grid>
@@ -545,4 +660,6 @@ export default function EditBusinessProfilePage() {
       <Footer />
     </>
   );
-}
+};
+
+export default withRouter(EditBusinessProfilePage);
