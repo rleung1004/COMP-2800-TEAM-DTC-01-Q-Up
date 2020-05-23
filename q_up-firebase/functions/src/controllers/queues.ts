@@ -76,7 +76,10 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
             }
             const onlineEmployees: number = await getOnlineEmployees(requestData.queueName);
             if (onlineEmployees < 1) {
-                return res.status(403).json({general: 'There is no online tellers for this queue!!'});
+                return res.status(200).json({
+                    general: 'There is no online tellers for this queue!, please wait!',
+                    noEmployee: true,
+                });
             }
             const lastHighestTicketNumber: number = getHighestTicketNumbers(queueSlots).highestNonVIPTicketNumber;
             const customerSlot = createQueueSlot(requestData.userEmail, lastHighestTicketNumber);
@@ -92,6 +95,7 @@ export const customerEnterQueue = async (req: Request, res: Response) => {
                 .update({ currentQueue: requestData.queueName });
             return res.status(201).json({
                 general: `you have been added into ${requestData.queueName}'s queue successfully`,
+                noEmployee: false,
                 customerSlotInfo: {
                     customer: customerSlot.customer,
                     password: customerSlot.password,
