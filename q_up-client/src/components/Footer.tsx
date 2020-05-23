@@ -19,16 +19,27 @@ export default function Footer() {
         <Grid item container direction="column" id="foot-content-grid">
           <Grid item container>
             <Grid item xs={3}>
-              <img src={require("../img/twit.svg")} alt="Twitter logo" />
+              <a href="https://twitter.com/QueueQup">
+                <img src={require("../img/twit.svg")} alt="Twitter logo" />
+              </a>
             </Grid>
+
             <Grid item xs={3}>
-              <img src={require("../img/face.svg")} alt="Facebook logo" />
+              <a href="https://www.facebook.com/Q-UP-Online-Platform-110343474025476">
+                <img src={require("../img/face.svg")} alt="Facebook logo" />
+              </a>
             </Grid>
+
             <Grid item xs={3}>
-              <img src={require("../img/insta.png")} alt="Instagram logo" />
+              <a href="https://www.instagram.com/qup.app/">
+                <img src={require("../img/insta.png")} alt="Instagram logo" />
+              </a>
             </Grid>
+
             <Grid item xs={3}>
-              <img src={require("../img/youtube.svg")} alt="Youtube logo" />
+              <a href="https://www.youtube.com/channel/UCyuwVlPReivA0FcYiAwIsEQ">
+                <img src={require("../img/youtube.svg")} alt="Youtube logo" />
+              </a>
             </Grid>
           </Grid>
           <Grid item>

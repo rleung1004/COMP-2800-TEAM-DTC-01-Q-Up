@@ -146,7 +146,7 @@ export default function ContactUsPage() {
                   </header>
                   <div
                     className="fb-comments"
-                    data-href="https://www.facebook.com/teamkart.bcit.7"
+                    data-href="https://www.facebook.com/Q-UP-Online-Platform-110343474025476"
                     data-numposts="5"
                     data-width="100%"
                   ></div>
