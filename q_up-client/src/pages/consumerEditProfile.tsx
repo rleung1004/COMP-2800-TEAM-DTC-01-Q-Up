@@ -101,7 +101,6 @@ const ConsumerEditProfilePage = ({ history }: any) => {
       const userData = {
         phoneNumber: unMaskPhone(formState.phoneNumber),
         postalCode: formState.postalCode.toUpperCase(),
-        email: JSON.parse(sessionStorage.user).email.toLowerCase(),
       };
       console.log(userData);
 
