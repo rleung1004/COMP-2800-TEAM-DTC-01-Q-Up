@@ -50,9 +50,17 @@ const ClientDashboardPage = ({ history }: any) => {
     inQueue: false,
   });
 
+  let token: string = "";
+  try {
+    token = JSON.parse(sessionStorage.user).token;
+  } catch (err) {
+    console.error(err);
+    app.auth().signOut();
+  }
+
   const axiosConfig = {
     headers: {
-      Authorization: `Bearer ${JSON.parse(sessionStorage.user).token}`,
+      Authorization: `Bearer ${token}`,
     },
   };
 

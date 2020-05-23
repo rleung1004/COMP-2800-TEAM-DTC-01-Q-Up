@@ -179,6 +179,7 @@ const LoginPage = ({ history }: any) => {
     } catch (err) {
       console.error(err);
       app.auth().signOut().catch(console.error);
+      history.push("/login");
     }
     switch (userType) {
       case "manager":
@@ -193,8 +194,11 @@ const LoginPage = ({ history }: any) => {
       case "display":
         history.push("/display");
         break;
-      default:
+      case "customer":
         history.push("/consumerDashboard");
+        break;
+      default:
+        history.push("/");
         break;
     }
   }
