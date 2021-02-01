@@ -30,8 +30,8 @@ const QueueSearchPage = ({ history }: any) => {
 
   // algolia config
   const searchClient = algoliasearch(
-    "EU7O4R6VOS",
-    "86a00161b4b0e5a68907e099e5962273"
+    "3Q212KGXA7",
+    "86b5b77b16cc7caab3b6fbefdc99531f"
   );
 
   const axiosConfig = {
